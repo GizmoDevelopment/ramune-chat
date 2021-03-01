@@ -7,3 +7,7 @@ export interface Client {
     user: User;
     data: Record<string, any>;
 }
+
+export interface ExtendedUser extends User {
+    host: boolean;
+}

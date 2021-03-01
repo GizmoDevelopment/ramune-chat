@@ -3,7 +3,7 @@ import { Socket } from "socket.io";
 import { User } from "gizmo-api";
 
 // Types
-import { Client } from "../types";
+import { Client, ExtendedUser } from "../types";
 
 export function constructClient (socket: Socket, user: User): Client {
     return {
@@ -12,5 +12,12 @@ export function constructClient (socket: Socket, user: User): Client {
         data: {
             hostOfRoom: null
         }
+    };
+}
+
+export function constructExtendedUser (client: Client): ExtendedUser {
+    return {
+        ...client.user,
+        host: !!client.data.hostOfRoom
     };
 }
