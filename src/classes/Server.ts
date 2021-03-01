@@ -106,8 +106,6 @@ export default class Server {
 
         socket.on("client:authenticate", async (data: { token: string }, callback: Function) => {
 
-            console.log(data);
-
             if (!data?.token) {
 
                 callback({
