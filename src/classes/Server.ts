@@ -121,11 +121,11 @@ export default class Server {
 
                 callback({
                     type: "success",
-                    message: data
+                    message: user
                 });
 
                 // Not needed at the moment
-                // socket.broadcast.emit("client:connect", user);
+                socket.broadcast.emit("client:connect", user);
 
                 logger.info(`{'${ socket.id }'} Authenticated client with userID ${ user.id }`);
     
