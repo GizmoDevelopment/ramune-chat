@@ -3,15 +3,21 @@ import fs from "fs";
 import http from "http";
 import https from "https";
 import gizmo from "gizmo-api";
-import io = require("socket.io");
+import io, { Socket } from "socket.io";
 
 // Utils
 import logger from "../utils/logger";
+import { constructClient } from "../utils/users";
+
+// Types
+import { Client } from "../types";
 
 export default class Server {
 
     private readonly httpServer: http.Server | https.Server;
     private readonly ioServer: io.Server;
+
+    clients: Map<string, Client> = new Map();
 
     constructor (port: number) {
 
@@ -24,7 +30,7 @@ export default class Server {
             this.httpServer = http.createServer();
         }
 
-        this.ioServer = io(this.httpServer);
+        this.ioServer = new io.Server(this.httpServer);
 
         this.ioServer.sockets.on("connection", this.handleSocketConnection);
 
@@ -34,11 +40,17 @@ export default class Server {
 
     }
 
-    private handleSocketConnection (socket: io.Socket) {
+    addClient (client: Client) {
+        this.clients.set(client.socket.id, client);
+    }
 
-        socket.on("auth:attempt", async (client: any, callback: Function) => {
+    private handleSocketConnection (socket: Socket) {
+
+        logger.info(`Incoming socket connection from '${ socket.id }'`);
+
+        socket.on("auth:attempt", async (data: { token: string }, callback: Function) => {
         
-            if (!client?.token) {
+            if (!data?.token) {
                 return callback({
                     type: "error",
                     reason: "User token is required"
@@ -47,7 +59,9 @@ export default class Server {
     
             try {
     
-                const user = await gizmo.getUser(client.token);
+                const user = await gizmo.getUser(data.token);
+                
+                this.addClient(constructClient(socket, user));
     
             } catch (err) {
     
