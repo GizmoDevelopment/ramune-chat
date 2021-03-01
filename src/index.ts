@@ -1,19 +1,29 @@
-// Modules
-import fs from "fs";
-import http from "http";
-import https from "https";
-import socket from "socket.io";
+// Clases
+import Sentry from "@sentry/node";
+import Server from "./classes/Server";
 
-// Variables
-let httpServer: http.Server | https.Server;
+// Utils
+import logger from "./utils/logger";
 
+// Set up error logging
 if (process.env.NODE_ENV === "production") {
-    httpServer = https.createServer({
-        key: fs.readFileSync("key.pem"),
-        cert: fs.readFileSync("cert.pem")
+
+    Sentry.init({
+        dsn: process.env.SENTRY_DSN
     });
+
+    process.on("uncaughtException", (error) => {
+        logger.error(error);
+        Sentry.captureException(error);
+    });
+    
+    process.on("unhandledRejection", (error) => {
+        logger.error(error);
+        Sentry.captureException(error);
+    });
+
 } else {
-    httpServer = http.createServer();
+    process.on("uncaughtException", logger.error);
+    process.on("unhandledRejection", logger.error);
 }
 
-const io = socket(httpServer);
