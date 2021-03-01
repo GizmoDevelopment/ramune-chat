@@ -5,6 +5,9 @@ import https from "https";
 import gizmo from "gizmo-api";
 import io = require("socket.io");
 
+// Utils
+import logger from "../utils/logger";
+
 export default class Server {
 
     private readonly httpServer: http.Server | https.Server;
@@ -26,7 +29,7 @@ export default class Server {
         this.ioServer.sockets.on("connection", this.handleSocketConnection);
 
         this.httpServer.listen(port, () => {
-            console.log(`Listening on port ${ port }`);
+            logger.info(`Listening on port ${ port }`);
         });
 
     }
@@ -48,9 +51,9 @@ export default class Server {
     
             } catch (err) {
     
-                return callback({
+                callback({
                     type: "error",
-                    reason: "User token is required"
+                    reason: "Something went wrong"
                 });
     
                 throw err;
