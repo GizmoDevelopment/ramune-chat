@@ -93,7 +93,33 @@ export default class Server {
     
         });
 
-        socket.on("disconnect", reason => {
+        socket.on("client:join_room", (data: { roomId: string }, callback: Function) => {
+            if (data?.roomId) {
+
+                socket.join(data.roomId);
+
+            } else {
+                callback({
+                    type: "error",
+                    message: "Room ID is required"
+                });
+            }
+        });
+
+        socket.on("client:leave_room", (data: { roomId: string }, callback: Function) => {
+            if (data?.roomId) {
+
+                socket.leave(data.roomId);
+
+            } else {
+                callback({
+                    type: "error",
+                    message: "Room ID is required"
+                });
+            }
+        });
+
+        socket.on("disconnect", (reason: string) => {
             if (this.socketExists(socket)) {
 
                 this.removeSocket(socket);
