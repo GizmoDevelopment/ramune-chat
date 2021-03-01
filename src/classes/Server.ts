@@ -36,7 +36,7 @@ export default class Server {
         this.ioServer.sockets.on("connection", this.handleSocketConnection);
 
         this.httpServer.listen(port, () => {
-            logger.info(`Listening on port ${ port }`);
+            logger.info(`Listening on port '${ port }'`);
         });
 
     }
