@@ -11,6 +11,10 @@
         "types": [
             "node",
             "socket.io"
+        ],
+        "typeRoots": [
+            "node_modules/@types",
+            "node_modules/@sentry/types"
         ]
     }
 }
