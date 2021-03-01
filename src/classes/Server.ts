@@ -144,6 +144,7 @@ export default class Server {
             }
 
             this.rooms.delete(roomId);
+            logger.info(`Removed roomID {${ roomId }}`);
         }
     }
 
@@ -212,8 +213,8 @@ export default class Server {
                     type: "success",
                     message: "Successfully left room"
                 });
-            }
-
+            }      
+            
             logger.info(`{${ socket.id }} Client left roomID {${ sanitizedRoomId }}`);
 
         } else if (callback) {
