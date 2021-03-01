@@ -44,35 +44,59 @@ export default class Server {
         this.clients.set(client.socket.id, client);
     }
 
+    socketExists (socket: Socket) {
+        return this.clients.has(socket.id);
+    }
+
+    removeSocket (socket: Socket) {
+        this.clients.delete(socket.id);
+    }
+
     private handleSocketConnection (socket: Socket) {
 
-        logger.info(`Incoming socket connection from '${ socket.id }'`);
+        logger.info(`{'${ socket.id }'} Client connected`);
 
-        socket.on("auth:attempt", async (data: { token: string }, callback: Function) => {
+        socket.on("user:authenticate", async (data: { token: string }, callback: Function) => {
         
             if (!data?.token) {
                 return callback({
                     type: "error",
-                    reason: "User token is required"
+                    message: "User token is required"
                 });
             }
     
             try {
     
                 const user = await gizmo.getUser(data.token);
-                
+
                 this.addClient(constructClient(socket, user));
+
+                callback({
+                    type: "success",
+                    message: "Successfully authenticated"
+                });
+
+                logger.info(`{'${ socket.id }'} Authenticated client with userID ${ user.id }`);
     
             } catch (err) {
     
                 callback({
                     type: "error",
-                    reason: "Something went wrong"
+                    message: "Something went wrong"
                 });
     
                 throw err;
             }
     
+        });
+
+        socket.on("disconnect", reason => {
+            if (this.socketExists(socket)) {
+
+                this.removeSocket(socket);
+
+                logger.info(`{'${ socket.id }'} Client disconnected with reason '${ reason }'`);
+            }
         });
 
     }
