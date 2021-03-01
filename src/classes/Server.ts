@@ -61,6 +61,36 @@ export default class Server {
         return this.clients.get(socketId);
     }
 
+    leaveAllSocketRooms (socket: Socket) {
+        socket.rooms.forEach(roomId => {
+            if (roomId !== socket.id) {
+                socket.leave(roomId);
+            }
+        });
+    }
+
+    modifyClientData (target: Client | Socket, data: Record<string, any>) {
+
+        let client: Client | null;
+
+        if (target instanceof Socket) {
+            client = this.clients.get(target.id) || null;
+        } else {
+            client = target;
+        }
+
+        if (client) {
+            this.clients.set(client.socket.id, {
+                ...client,
+                data: {
+                    ...client.data,
+                    ...data
+                }
+            });
+        }
+
+    }
+
     private handleSocketConnection (socket: Socket) {
 
         logger.info(`{'${ socket.id }'} Client connected`);
@@ -110,6 +140,20 @@ export default class Server {
                     user = this.getClientFromSocket(socket)?.user;
 
                 if (user) {
+
+                    this.leaveAllSocketRooms(socket);
+
+                    if ((await this.ioServer.to(sanitizedRoomId).allSockets()).size > 0) {
+                        // Existing room
+                        this.modifyClientData(socket, {
+                            hostOfRoom: null
+                        });
+                    } else {
+                        // New room (promote to host)
+                        this.modifyClientData(socket, {
+                            hostOfRoom: sanitizedRoomId
+                        });
+                    }
 
                     socket.join(sanitizedRoomId);
                     this.ioServer.to(sanitizedRoomId).emit("client:join_room", user);
