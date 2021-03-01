@@ -417,6 +417,22 @@ export default class Server {
             }
         });
 
+        socket.on("client:fetch_room", (data: { roomId: string }, callback: Function) => {
+            if (this.socketExists(socket)) {
+                if (this.roomExists(data.roomId)) {
+                    callback({
+                        type: "success",
+                        message: this.rooms.get(data.roomId)
+                    });
+                } else {
+                    callback({
+                        type: "error",
+                        message: "Room doesn't exist"
+                    });
+                }
+            }
+        });
+
         socket.on("disconnecting", () => {
             if (this.socketExists(socket)) {
                 this.leaveAllSocketRooms(socket);
