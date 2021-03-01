@@ -7,7 +7,7 @@ import io, { Socket } from "socket.io";
 
 // Utils
 import logger from "../utils/logger";
-import { constructClient } from "../utils/users";
+import { constructClient, constructExtendedUser } from "../utils/users";
 import { sanitizeRoomId } from "../utils/rooms";
 
 // Types
@@ -118,17 +118,20 @@ export default class Server {
     
             try {
     
-                const user = await gizmo.getUser(data.token);
+                const
+                    user = await gizmo.getUser(data.token),
+                    client = constructClient(socket, user),
+                    extendedUser = constructExtendedUser(client);
 
-                this.addClient(constructClient(socket, user));
+                this.addClient(client);
 
                 callback({
                     type: "success",
-                    message: user
+                    message: extendedUser
                 });
 
                 // Not needed at the moment
-                socket.broadcast.emit("client:connect", user);
+                socket.broadcast.emit("client:connect", extendedUser);
 
                 logger.info(`{${ socket.id }} Authenticated client with userID {${ user.id }}`);
     
