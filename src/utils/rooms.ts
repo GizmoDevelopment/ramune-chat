@@ -15,3 +15,13 @@ export function constructRoom (socket: Socket, roomId: string): Room {
         data: null
     };
 }
+
+export function updateRoom (oldRoom: Room, newRoom: Record): Room {
+    return {
+        ...oldRoom,
+        data: {
+            ...(oldRoom?.data || {}),
+            ...(newRoom?.data || {})
+        }
+    };
+}
