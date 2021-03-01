@@ -72,7 +72,7 @@ export default class Server {
                     socket.leave(roomId);
                     this.ioServer.to(roomId).emit("client:leave_room", client.user.id);
     
-                    logger.info(`['${ socket.id }'} Client left room {'${ roomId }'}`);
+                    logger.info(`{${ socket.id }} Client left room {${ roomId }}`);
                 }
             });
         }
@@ -102,9 +102,11 @@ export default class Server {
 
     private handleSocketConnection (socket: Socket) {
 
-        logger.info(`['${ socket.id }'} Client connected`);
+        logger.info(`{${ socket.id }} Client connected`);
 
         socket.on("client:authenticate", async (data: { token: string }, callback: Function) => {
+
+            console.log(data);
 
             if (!data?.token) {
 
@@ -130,7 +132,7 @@ export default class Server {
                 // Not needed at the moment
                 socket.broadcast.emit("client:connect", user);
 
-                logger.info(`['${ socket.id }'} Authenticated client with userID ${ user.id }`);
+                logger.info(`{${ socket.id }} Authenticated client with userID {${ user.id }}`);
     
             } catch (err) {
     
@@ -189,6 +191,8 @@ export default class Server {
                         type: "success",
                         message: listOfUsersInRoom
                     });
+
+                    logger.info(`{${ socket.id }} Client joined roomID {${ sanitizedRoomId }}`);
                     
                 } else {
                     callback({
@@ -222,7 +226,7 @@ export default class Server {
                         message: "Successfully left room"
                     });
 
-                    logger.info(`['${ socket.id }'} Client left room {'${ sanitizedRoomId }'}`);
+                    logger.info(`{${ socket.id }} Client left roomID {${ sanitizedRoomId }}`);
 
                 } else {
                     callback({
@@ -273,7 +277,7 @@ export default class Server {
                 this.removeSocket(socket);
             }
 
-            logger.info(`['${ socket.id }'} Client disconnected with reason '${ reason }'`);
+            logger.info(`{${ socket.id }} Client disconnected with reason '${ reason }'`);
         });
 
     }
