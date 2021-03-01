@@ -62,11 +62,20 @@ export default class Server {
     }
 
     leaveAllSocketRooms (socket: Socket) {
-        socket.rooms.forEach(roomId => {
-            if (roomId !== socket.id) {
-                socket.leave(roomId);
-            }
-        });
+
+        const client = this.getClientFromSocket(socket);
+
+        if (client) {
+            socket.rooms.forEach(roomId => {
+                if (roomId !== socket.id) {
+    
+                    socket.leave(roomId);
+                    this.ioServer.to(roomId).emit("client:leave_room", client.user.id);
+    
+                    logger.info(`{'${ socket.id }'} Client left room {'${ roomId }'}`);
+                }
+            });
+        }
     }
 
     modifyClientData (target: Client | Socket, data: Record<string, any>) {
@@ -201,8 +210,17 @@ export default class Server {
                     user = this.getClientFromSocket(socket)?.user;
 
                 if (user) {
+
                     socket.leave(sanitizedRoomId);
-                    this.ioServer.to(sanitizedRoomId).emit("client:leave_room", user);
+                    this.ioServer.to(sanitizedRoomId).emit("client:leave_room", user.id);
+
+                    callback({
+                        type: "success",
+                        message: "Successfully left room"
+                    });
+
+                    logger.info(`{'${ socket.id }'} Client left room {'${ sanitizedRoomId }'}`);
+
                 } else {
                     callback({
                         type: "error",
@@ -218,11 +236,15 @@ export default class Server {
             }
         });
 
+        socket.on("disconnecting", (reason: string) => {
+            if (this.socketExists(socket)) {
+                this.leaveAllSocketRooms(socket);
+            }
+        });
+
         socket.on("disconnect", (reason: string) => {
             if (this.socketExists(socket)) {
-
                 this.removeSocket(socket);
-
                 logger.info(`{'${ socket.id }'} Client disconnected with reason '${ reason }'`);
             }
         });
