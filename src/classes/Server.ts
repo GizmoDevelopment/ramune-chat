@@ -54,9 +54,11 @@ export default class Server {
 
     private handleSocketConnection (socket: Socket) {
 
+        const ioServer = this.ioServer;
+
         logger.info(`{'${ socket.id }'} Client connected`);
 
-        socket.on("user:authenticate", async (data: { token: string }, callback: Function) => {
+        socket.on("client:authenticate", async (data: { token: string }, callback: Function) => {
         
             if (!data?.token) {
                 return callback({
@@ -73,8 +75,10 @@ export default class Server {
 
                 callback({
                     type: "success",
-                    message: "Successfully authenticated"
+                    message: data
                 });
+
+                socket.broadcast.emit("client:connect", user);
 
                 logger.info(`{'${ socket.id }'} Authenticated client with userID ${ user.id }`);
     
