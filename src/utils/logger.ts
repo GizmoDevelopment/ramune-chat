@@ -24,8 +24,8 @@ function getDateLabel () {
  */
 function log (message: string, color: string = COLORS.NC) {
 
-    // Color words in 'single quotes'
-    message = message.replace(/('.*?')/g, `${COLORS.BrightBlue}$1${color}`);
+    // Color words in 'single quotes' and {curly braces}
+    message = message.replace(/('.*?')|({.*?})/g, `${COLORS.BrightBlue}$1$2${color}`);
 
     console.log(`${getDateLabel()}${color} ${message}${COLORS.NC}`);
 }
