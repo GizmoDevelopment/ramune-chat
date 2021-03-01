@@ -87,7 +87,7 @@ export default class Server {
                                     hostOfRoom: null
                                 });
         
-                                this.modifyClientData(newHostClient, {
+                                this.modifyClientData(newHostClient.socket, {
                                     hostOfRoom: roomId
                                 });
 
@@ -174,25 +174,10 @@ export default class Server {
             socket.join(sanitizedRoomId);
             this.ioServer.to(sanitizedRoomId).emit("client:join_room", user);
 
-            const
-                socketsInRoom = await this.ioServer.to(sanitizedRoomId).allSockets(),
-                listOfUsersInRoom: Record<string, User> = {};
-
-            socketsInRoom.forEach(socketId => {
-                if (socketId !== socket.id) {
-                    
-                    const user = this.getClientFromSocketId(socketId)?.user;
-
-                    if (user) {
-                        listOfUsersInRoom[user.id] = user;
-                    }
-                }
-            });
-
             if (callback) {
                 callback({
                     type: "success",
-                    message: listOfUsersInRoom
+                    message: this.rooms.get(roomId)
                 });
             }
 
@@ -252,15 +237,9 @@ export default class Server {
         }
     }
 
-    private modifyClientData (target: Client | Socket, data: Record<string, any>) {
+    private modifyClientData (socket: Socket, data: Record<string, any>) {
 
-        let client: Client | null;
-
-        if (target instanceof Socket) {
-            client = this.clients.get(target.id) || null;
-        } else {
-            client = target;
-        }
+        const client = this.getClientFromSocket(socket);
 
         if (client) {
             this.clients.set(client.socket.id, {
@@ -407,6 +386,11 @@ export default class Server {
 
                     this.updateRoom(socket, "update_data", hostOfRoom, newRoomContent);
                     socket.to(hostOfRoom).emit("client:update_room", newRoomContent);
+
+                    callback({
+                        type: "success",
+                        message: this.rooms.get(hostOfRoom)
+                    });
 
                 } else {
                     callback({

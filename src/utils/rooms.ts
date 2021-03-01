@@ -5,7 +5,7 @@ import { Socket } from "socket.io";
 import { Room } from "../types";
 
 export function sanitizeRoomId (roomId: string) {
-    return JSON.stringify(roomId); // DIY string sanitization, please don't actually do this
+    return roomId; // DIY string sanitization, please don't actually do this
 }
 
 export function constructRoom (socket: Socket, roomId: string): Room {
