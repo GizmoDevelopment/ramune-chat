@@ -268,10 +268,12 @@ export default class Server {
         });
 
         socket.on("disconnect", (reason: string) => {
+            
             if (this.socketExists(socket)) {
                 this.removeSocket(socket);
-                logger.info(`['${ socket.id }'} Client disconnected with reason '${ reason }'`);
             }
+
+            logger.info(`['${ socket.id }'} Client disconnected with reason '${ reason }'`);
         });
 
     }
