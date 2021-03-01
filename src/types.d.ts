@@ -6,7 +6,7 @@ export interface Client {
     socket: Socket;
     user: User;
     data: {
-        hostOfRoom: string;
+        hostOfRoom: string | null;
     };
 }
 
