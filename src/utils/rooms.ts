@@ -16,7 +16,7 @@ export function constructRoom (socket: Socket, roomId: string): Room {
     };
 }
 
-export function updateRoom (oldRoom: Room, newRoom: Record): Room {
+export function updateRoom (oldRoom: Room, newRoom: Record<string, any>): Room {
     return {
         ...oldRoom,
         data: {
