@@ -236,7 +236,7 @@ export default class Server {
             }
         });
 
-        socket.on("disconnecting", (reason: string) => {
+        socket.on("disconnecting", () => {
             if (this.socketExists(socket)) {
                 this.leaveAllSocketRooms(socket);
             }
