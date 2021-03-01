@@ -2,7 +2,7 @@
 import fs from "fs";
 import http from "http";
 import https from "https";
-import gizmo, { User } from "gizmo-api";
+import gizmo from "gizmo-api";
 import io, { Socket } from "socket.io";
 
 // Utils
