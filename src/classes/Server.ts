@@ -246,11 +246,7 @@ export default class Server {
         if (client) {
             socket.rooms.forEach(roomId => {
                 if (roomId !== socket.id) {
-    
-                    socket.leave(roomId);
-                    this.ioServer.to(roomId).emit("client:leave_room", client.user.id);
-    
-                    logger.info(`{${ socket.id }} Client left room {${ roomId }}`);
+                    this.leaveRoom(socket, roomId);
                 }
             });
         }
