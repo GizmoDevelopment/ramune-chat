@@ -16,6 +16,7 @@ export interface ExtendedUser extends User {
 
 export interface Room {
     id: string;
+    host: string;
     data: null | {
         showId: string;
         episodeId: string;
