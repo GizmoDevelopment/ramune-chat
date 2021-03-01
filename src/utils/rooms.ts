@@ -8,7 +8,7 @@ export function sanitizeRoomId (roomId: string) {
     return JSON.stringify(roomId); // DIY string sanitization, please don't actually do this
 }
 
-export function constructRoom (roomId: string, socket: Socket): Room {
+export function constructRoom (socket: Socket, roomId: string): Room {
     return {
         id: roomId,
         host: socket.id,
