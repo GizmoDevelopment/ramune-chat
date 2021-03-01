@@ -33,7 +33,7 @@ export default class Server {
 
         this.ioServer = new io.Server(this.httpServer);
 
-        this.ioServer.sockets.on("connection", this.handleSocketConnection);
+        this.ioServer.sockets.on("connection", this.handleSocketConnection.bind(this));
 
         this.httpServer.listen(port, () => {
             logger.info(`Listening on port '${ port }'`);
@@ -41,27 +41,27 @@ export default class Server {
 
     }
 
-    addClient (client: Client) {
+    private addClient (client: Client) {
         this.clients.set(client.socket.id, client);
     }
 
-    socketExists (socket: Socket) {
+    private socketExists (socket: Socket) {
         return this.clients.has(socket.id);
     }
 
-    removeSocket (socket: Socket) {
+    private removeSocket (socket: Socket) {
         this.clients.delete(socket.id);
     }
 
-    getClientFromSocket (socket: Socket) {
+    private getClientFromSocket (socket: Socket) {
         return this.clients.get(socket.id);
     }
 
-    getClientFromSocketId (socketId: string) {
+    private getClientFromSocketId (socketId: string) {
         return this.clients.get(socketId);
     }
 
-    leaveAllSocketRooms (socket: Socket) {
+    private leaveAllSocketRooms (socket: Socket) {
 
         const client = this.getClientFromSocket(socket);
 
@@ -72,13 +72,13 @@ export default class Server {
                     socket.leave(roomId);
                     this.ioServer.to(roomId).emit("client:leave_room", client.user.id);
     
-                    logger.info(`{'${ socket.id }'} Client left room {'${ roomId }'}`);
+                    logger.info(`['${ socket.id }'} Client left room {'${ roomId }'}`);
                 }
             });
         }
     }
 
-    modifyClientData (target: Client | Socket, data: Record<string, any>) {
+    private modifyClientData (target: Client | Socket, data: Record<string, any>) {
 
         let client: Client | null;
 
@@ -102,15 +102,18 @@ export default class Server {
 
     private handleSocketConnection (socket: Socket) {
 
-        logger.info(`{'${ socket.id }'} Client connected`);
+        logger.info(`['${ socket.id }'} Client connected`);
 
         socket.on("client:authenticate", async (data: { token: string }, callback: Function) => {
-        
+
             if (!data?.token) {
-                return callback({
+
+                callback({
                     type: "error",
                     message: "User token is required"
                 });
+
+                return socket.disconnect(true);
             }
     
             try {
@@ -127,7 +130,7 @@ export default class Server {
                 // Not needed at the moment
                 socket.broadcast.emit("client:connect", user);
 
-                logger.info(`{'${ socket.id }'} Authenticated client with userID ${ user.id }`);
+                logger.info(`['${ socket.id }'} Authenticated client with userID ${ user.id }`);
     
             } catch (err) {
     
@@ -219,7 +222,7 @@ export default class Server {
                         message: "Successfully left room"
                     });
 
-                    logger.info(`{'${ socket.id }'} Client left room {'${ sanitizedRoomId }'}`);
+                    logger.info(`['${ socket.id }'} Client left room {'${ sanitizedRoomId }'}`);
 
                 } else {
                     callback({
@@ -236,6 +239,28 @@ export default class Server {
             }
         });
 
+        socket.on("client:send_message", (data: { content: string }) => {
+
+            const client = this.getClientFromSocket(socket);
+
+            if (client) {
+
+                const user = client.user;
+
+                this.ioServer.sockets.emit("client:send_message", {
+                    id: Math.floor(Math.random() * 10000000),
+                    type: "text",
+                    content: data.content,
+                    author: {
+                        id: user.id,
+                        username: user.uid,
+                        avatar: user.avatar
+                    }
+                });
+            }
+
+        });
+
         socket.on("disconnecting", () => {
             if (this.socketExists(socket)) {
                 this.leaveAllSocketRooms(socket);
@@ -245,7 +270,7 @@ export default class Server {
         socket.on("disconnect", (reason: string) => {
             if (this.socketExists(socket)) {
                 this.removeSocket(socket);
-                logger.info(`{'${ socket.id }'} Client disconnected with reason '${ reason }'`);
+                logger.info(`['${ socket.id }'} Client disconnected with reason '${ reason }'`);
             }
         });
 
