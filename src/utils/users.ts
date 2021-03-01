@@ -8,6 +8,9 @@ import { Client } from "../types";
 export function constructClient (socket: Socket, user: User): Client {
     return {
         socket,
-        user
+        user,
+        data: {
+            hostOfRoom: null
+        }
     };
 }
