@@ -2,12 +2,13 @@
 import fs from "fs";
 import http from "http";
 import https from "https";
-import gizmo from "gizmo-api";
+import gizmo, { User } from "gizmo-api";
 import io, { Socket } from "socket.io";
 
 // Utils
 import logger from "../utils/logger";
 import { constructClient } from "../utils/users";
+import { sanitizeRoomId } from "../utils/rooms";
 
 // Types
 import { Client } from "../types";
@@ -52,6 +53,14 @@ export default class Server {
         this.clients.delete(socket.id);
     }
 
+    getClientFromSocket (socket: Socket) {
+        return this.clients.get(socket.id);
+    }
+
+    getClientFromSocketId (socketId: string) {
+        return this.clients.get(socketId);
+    }
+
     private handleSocketConnection (socket: Socket) {
 
         logger.info(`{'${ socket.id }'} Client connected`);
@@ -93,10 +102,44 @@ export default class Server {
     
         });
 
-        socket.on("client:join_room", (data: { roomId: string }, callback: Function) => {
-            if (data?.roomId) {
+        socket.on("client:join_room", async (data: { roomId: string }, callback: Function) => {
+            if (data?.roomId && data?.roomId?.startsWith("room:")) {
 
-                socket.join(data.roomId);
+                const
+                    sanitizedRoomId = sanitizeRoomId(data.roomId),
+                    user = this.getClientFromSocket(socket)?.user;
+
+                if (user) {
+
+                    socket.join(sanitizedRoomId);
+                    this.ioServer.to(sanitizedRoomId).emit("client:join_room", user);
+
+                    const
+                        socketsInRoom = await this.ioServer.to(sanitizedRoomId).allSockets(),
+                        listOfUsersInRoom: Record<string, User> = {};
+
+                    socketsInRoom.forEach(socketId => {
+                        if (socketId !== socket.id) {
+                            
+                            const user = this.getClientFromSocketId(socketId)?.user;
+
+                            if (user) {
+                                listOfUsersInRoom[user.id] = user;
+                            }
+                        }
+                    });
+
+                    callback({
+                        type: "success",
+                        message: listOfUsersInRoom
+                    });
+                    
+                } else {
+                    callback({
+                        type: "error",
+                        message: "Client doesn't exist"
+                    });
+                }
 
             } else {
                 callback({
@@ -107,9 +150,21 @@ export default class Server {
         });
 
         socket.on("client:leave_room", (data: { roomId: string }, callback: Function) => {
-            if (data?.roomId) {
+            if (data?.roomId && data?.roomId?.startsWith("room:")) {
 
-                socket.leave(data.roomId);
+                const
+                    sanitizedRoomId = sanitizeRoomId(data.roomId),
+                    user = this.getClientFromSocket(socket)?.user;
+
+                if (user) {
+                    socket.leave(sanitizedRoomId);
+                    this.ioServer.to(sanitizedRoomId).emit("client:leave_room", user);
+                } else {
+                    callback({
+                        type: "error",
+                        message: "Client doesn't exist"
+                    });
+                }
 
             } else {
                 callback({
