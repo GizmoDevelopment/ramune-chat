@@ -27,3 +27,5 @@ if (process.env.NODE_ENV === "production") {
     process.on("unhandledRejection", logger.error);
 }
 
+if (!process.env.PORT) throw Error("Missing environmental variable 'PORT'");
+new Server(Number(process.env.PORT));
