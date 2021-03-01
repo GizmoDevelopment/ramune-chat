@@ -1,5 +1,7 @@
-// Clases
+// Modules
 import Sentry from "@sentry/node";
+
+// Clases
 import Server from "./classes/Server";
 
 // Utils
@@ -9,7 +11,8 @@ import logger from "./utils/logger";
 if (process.env.NODE_ENV === "production") {
 
     Sentry.init({
-        dsn: process.env.SENTRY_DSN
+        dsn: process.env.SENTRY_DSN,
+        tracesSampleRate: 1.0
     });
 
     process.on("uncaughtException", (error) => {
