@@ -13,3 +13,11 @@ export interface Client {
 export interface ExtendedUser extends User {
     host: boolean;
 }
+
+export interface Room {
+    id: string;
+    data: null | {
+        showId: string;
+        episodeId: string;
+    };
+}
