@@ -13,8 +13,8 @@
             "socket.io"
         ],
         "typeRoots": [
-            "node_modules/@types",
-            "node_modules/@sentry/types"
+            "./node_modules/@types",
+            "./node_modules/@sentry/types"
         ]
     }
 }
