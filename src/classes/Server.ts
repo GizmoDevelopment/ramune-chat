@@ -148,7 +148,7 @@ export default class Server {
         });
 
         socket.on("client:join_room", async (data: { roomId: string }, callback: Function) => {
-            if (data?.roomId && data?.roomId?.startsWith("room:")) {
+            if (this.socketExists(socket) && data?.roomId && data?.roomId?.startsWith("room:")) {
 
                 const
                     sanitizedRoomId = sanitizeRoomId(data.roomId),
@@ -211,7 +211,7 @@ export default class Server {
         });
 
         socket.on("client:leave_room", (data: { roomId: string }, callback: Function) => {
-            if (data?.roomId && data?.roomId?.startsWith("room:")) {
+            if (this.socketExists(socket) && data?.roomId && data?.roomId?.startsWith("room:")) {
 
                 const
                     sanitizedRoomId = sanitizeRoomId(data.roomId),
@@ -245,25 +245,52 @@ export default class Server {
         });
 
         socket.on("client:send_message", (data: { content: string }) => {
+            if (this.socketExists(socket)) {
 
-            const client = this.getClientFromSocket(socket);
+                const client = this.getClientFromSocket(socket);
 
-            if (client) {
+                if (client) {
 
-                const user = client.user;
+                    const user = client.user;
 
-                this.ioServer.sockets.emit("client:send_message", {
-                    id: Math.floor(Math.random() * 10000000),
-                    type: "text",
-                    content: data.content,
-                    author: {
-                        id: user.id,
-                        username: user.uid,
-                        avatar: user.avatar
-                    }
-                });
+                    this.ioServer.sockets.emit("client:send_message", {
+                        id: Math.floor(Math.random() * 10000000),
+                        type: "text",
+                        content: data.content,
+                        author: {
+                            id: user.id,
+                            username: user.uid,
+                            avatar: user.avatar
+                        }
+                    });
+                }
             }
+        });
 
+        socket.on("client:sync_player", (data: { timestamp: number, paused: boolean }, callback: Function) => {
+            if (this.socketExists(socket)) {
+
+                const client = this.getClientFromSocket(socket);
+
+                if (client) {
+
+                    const {
+                        hostOfRoom
+                    } = client.data;
+
+                    if (hostOfRoom) {
+                        socket.to(hostOfRoom).emit("client:sync_player", {
+                            timestamp: Number(data.timestamp) || 0,
+                            paused: !!data.paused || false
+                        });
+                    } else {
+                        callback({
+                            type: "error",
+                            message: "You aren't the host"
+                        });
+                    }
+                }
+            }
         });
 
         socket.on("disconnecting", () => {
