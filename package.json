@@ -25,7 +25,6 @@
     "typescript": "^4.2.2"
   },
   "dependencies": {
-    "@google-cloud/error-reporting": "^2.0.1",
     "@sentry/node": "^6.2.0",
     "@sentry/tracing": "^6.2.0",
     "@types/socket.io": "^2.1.13",
