@@ -20,8 +20,17 @@ export interface Room {
     id: string;
     host: string;
     sockets: SocketId[];
-    data: null | {
-        showId: string;
-        episodeId: string;
-    };
+    data: RoomData;
 }
+
+export interface SimpleRoom {
+    id: string;
+    host: User;
+    users: User[];
+    data: RoomData;
+}
+
+export type RoomData = null | {
+    showId: string;
+    episodeId: string;
+};
