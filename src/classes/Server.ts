@@ -1,7 +1,5 @@
 // Modules
-import fs from "fs";
 import http from "http";
-import https from "https";
 import gizmo, { User } from "gizmo-api";
 import io, { Socket } from "socket.io";
 
@@ -15,7 +13,7 @@ import { Client, Room } from "../types";
 
 export default class Server {
 
-    private readonly httpServer: http.Server | https.Server;
+    private readonly httpServer: http.Server;
     private readonly ioServer: io.Server;
 
     clients: Map<string, Client> = new Map();
@@ -23,15 +21,7 @@ export default class Server {
 
     constructor (port: number) {
 
-        if (process.env.NODE_ENV === "production") {
-            this.httpServer = https.createServer({
-                key: fs.readFileSync("../../key.pem"),
-                cert: fs.readFileSync("../../cert.pem")
-            });
-        } else {
-            this.httpServer = http.createServer();
-        }
-
+        this.httpServer = http.createServer();
         this.ioServer = new io.Server(this.httpServer);
 
         this.ioServer.sockets.on("connection", this.handleSocketConnection.bind(this));
