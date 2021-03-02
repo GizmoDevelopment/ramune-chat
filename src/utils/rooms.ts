@@ -5,6 +5,7 @@ import { Socket } from "socket.io";
 import Server from "../classes/Server";
 
 // Types
+import { User } from "gizmo-api";
 import { Room, SimpleRoom } from "../types";
 
 export function sanitizeRoomId (roomId: string) {
@@ -48,11 +49,18 @@ export function prepareRoomForSending (server: Server, room: Room | string): Sim
 
         const hostUser = server.getUserFromSocketId(_room.host);
 
+        // Go fuck yourself TypeShit
+        const userList = _room.sockets.reduce((users: User[], socketId: string) => {
+            const user = server.getUserFromSocketId(socketId);
+            if (user) users.push(user);
+            return users;
+        }, [] as User[]);
+
         if (hostUser) {
             return {
                 id: _room.id,
                 host: hostUser,
-                users: [],
+                users: userList,
                 data: _room.data
             };
         }
