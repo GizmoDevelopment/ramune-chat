@@ -19,7 +19,7 @@ export type SocketId = string;
 export interface Room {
     id: string;
     host: string;
-    users: SocketId[];
+    sockets: SocketId[];
     data: null | {
         showId: string;
         episodeId: string;
