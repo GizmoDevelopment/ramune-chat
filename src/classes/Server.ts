@@ -172,8 +172,18 @@ export default class Server {
 
             }
 
-            socket.join(sanitizedRoomId);
-            this.ioServer.to(sanitizedRoomId).emit("client:join_room", user);
+            const room = this.rooms.get(roomId);
+
+            if (room) {
+
+                socket.join(sanitizedRoomId);
+                this.ioServer.to(sanitizedRoomId).emit("client:join_room", user);
+
+                if (!room.sockets.includes(socket.id)) {
+                    room.sockets.push(socket.id);
+                }
+
+            }
 
             if (callback) {
                 callback({
@@ -206,6 +216,12 @@ export default class Server {
                 this.ioServer.to(sanitizedRoomId).emit("client:leave_room", user.id);
             } else {
                 this.removeRoom(sanitizedRoomId);
+            }
+
+            const room = this.rooms.get(roomId);
+
+            if (room && room?.sockets?.includes(socket.id)) {
+                room.sockets.splice(room.sockets.indexOf(socket.id), 1);
             }
 
             if (callback) {
