@@ -1,2 +1,10 @@
 runtime: nodejs
 vm: true
+
+steps:
+  - name: node
+    entrypoint: npm
+    args: [ "ci" ]
+  - name: node
+    entrypoint: npm
+    args: [ "run", "build" ]
