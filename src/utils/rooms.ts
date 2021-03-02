@@ -34,7 +34,7 @@ export function updateRoom (oldRoom: Room, newRoom: Record<string, any>): Room {
 export function prepareRoomForSending (server: Server, room: Room): SimpleRoom | undefined;
 export function prepareRoomForSending (server: Server, roomId: string): SimpleRoom | undefined;
 export function prepareRoomForSending (server: Server, roomOrRoomId: Room | string): SimpleRoom | undefined {
-
+    
     let _room: Room | undefined;
 
     // RoomID was passed
@@ -44,7 +44,6 @@ export function prepareRoomForSending (server: Server, roomOrRoomId: Room | stri
     } else {
         _room = roomOrRoomId;
     }
-
     if (_room) {
 
         const hostUser = server.getUserFromSocketId(_room.host);
