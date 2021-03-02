@@ -26,7 +26,6 @@ jobs:
         touch .env
         echo "
           NODE_ENV=production
-          PORT=${{ secrets.PORT }}
         " >> .env
 
     - name: Deploy
