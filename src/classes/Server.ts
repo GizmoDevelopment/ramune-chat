@@ -2,13 +2,13 @@
 import fs from "fs";
 import http from "http";
 import https from "https";
-import gizmo from "gizmo-api";
+import gizmo, { User } from "gizmo-api";
 import io, { Socket } from "socket.io";
 
 // Utils
 import logger from "../utils/logger";
 import { constructClient, constructExtendedUser } from "../utils/users";
-import { constructRoom, sanitizeRoomId, updateRoom } from "../utils/rooms";
+import { constructRoom, prepareRoomForSending, sanitizeRoomId, updateRoom } from "../utils/rooms";
 
 // Types
 import { Client, Room } from "../types";
@@ -64,6 +64,10 @@ export default class Server {
 
     private roomExists (roomId: string) {
         return this.rooms.has(roomId);
+    }
+
+    getUserFromSocketId (socketId: string): User | undefined {
+        return this.getClientFromSocketId(socketId)?.user;
     }
 
     private updateRoom (socket: Socket, type: string, roomId: string, data?: Record<string, any>) {
@@ -183,13 +187,23 @@ export default class Server {
                     room.sockets.push(socket.id);
                 }
 
-            }
+                if (callback) {
 
-            if (callback) {
-                callback({
-                    type: "success",
-                    message: this.rooms.get(roomId)
-                });
+                    const preparedRoom = prepareRoomForSending(this, room);
+    
+                    if (preparedRoom) {
+                        callback({
+                            type: "success",
+                            message: preparedRoom
+                        });
+                    } else {
+                        callback({
+                            type: "success",
+                            message: {}
+                        });
+                    }
+                }
+
             }
 
             logger.info(`{${ socket.id }} Client joined roomID {${ sanitizedRoomId }}`);
@@ -221,15 +235,26 @@ export default class Server {
             const room = this.rooms.get(roomId);
 
             if (room && room?.sockets?.includes(socket.id)) {
-                room.sockets.splice(room.sockets.indexOf(socket.id), 1);
-            }
 
-            if (callback) {
-                callback({
-                    type: "success",
-                    message: "Successfully left room"
-                });
-            }      
+                room.sockets.splice(room.sockets.indexOf(socket.id), 1);
+                
+                if (callback) {
+
+                    const preparedRoom = prepareRoomForSending(this, room);
+    
+                    if (preparedRoom) {
+                        callback({
+                            type: "success",
+                            message: preparedRoom
+                        });
+                    } else {
+                        callback({
+                            type: "success",
+                            message: {}
+                        });
+                    }
+                }
+            } 
             
             logger.info(`{${ socket.id }} Client left roomID {${ sanitizedRoomId }}`);
 
@@ -372,8 +397,8 @@ export default class Server {
 
                 if (hostOfRoom) {
                     socket.to(hostOfRoom).emit("client:sync_player", {
-                        timestamp: Number(data.timestamp) || 0,
-                        paused: !!data.paused || false
+                        timestamp: Number(data.timestamp) ?? 0,
+                        paused: !!data.paused
                     });
                 } else {
                     callback({
@@ -406,7 +431,7 @@ export default class Server {
 
                     callback({
                         type: "success",
-                        message: this.rooms.get(hostOfRoom)
+                        message: prepareRoomForSending(this, hostOfRoom)
                     });
 
                 } else {
@@ -423,7 +448,7 @@ export default class Server {
                 if (this.roomExists(data.roomId)) {
                     callback({
                         type: "success",
-                        message: this.rooms.get(data.roomId)
+                        message: prepareRoomForSending(this, data.roomId)
                     });
                 } else {
                     callback({
