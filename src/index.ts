@@ -31,4 +31,4 @@ if (process.env.NODE_ENV === "production") {
 }
 
 if (!process.env.PORT) throw Error("Missing environmental variable 'PORT'");
-new Server(Number(process.env.PORT) || 3000);
+new Server(Number(process.env.PORT) || 8080);
