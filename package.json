@@ -10,7 +10,7 @@
   },
   "main": "build/index.js",
   "scripts": {
-    "start": "node -r dotenv/config ./build/index.js",
+    "start": "node ./build/index.js",
     "dev": "nodemon --exec npm run start",
     "build": "rm -rf ./build && tsc",
     "build:watch": "rm -rf ./build && tsc -w"
@@ -28,7 +28,6 @@
     "@sentry/node": "^6.2.0",
     "@sentry/tracing": "^6.2.0",
     "@types/socket.io": "^2.1.13",
-    "dotenv": "^8.2.0",
     "gizmo-api": "^0.1.1",
     "socket.io": "^3.1.2"
   },
