@@ -4,7 +4,7 @@ RUN mkdir /dist
 WORKDIR /dist
 
 COPY package*.json ./
-RUN npm ci
+RUN npm ci --only=production
 
 COPY . .
 RUN npm run build
