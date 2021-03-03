@@ -19,7 +19,11 @@ export default class Server {
 
     constructor (port: number) {
 
-        this.ioServer = new io.Server(port);
+        this.ioServer = new io.Server(port, {
+            cors: {
+                origin: "*"
+            }
+        });
         this.ioServer.sockets.on("connection", this.handleSocketConnection.bind(this));
 
         logger.info(`Listening on port '${ port }'`);
