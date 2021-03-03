@@ -21,11 +21,11 @@ jobs:
       #  uses: actions/checkout@v2
 
       - name: SSH
-        uses: fifsky/ssh-action@master
+        uses: garygrossgarten/github-action-ssh@release
         with:
           host: ${{ secrets.HOST }}
           user: ${{ secrets.USERNAME }}
-          key: ${{ secrets.SSH_KEY }}
+          privateKey: ${{ secrets.SSH_KEY }}
           command: |
             cd /home/ubuntu/gizmo-chat-server
             pm2 stop gizmo-chat-server
