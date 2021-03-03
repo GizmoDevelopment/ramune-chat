@@ -19,6 +19,22 @@ jobs:
       
       #- name: GIT checkout
       #  uses: actions/checkout@v2
+      - name: Configure SSH
+        run: |
+          mkdir -p ~/.ssh/
+          echo "$SSH_KEY" > ~/.ssh/staging.key
+          chmod 600 ~/.ssh/staging.key
+          cat >>~/.ssh/config <<END
+          Host staging
+            HostName $SSH_HOST
+            User $SSH_USER
+            IdentityFile ~/.ssh/staging.key
+            StrictHostKeyChecking no
+          END
+        env:
+          SSH_USER: ${{ secrets.USERNAME }}
+          SSH_KEY: ${{ secrets.SSH_KEY }}
+          SSH_HOST: ${{ secrets.HOST }}
 
       - name: SSH
         uses: garygrossgarten/github-action-ssh@release
@@ -37,6 +53,22 @@ jobs:
             pm2 start npm --name gizmo-chat-server -- start
             echo "NA NA NA NA NA NA NA NA NA NA NA NA NA NA NA NA NA NA NA NA NA NA NA NA NA NA NA NA NA NA NA NA NA " 
 
+      - name: Build NPM dependencies
+        run: >
+          ssh staging "
+          cd /home/ubuntu/gizmo-chat-server
+          rm -rf ./node_modules
+          rm -rf ./build
+          npm ci --only=production
+          pm run build
+          "
+
+      - name: Start PM2 process
+        run: >
+          ssh staging "
+          pm2 start npm --name gizmo-chat-server -- start
+          echo "NA NA NA NA NA NA NA NA NA NA NA NA NA NA NA NA NA NA NA NA NA NA NA NA NA NA NA NA NA NA NA NA NA " 
+          "
 
       #- name: Build NPM dependencies
       #  run: |
@@ -49,4 +81,4 @@ jobs:
       #- name: Start PM2 process
       #  run: |
       #    pm2 start npm --name gizmo-chat-server -- start
-       #   echo "NA NA NA NA NA NA NA NA NA NA NA NA NA NA NA NA NA NA NA NA NA NA NA NA NA NA NA NA NA NA NA NA NA " 
+      #   echo "NA NA NA NA NA NA NA NA NA NA NA NA NA NA NA NA NA NA NA NA NA NA NA NA NA NA NA NA NA NA NA NA NA " 
