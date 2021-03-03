@@ -9,7 +9,9 @@ RUN npm ci
 COPY . .
 RUN npm run build
 
-ENV PORT=80
-EXPOSE 80
+EXPOSE 1337
+
+ENV PORT=1337
+ENV NODE_ENV=production
 
 CMD [ "npm", "start" ]
