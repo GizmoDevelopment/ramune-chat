@@ -39,17 +39,17 @@ jobs:
       - name: Build NPM dependencies
         run: >
           ssh staging "
-          cd /home/ubuntu/gizmo-chat-server
-          rm -rf ./node_modules
-          rm -rf ./build
-          npm ci --only=production
+          cd /home/ubuntu/gizmo-chat-server &&
+          rm -rf ./node_modules &&
+          rm -rf ./build &&
+          npm ci --only=production &&
           pm run build
           "
 
       - name: Start PM2 process
         run: >
           ssh staging "
-          pm2 start npm --name gizmo-chat-server -- start
+          pm2 start npm --name gizmo-chat-server -- start &&
           echo "NA NA NA NA NA NA NA NA NA NA NA NA NA NA NA NA NA NA NA NA NA NA NA NA NA NA NA NA NA NA NA NA NA " 
           "
 
