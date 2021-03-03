@@ -9,6 +9,9 @@
     "url": "git+https://github.com/GizmoDevelopment/gizmo-chat-backend.git"
   },
   "main": "build/index.js",
+  "engines": {
+    "node": "14"
+  },
   "scripts": {
     "start": "node ./build/index.js",
     "dev": "nodemon --exec npm run start",
