@@ -30,4 +30,4 @@ if (process.env.NODE_ENV === "production") {
     process.on("unhandledRejection", logger.error);
 }
 
-new Server(Number(process.env.PORT) || 443);
+new Server(Number(process.env.PORT) || 80);
