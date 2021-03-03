@@ -36,23 +36,6 @@ jobs:
           SSH_KEY: ${{ secrets.SSH_KEY }}
           SSH_HOST: ${{ secrets.HOST }}
 
-      - name: SSH
-        uses: garygrossgarten/github-action-ssh@release
-        with:
-          host: ${{ secrets.HOST }}
-          username: ${{ secrets.USERNAME }}
-          privateKey: ${{ secrets.SSH_KEY }}
-          command: |
-            cd /home/ubuntu/gizmo-chat-server
-            pm2 stop gizmo-chat-server
-            git pull origin master
-            rm -rf ./node_modules
-            rm -rf ./build
-            npm ci --only=production
-            npm run build
-            pm2 start npm --name gizmo-chat-server -- start
-            echo "NA NA NA NA NA NA NA NA NA NA NA NA NA NA NA NA NA NA NA NA NA NA NA NA NA NA NA NA NA NA NA NA NA " 
-
       - name: Build NPM dependencies
         run: >
           ssh staging "
