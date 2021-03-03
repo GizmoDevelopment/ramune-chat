@@ -1,32 +1,32 @@
-name: Build and deploy to Azure
+name: Build and deploy
 
 on:
   push:
     branches:
       - master
-  workflow_dispatch:
 
 jobs:
   build-and-deploy:
     runs-on: ubuntu-latest
 
     steps:
-    - uses: actions/checkout@master
-
-    - uses: azure/docker-login@v1
+    - name: SSH
+      uses: appleboy/ssh-action@master
       with:
-        login-server: https://index.docker.io/v1/
-        username: ${{ secrets.DOCKER_USERNAME }}
-        password: ${{ secrets.DOCKER_PASSWORD }}
+        host: ${{ secrets.HOST }}
+        username: ${{ secrets.USERNAME }}
+        key: ${{ secrets.SSH_KEY }}
+        port: 22
+        script: |
+          pm2 stop gizmo-chat-server
+          cd /home/ubuntu/gizmo-chat-server
+          git pull origin master
+          rm -rf ./node_modules
+          rm -rf ./build
+          npm ci
+          npm run build
+          pm2 start gizmo-chat-server
 
-    - run: |
-        docker build . -t index.docker.io/${{ secrets.DOCKER_USERNAME }}/gizmo-chat-server:${{ github.sha }}
-        docker push index.docker.io/${{ secrets.DOCKER_USERNAME }}/gizmo-chat-server:${{ github.sha }}
-
-    - name: Deploy to Azure Web App
-      uses: azure/webapps-deploy@v2
-      with:
-        app-name: gizmo-chat-server
-        slot-name: production
-        publish-profile: ${{ secrets.AZURE_PUBLISH_PROFILE }}
-        images: index.docker.io/${{ secrets.DOCKER_USERNAME }}/gizmo-chat-server:${{ github.sha }}
+    - name: Finish
+      script: |
+        echo "NA NA NA NA NA NA NA NA NA NA NA NA NA NA NA NA NA NA NA NA NA NA NA NA NA NA NA NA NA NA NA NA NA "
