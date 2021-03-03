@@ -20,13 +20,13 @@ jobs:
         password: ${{ secrets.DOCKER_PASSWORD }}
 
     - run: |
-        docker build . -t index.docker.io/${{ secrets.DOCKER_USERNAME }}/tjaz/gizmo-chat-server:${{ github.sha }}
-        docker push index.docker.io/${{ secrets.DOCKER_USERNAME }}/tjaz/gizmo-chat-server:${{ github.sha }}
+        docker build . -t index.docker.io/${{ secrets.DOCKER_USERNAME }}/gizmo-chat-server:${{ github.sha }}
+        docker push index.docker.io/${{ secrets.DOCKER_USERNAME }}/gizmo-chat-server:${{ github.sha }}
 
     - name: Deploy to Azure Web App
       uses: azure/webapps-deploy@v2
       with:
         app-name: gizmo-chat-server
         slot-name: production
-        publish-profile: ${{ secrets.AzureAppService_PublishProfile_4462921c62d94fadac02be258a85d64d }}
-        images: index.docker.io/${{ secrets.DOCKER_USERNAME }}/tjaz/gizmo-chat-server:${{ github.sha }}
+        publish-profile: ${{ secrets.AZURE_PUBLISH_PROFILE }}
+        images: index.docker.io/${{ secrets.DOCKER_USERNAME }}/gizmo-chat-server:${{ github.sha }}
