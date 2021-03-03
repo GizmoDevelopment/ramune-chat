@@ -24,7 +24,7 @@ jobs:
         uses: garygrossgarten/github-action-ssh@release
         with:
           host: ${{ secrets.HOST }}
-          user: ${{ secrets.USERNAME }}
+          username: ${{ secrets.USERNAME }}
           privateKey: ${{ secrets.SSH_KEY }}
           command: |
             cd /home/ubuntu/gizmo-chat-server
