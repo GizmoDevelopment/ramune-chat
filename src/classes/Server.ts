@@ -17,9 +17,9 @@ export default class Server {
     clients: Map<string, Client> = new Map();
     rooms: Map<string, Room> = new Map();
 
-    constructor (port: number) {
+    constructor (port: number | string) {
 
-        this.ioServer = new io.Server(port, {
+        this.ioServer = new io.Server(Number(port), {
             cors: {
                 origin: "*"
             }
