@@ -1,5 +1,5 @@
 // Modules
-import Sentry from "@sentry/node";
+import * as Sentry from "@sentry/node";
 
 // Clases
 import Server from "./classes/Server";
