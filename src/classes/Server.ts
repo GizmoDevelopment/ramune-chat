@@ -1,5 +1,4 @@
 // Modules
-import http from "http";
 import gizmo, { User } from "gizmo-api";
 import io, { Socket } from "socket.io";
 
@@ -13,7 +12,6 @@ import { Client, Room } from "../types";
 
 export default class Server {
 
-    private readonly httpServer: http.Server;
     private readonly ioServer: io.Server;
 
     clients: Map<string, Client> = new Map();
@@ -21,15 +19,10 @@ export default class Server {
 
     constructor (port: number) {
 
-        this.httpServer = http.createServer();
-        this.ioServer = new io.Server(this.httpServer);
-
+        this.ioServer = new io.Server(port);
         this.ioServer.sockets.on("connection", this.handleSocketConnection.bind(this));
 
-        this.httpServer.listen(port, () => {
-            logger.info(`Listening on port '${ port }'`);
-        });
-
+        logger.info(`Listening on port '${ port }'`);
     }
 
     private addClient (client: Client) {
