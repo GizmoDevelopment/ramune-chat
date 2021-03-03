@@ -4,28 +4,49 @@ on:
   push:
     branches:
       - master
+  pull_request:
+    branches:
+      - master
 
 jobs:
   build-and-deploy:
     runs-on: ubuntu-latest
 
     steps:
-    - name: SSH
-      uses: appleboy/ssh-action@master
-      with:
-        host: ${{ secrets.HOST }}
-        username: ${{ secrets.USERNAME }}
-        key: ${{ secrets.SSH_KEY }}
-        port: 22
-        script: |
-          pm2 stop gizmo-chat-server && pm2 delete gizmo-chat-server
-          cd /home/ubuntu/gizmo-chat-server
-          git pull origin master
-          rm -rf ./node_modules
-          rm -rf ./build
-          npm ci --only=production
-          npm run build
-          pm2 start gizmo-chat-server
-    - name: Finish
-      run: |
-        echo "NA NA NA NA NA NA NA NA NA NA NA NA NA NA NA NA NA NA NA NA NA NA NA NA NA NA NA NA NA NA NA NA NA " 
+
+      #- name: Stop PM2 process
+      #  run: pm2 stop gizmo-chat-server
+      
+      #- name: GIT checkout
+      #  uses: actions/checkout@v2
+
+      - name: SSH
+        uses: fifsky/ssh-action@master
+        with:
+          host: ${{ secrets.HOST }}
+          user: ${{ secrets.USERNAME }}
+          key: ${{ secrets.SSH_KEY }}
+          command: |
+            cd /home/ubuntu/gizmo-chat-server
+            pm2 stop gizmo-chat-server
+            git pull origin master
+            rm -rf ./node_modules
+            rm -rf ./build
+            npm ci --only=production
+            npm run build
+            pm2 start npm --name gizmo-chat-server -- start
+            echo "NA NA NA NA NA NA NA NA NA NA NA NA NA NA NA NA NA NA NA NA NA NA NA NA NA NA NA NA NA NA NA NA NA " 
+
+
+      #- name: Build NPM dependencies
+      #  run: |
+      #    cd /home/ubuntu/gizmo-chat-server
+      #    rm -rf ./node_modules
+      #    rm -rf ./build
+      #    npm ci --only=production
+      #    npm run build
+        
+      #- name: Start PM2 process
+      #  run: |
+      #    pm2 start npm --name gizmo-chat-server -- start
+       #   echo "NA NA NA NA NA NA NA NA NA NA NA NA NA NA NA NA NA NA NA NA NA NA NA NA NA NA NA NA NA NA NA NA NA " 
