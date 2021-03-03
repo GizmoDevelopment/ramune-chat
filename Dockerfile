@@ -7,7 +7,7 @@ RUN npm ci
 COPY . .
 RUN npm run build
 
-ENV PORT=1337
-EXPOSE 1337
+ENV PORT=443
+EXPOSE 443
 
 CMD [ "npm", "start" ]
