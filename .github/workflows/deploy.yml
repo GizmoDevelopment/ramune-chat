@@ -19,11 +19,11 @@ jobs:
         username: ${{ secrets.DOCKERIO_USERNAME }}
         password: ${{ secrets.DOCKERIO_PASSWORD }}
     - run: |
-        docker build . -t mycontainer.azurecr.io/gizmo-chat-server:${{ github.sha }}
-        docker push mycontainer.azurecr.io/gizmo-chat-server:${{ github.sha }}         
+        docker build . -t gizmo.azurecr.io/gizmo-chat-server:${{ github.sha }}
+        docker push gizmo.azurecr.io/gizmo-chat-server:${{ github.sha }}         
 
     - uses: azure/webapps-deploy@v2
       with:
         app-name: gizmo-chat-server
         publish-profile: ${{ secrets.AZURE_WEBAPP_PUBLISH_PROFILE }}
-        images: mycontainer.azurecr.io/gizmo-chat-server:${{ github.sha }}
+        images: gizmo.azurecr.io/gizmo-chat-server:${{ github.sha }}
