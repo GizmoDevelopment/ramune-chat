@@ -53,11 +53,9 @@ jobs:
             npm run build
           "
 
-      - name: Start PM2 process
+      - name: Finish
         run: >
           ssh staging "
-            cd /home/ubuntu/gizmo-chat-server &&
-            pm2 start npm --name gizmo-chat-server -- start &&
             echo "NA NA NA NA NA NA NA NA NA NA NA NA NA NA NA NA NA NA NA NA NA NA NA NA NA NA NA NA NA NA NA NA NA " 
           "
 
