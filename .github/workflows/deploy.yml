@@ -28,5 +28,5 @@ jobs:
           pm2 start gizmo-chat-server
 
     - name: Finish
-      script: |
+      run: |
         echo "NA NA NA NA NA NA NA NA NA NA NA NA NA NA NA NA NA NA NA NA NA NA NA NA NA NA NA NA NA NA NA NA NA "
