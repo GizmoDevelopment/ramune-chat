@@ -32,4 +32,4 @@ if (process.env.NODE_ENV === "production") {
 
 logger.info(`Started in environment '${ process.env.NODE_ENV || "development" }'`);
 
-new Server(Number(process.env.PORT) || 1337);
+new Server(process.env.PORT || 1337);

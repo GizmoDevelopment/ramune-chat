@@ -2,6 +2,15 @@
 import { Socket } from "socket.io";
 import { User } from "gizmo-api";
 
+declare global {
+    namespace NodeJS {
+        export interface ProcessEnv {
+            NODE_ENV: string;
+            PORT: number;
+        }
+    }
+}
+
 export interface Client {
     socket: Socket;
     user: User;
