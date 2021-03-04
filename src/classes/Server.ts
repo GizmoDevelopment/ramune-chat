@@ -246,10 +246,20 @@ export default class Server {
                 
                 const room = this.getRoomById(sanitizedRoomId);
 
-                if (room && room?.sockets?.includes(socket.id)) {
-                    room.sockets.splice(room.sockets.indexOf(socket.id), 1);
-                    this.rooms.set(sanitizedRoomId, room);
-                } 
+                if (room) {
+                    
+                    // Remove socket from socket array
+                    if (room && room?.sockets?.includes(socket.id)) {
+                        room.sockets.splice(room.sockets.indexOf(socket.id), 1);
+                        this.rooms.set(sanitizedRoomId, room);
+                    }
+
+                    // Choose next host
+                    if (room.host === socket.id) {
+                        room.host = room.sockets[0];
+                    }
+
+                }
 
                 this.ioServer.to(sanitizedRoomId).emit("client:leave_room", user.id);
 
