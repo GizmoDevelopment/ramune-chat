@@ -17,6 +17,7 @@ export function constructRoom (socket: Socket, roomId: string): Room {
         id: roomId,
         host: socket.id,
         sockets: [],
+        messages: [],
         data: null
     };
 }
