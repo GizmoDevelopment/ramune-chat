@@ -343,24 +343,42 @@ export default class Server {
             }
         });
 
-        socket.on("client:send_message", (data: { content: string }) => {
+        socket.on("client:send_message", (data: { content: string, roomId: string }, callback: Function) => {
 
             const client = this.getClientFromSocket(socket);
 
             if (client) {
 
-                const user = client.user;
+                const
+                    user = client.user,
+                    sanitizedRoomId = sanitizeRoomId(data.roomId);
 
-                this.ioServer.sockets.emit("client:send_message", {
-                    id: Math.floor(Math.random() * 10000000),
-                    type: "text",
-                    content: data.content,
-                    author: {
-                        id: user.id,
-                        username: user.uid,
-                        avatar: user.avatar
-                    }
-                });
+                if (this.roomExists(sanitizedRoomId)) {
+
+                    const message = {
+                        id: Math.floor(Math.random() * 10000000),
+                        type: "text",
+                        content: data.content,
+                        author: {
+                            id: user.id,
+                            username: user.uid,
+                            avatar: user.avatar
+                        }
+                    };
+
+                    socket.to(sanitizedRoomId).emit("client:send_message", message);
+
+                    callback({
+                        type: "success",
+                        message
+                    });
+
+                } else {
+                    callback({
+                        type: "error",
+                        message: "Room does not exist"
+                    });
+                }
             }
         });
 
