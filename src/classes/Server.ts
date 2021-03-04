@@ -446,6 +446,21 @@ export default class Server {
             }
         });
 
+        socket.on("client:fetch_rooms", (callback: Function) => {
+            if (this.socketExists(socket)) {
+
+                const preparedRooms = Array.from(this.rooms.values()).map((room: Room) => {
+                    return prepareRoomForSending(this, room);
+                });
+
+                callback({
+                    type: "success",
+                    message: preparedRooms
+                });
+
+            }
+        });
+
         socket.on("disconnecting", () => {
             if (this.socketExists(socket)) {
                 this.leaveAllSocketRooms(socket);
