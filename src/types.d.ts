@@ -46,8 +46,8 @@ export type RoomData = null | {
 };
 
 export interface Message {
-    id: number;
-    type: "text";
+    id: string;
+    type: string;
     content: string;
     author: User;
 }

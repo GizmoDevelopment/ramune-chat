@@ -351,20 +351,20 @@ export default class Server {
 
                 const
                     user = client.user,
-                    sanitizedRoomId = sanitizeRoomId(data.roomId);
+                    sanitizedRoomId = sanitizeRoomId(data.roomId),
+                    room = this.rooms.get(sanitizedRoomId);
 
-                if (this.roomExists(sanitizedRoomId)) {
-
+                if (room) {
+                    
                     const message = {
-                        id: Math.floor(Math.random() * 10000000),
+                        id: room.messages.length.toString(),
                         type: "text",
                         content: data.content,
-                        author: {
-                            id: user.id,
-                            username: user.uid,
-                            avatar: user.avatar
-                        }
+                        author: user
                     };
+
+                    room.messages.push(message);
+                    this.rooms.set(sanitizedRoomId, room);
 
                     socket.to(sanitizedRoomId).emit("client:send_message", message);
 
