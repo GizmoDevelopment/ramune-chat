@@ -57,10 +57,18 @@ export default class Server {
         return this.getClientFromSocketId(socketId)?.user;
     }
 
+    private getRoomById (roomId: string): Room | undefined {
+        return this.rooms.get(roomId);
+    }
+
+    private getRoomByName (roomName: string): Room | undefined {
+        return Array.from(this.rooms.values()).find(({ name }) => name === roomName);
+    }
+
     private updateRoom (socket: Socket, type: string, roomId: string, data?: Record<string, any>) {
         if (this.roomExists(roomId)) {
 
-            const room = this.rooms.get(roomId);
+            const room = this.getRoomById(roomId);
 
             if (room) {
                 switch (type) {
@@ -105,15 +113,44 @@ export default class Server {
         }
     }
 
-    private createRoom (socket: Socket, roomId: string) {
-        if (!this.roomExists(roomId)) {
+    private createRoom (socket: Socket, roomName: string, callback?: Function) {
 
-            // New room (promote to host)
-            this.modifyClientData(socket, {
-                hostOfRoom: roomId
+        const existingRoom = this.getRoomByName(roomName);
+
+        if (!existingRoom) {
+
+            const room = constructRoom(socket, roomName);
+
+            if (room) {
+
+                // New room (promote to host)
+                this.modifyClientData(socket, {
+                    hostOfRoom: room.id
+                });
+
+                this.rooms.set(room.id, room);
+
+                if (callback) {
+                    callback({
+                        type: "success",
+                        message: prepareRoomForSending(this, room)
+                    });
+                }
+
+                logger.info(`{${ socket.id }} Client created roomID {${ room.id }}`);
+
+            } else if (callback) {
+                callback({
+                    type: "error",
+                    message: "Something went wrong"
+                });
+            }
+
+        } else if (callback) {
+            callback({
+                type: "error",
+                message: "Room already exists"
             });
-
-            this.rooms.set(roomId, constructRoom(socket, roomId));
         }
     }
 
@@ -150,20 +187,12 @@ export default class Server {
             this.leaveAllSocketRooms(socket);
 
             if ((await this.ioServer.to(sanitizedRoomId).allSockets()).size > 0) {
-
-                // Existing room
                 this.modifyClientData(socket, {
                     hostOfRoom: null
                 });
-
-            } else {
-
-                this.createRoom(socket, sanitizedRoomId);
-                logger.info(`{${ socket.id }} Client created roomID {${ sanitizedRoomId }}`);
-
             }
 
-            const room = this.rooms.get(roomId);
+            const room = this.getRoomById(roomId);
 
             if (room) {
 
@@ -215,7 +244,7 @@ export default class Server {
 
             if ((await this.ioServer.to(sanitizedRoomId).allSockets()).size > 0) {
                 
-                const room = this.rooms.get(sanitizedRoomId);
+                const room = this.getRoomById(sanitizedRoomId);
 
                 if (room && room?.sockets?.includes(socket.id)) {
                     room.sockets.splice(room.sockets.indexOf(socket.id), 1);
@@ -321,6 +350,17 @@ export default class Server {
     
         });
 
+        socket.on("client:create_room", async (data: { roomName: string }, callback: Function) => {
+            if (data?.roomName) {
+                this.createRoom(socket, data.roomName, callback);
+            } else {
+                callback({
+                    type: "error",
+                    message: "Room name is required"
+                });
+            }
+        });
+
         socket.on("client:join_room", async (data: { roomId: string }, callback: Function) => {
             if (data?.roomId) {
                 this.joinRoom(socket, data.roomId, callback);
@@ -352,7 +392,7 @@ export default class Server {
                 const
                     user = client.user,
                     sanitizedRoomId = sanitizeRoomId(data.roomId),
-                    room = this.rooms.get(sanitizedRoomId);
+                    room = this.getRoomById(sanitizedRoomId);
 
                 if (room) {
                     
@@ -440,17 +480,41 @@ export default class Server {
             }
         });
 
-        socket.on("client:fetch_room", (data: { roomId: string }, callback: Function) => {
+        socket.on("client:fetch_room", (data: { roomId?: string, roomName?: string }, callback: Function) => {
             if (this.socketExists(socket)) {
-                if (this.roomExists(data.roomId)) {
-                    callback({
-                        type: "success",
-                        message: prepareRoomForSending(this, data.roomId)
-                    });
+
+                if (data.roomId) {
+                    if (this.roomExists(data.roomId)) {
+                        callback({
+                            type: "success",
+                            message: prepareRoomForSending(this, data.roomId)
+                        });
+                    } else {
+                        callback({
+                            type: "error",
+                            message: "Room doesn't exist"
+                        });
+                    }
+                } else if (data.roomName) {
+
+                    const room = this.getRoomByName(data.roomName);
+                    
+                    if (room) {
+                        callback({
+                            type: "success",
+                            message: prepareRoomForSending(this, room)
+                        });
+                    } else {
+                        callback({
+                            type: "error",
+                            message: "Room doesn't exist"
+                        });
+                    }
+
                 } else {
                     callback({
                         type: "error",
-                        message: "Room doesn't exist"
+                        message: "No search filter provided"
                     });
                 }
             }

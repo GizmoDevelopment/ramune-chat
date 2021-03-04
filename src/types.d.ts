@@ -27,6 +27,7 @@ export type SocketId = string;
 
 export interface Room {
     id: string;
+    name: string;
     host: string;
     sockets: SocketId[];
     data: RoomData;
@@ -35,6 +36,7 @@ export interface Room {
 
 export interface SimpleRoom {
     id: string;
+    name: string;
     host: User;
     users: User[];
     data: RoomData;

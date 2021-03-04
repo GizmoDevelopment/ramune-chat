@@ -1,5 +1,6 @@
 // Modules
 import { Socket } from "socket.io";
+import randtoken from "rand-token";
 
 // Classes
 import Server from "../classes/Server";
@@ -12,9 +13,10 @@ export function sanitizeRoomId (roomId: string) {
     return roomId; // DIY string sanitization, please don't actually do this
 }
 
-export function constructRoom (socket: Socket, roomId: string): Room {
+export function constructRoom (socket: Socket, roomName: string): Room {
     return {
-        id: roomId,
+        id: randtoken.generate(32),
+        name: roomName,
         host: socket.id,
         sockets: [],
         messages: [],
@@ -59,6 +61,7 @@ export function prepareRoomForSending (server: Server, roomOrRoomId: Room | stri
         if (hostUser) {
             return {
                 id: _room.id,
+                name: _room.name,
                 host: hostUser,
                 users: userList,
                 data: _room.data
