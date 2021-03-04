@@ -214,34 +214,26 @@ export default class Server {
             socket.leave(sanitizedRoomId);
 
             if ((await this.ioServer.to(sanitizedRoomId).allSockets()).size > 0) {
+                
+                const room = this.rooms.get(sanitizedRoomId);
+
+                if (room && room?.sockets?.includes(socket.id)) {
+                    room.sockets.splice(room.sockets.indexOf(socket.id), 1);
+                    this.rooms.set(sanitizedRoomId, room);
+                } 
+
                 this.ioServer.to(sanitizedRoomId).emit("client:leave_room", user.id);
+
             } else {
                 this.removeRoom(sanitizedRoomId);
             }
 
-            const room = this.rooms.get(roomId);
-
-            if (room && room?.sockets?.includes(socket.id)) {
-
-                room.sockets.splice(room.sockets.indexOf(socket.id), 1);
-                
-                if (callback) {
-
-                    const preparedRoom = prepareRoomForSending(this, room);
-    
-                    if (preparedRoom) {
-                        callback({
-                            type: "success",
-                            message: preparedRoom
-                        });
-                    } else {
-                        callback({
-                            type: "success",
-                            message: {}
-                        });
-                    }
-                }
-            } 
+            if (callback) {
+                callback({
+                    type: "success",
+                    message: sanitizedRoomId
+                });
+            }
             
             logger.info(`{${ socket.id }} Client left roomID {${ sanitizedRoomId }}`);
 
