@@ -30,6 +30,7 @@ export interface Room {
     host: string;
     sockets: SocketId[];
     data: RoomData;
+    messages: Message[];
 }
 
 export interface SimpleRoom {
@@ -43,3 +44,10 @@ export type RoomData = null | {
     showId: string;
     episodeId: string;
 };
+
+export interface Message {
+    id: number;
+    type: "text";
+    content: string;
+    author: User;
+}
