@@ -65,7 +65,8 @@ export function prepareRoomForSending (server: Server, roomOrRoomId: Room | stri
                 name: _room.name,
                 host: hostUser,
                 users: userList,
-                data: _room.data
+                data: _room.data,
+                messages: []
             };
         }
     }

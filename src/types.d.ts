@@ -40,6 +40,7 @@ export interface SimpleRoom {
     host: User;
     users: User[];
     data: RoomData;
+    messages: Message[];
 }
 
 export type RoomData = null | {
