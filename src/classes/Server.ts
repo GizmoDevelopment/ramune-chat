@@ -431,7 +431,7 @@ export default class Server {
                     room.messages.push(message);
                     this.rooms.set(sanitizedRoomId, room);
 
-                    socket.to(sanitizedRoomId).emit("client:send_message", message);
+                    this.ioServer.to(sanitizedRoomId).emit("client:send_message", message);
 
                     callback({
                         type: "success",
