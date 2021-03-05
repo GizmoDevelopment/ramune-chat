@@ -6,9 +6,7 @@ import { User } from "gizmo-api";
 import { Room, Message } from "../types";
 
 function cleanMessageContent (content: string) {
-    return sanitizeHtml(content, {
-        allowedTags: [ "b", "i" ]
-    });
+    return sanitizeHtml(content);
 }
 
 export function constructMessage (room: Room, user: User, content: string): Message {
