@@ -15,7 +15,7 @@ export function constructMessage (room: Room, user: User, content: string): Mess
     return {
         id: room.messages.length.toString(),
         type: "text",
-        content: cleanMessageContent(content),
+        content: cleanMessageContent(content.slice(0, 400)).slice(0, 400),
         author: user
     };
 }
