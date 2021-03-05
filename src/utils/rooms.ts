@@ -51,14 +51,15 @@ export function prepareRoomForSending (server: Server, roomOrRoomId: Room | stri
 
         const hostUser = server.getUserFromSocketId(_room.host);
 
-        // Go fuck yourself TypeShit
-        const userList = _room.sockets.reduce((users: User[], socketId: string) => {
-            const user = server.getUserFromSocketId(socketId);
-            if (user) users.push(user);
-            return users;
-        }, [] as User[]);
-
         if (hostUser) {
+
+            // Go fuck yourself TypeShit
+            const userList = _room.sockets.reduce((users: User[], socketId: string) => {
+                const user = server.getUserFromSocketId(socketId);
+                if (user) users.push(user);
+                return users;
+            }, [] as User[]);
+
             return {
                 id: _room.id,
                 name: _room.name,
