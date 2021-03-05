@@ -376,7 +376,7 @@ export default class Server {
     
         });
 
-        socket.on("client:create_room", async (data: { roomName: string }, callback: Function) => {
+        socket.on("client:create_room", (data: { roomName: string }, callback: Function) => {
             if (data?.roomName) {
                 this.createRoom(socket, data.roomName, callback);
             } else {
@@ -387,7 +387,7 @@ export default class Server {
             }
         });
 
-        socket.on("client:join_room", async (data: { roomId: string }, callback: Function) => {
+        socket.on("client:join_room", (data: { roomId: string }, callback: Function) => {
             if (data?.roomId) {
                 this.joinRoom(socket, data.roomId, callback);
             } else {
