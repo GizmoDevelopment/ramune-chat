@@ -107,6 +107,21 @@ export default class Server {
                         }
 
                         break;
+                    case "sync_data":
+                        
+                        if (typeof data === "object") {
+
+                            const updatedRoom = updateRoom(room, { data });
+                            
+                            this.rooms.set(roomId, updatedRoom);
+
+                            /**
+                             * There's no need to emit 'client:update_room' for this,
+                             * it only matters during 'client:fetch_room'
+                             */
+                        }
+
+                        break;
                     default:
                 }
             }
@@ -443,10 +458,16 @@ export default class Server {
                 } = client.data;
 
                 if (hostOfRoom) {
+
+                    this.updateRoom(socket, "sync_data", hostOfRoom, {
+                        timestamp: data.timestamp
+                    });
+
                     socket.to(hostOfRoom).emit("client:sync_player", {
                         timestamp: Number(data.timestamp) ?? 0,
                         paused: !!data.paused
                     });
+
                 } else {
                     callback({
                         type: "error",
@@ -456,7 +477,7 @@ export default class Server {
             }
         });
 
-        socket.on("client:update_room", (data: { showId: string, episodeId: string }, callback: Function) => {
+        socket.on("client:update_room", (data: { showId: string, episodeId: string, timestamp?: number }, callback: Function) => {
 
             const client = this.getClientFromSocket(socket);
 
@@ -470,7 +491,8 @@ export default class Server {
 
                     const newRoomContent = {
                         showId: data.showId,
-                        episodeId: data.episodeId
+                        episodeId: data.episodeId,
+                        timestamp: data.timestamp
                     };
 
                     this.updateRoom(socket, "update_data", hostOfRoom, newRoomContent);
