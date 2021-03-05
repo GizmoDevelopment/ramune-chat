@@ -6,6 +6,7 @@ import io, { Socket } from "socket.io";
 import logger from "../utils/logger";
 import { constructClient, constructExtendedUser } from "../utils/users";
 import { constructRoom, prepareRoomForSending, sanitizeRoomId, updateRoom } from "../utils/rooms";
+import { constructMessage } from "../utils/messages";
 
 // Types
 import { Client, Room } from "../types";
@@ -421,12 +422,7 @@ export default class Server {
 
                 if (room) {
                     
-                    const message = {
-                        id: room.messages.length.toString(),
-                        type: "text",
-                        content: data.content,
-                        author: user
-                    };
+                    const message = constructMessage(room, user, data.content);
 
                     room.messages.push(message);
                     this.rooms.set(sanitizedRoomId, room);

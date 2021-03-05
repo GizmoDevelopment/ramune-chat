@@ -10,7 +10,8 @@
         "resolveJsonModule": true,
         "types": [
             "node",
-            "socket.io"
+            "socket.io",
+            "sanitize-html"
         ],
         "typeRoots": [
             "./node_modules/@types",

@@ -1,4 +1,4 @@
-// Modules
+// Types
 import { Socket } from "socket.io";
 import { User } from "gizmo-api";
 
