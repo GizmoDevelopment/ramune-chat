@@ -335,7 +335,7 @@ export default class Server {
 
         socket.on("client:authenticate", async (data: { token: string }, callback: Function) => {
 
-            if (!data?.token) {
+            if (typeof data?.token !== "string") {
 
                 callback({
                     type: "error",
@@ -377,7 +377,7 @@ export default class Server {
         });
 
         socket.on("client:create_room", (data: { roomName: string }, callback: Function) => {
-            if (data?.roomName) {
+            if (typeof data?.roomName === "string") {
                 this.createRoom(socket, data.roomName, callback);
             } else {
                 callback({
@@ -388,7 +388,7 @@ export default class Server {
         });
 
         socket.on("client:join_room", (data: { roomId: string }, callback: Function) => {
-            if (data?.roomId) {
+            if (typeof data?.roomId === "string") {
                 this.joinRoom(socket, data.roomId, callback);
             } else {
                 callback({
@@ -399,7 +399,7 @@ export default class Server {
         });
 
         socket.on("client:leave_room", (data: { roomId: string }, callback: Function) => {
-            if (data?.roomId) {
+            if (typeof data?.roomId === "string") {
                 this.leaveRoom(socket, data.roomId, callback);
             } else {
                 callback({
@@ -410,6 +410,13 @@ export default class Server {
         });
 
         socket.on("client:send_message", (data: { content: string, roomId: string }, callback: Function) => {
+
+            if (typeof data?.content !== "string" || typeof data?.roomId !== "string") {
+                return callback({
+                    type: "error",
+                    message: "Invalid message payload"
+                });
+            }
 
             const client = this.getClientFromSocket(socket);
 
@@ -429,12 +436,14 @@ export default class Server {
 
                     this.ioServer.to(sanitizedRoomId).emit("client:send_message", message);
 
-                    callback({
-                        type: "success",
-                        message
-                    });
+                    if (callback) {
+                        callback({
+                            type: "success",
+                            message
+                        });
+                    }
 
-                } else {
+                } else if (callback) {
                     callback({
                         type: "error",
                         message: "Room does not exist"
@@ -445,6 +454,13 @@ export default class Server {
 
         socket.on("client:sync_player", (data: { timestamp: number, paused: boolean }, callback: Function) => {
             
+            if (!data) {
+                return callback({
+                    type: "error",
+                    message: "You are trying to sync with an empty payload"
+                });
+            }
+
             const client = this.getClientFromSocket(socket);
 
             if (client) {
@@ -474,6 +490,13 @@ export default class Server {
         });
 
         socket.on("client:update_room", (data: { showId: string, episodeId: string, timestamp?: number }, callback: Function) => {
+
+            if (!data) {
+                return callback({
+                    type: "error",
+                    message: "You are trying to update a room with an empty payload"
+                });
+            }
 
             const client = this.getClientFromSocket(socket);
 
@@ -509,58 +532,52 @@ export default class Server {
         });
 
         socket.on("client:fetch_room", (data: { roomId?: string, roomName?: string }, callback: Function) => {
-            if (this.socketExists(socket)) {
-
-                if (data.roomId) {
-                    if (this.roomExists(data.roomId)) {
-                        callback({
-                            type: "success",
-                            message: prepareRoomForSending(this, data.roomId)
-                        });
-                    } else {
-                        callback({
-                            type: "error",
-                            message: "Room doesn't exist"
-                        });
-                    }
-                } else if (data.roomName) {
-
-                    const room = this.getRoomByName(data.roomName);
-                    
-                    if (room) {
-                        callback({
-                            type: "success",
-                            message: prepareRoomForSending(this, room)
-                        });
-                    } else {
-                        callback({
-                            type: "error",
-                            message: "Room doesn't exist"
-                        });
-                    }
-
+            if (data.roomId) {
+                if (this.roomExists(data.roomId)) {
+                    callback({
+                        type: "success",
+                        message: prepareRoomForSending(this, data.roomId)
+                    });
                 } else {
                     callback({
                         type: "error",
-                        message: "No search filter provided"
+                        message: "Room doesn't exist"
                     });
                 }
+            } else if (data.roomName) {
+
+                const room = this.getRoomByName(data.roomName);
+                
+                if (room) {
+                    callback({
+                        type: "success",
+                        message: prepareRoomForSending(this, room)
+                    });
+                } else {
+                    callback({
+                        type: "error",
+                        message: "Room doesn't exist"
+                    });
+                }
+
+            } else {
+                callback({
+                    type: "error",
+                    message: "No search filter provided"
+                });
             }
         });
 
         socket.on("client:fetch_rooms", (callback: Function) => {
-            if (this.socketExists(socket)) {
+            
+            const preparedRooms = Array.from(this.rooms.values()).map((room: Room) => {
+                return prepareRoomForSending(this, room);
+            });
 
-                const preparedRooms = Array.from(this.rooms.values()).map((room: Room) => {
-                    return prepareRoomForSending(this, room);
-                });
-
-                callback({
-                    type: "success",
-                    message: preparedRooms
-                });
-
-            }
+            callback({
+                type: "success",
+                message: preparedRooms
+            });
         });
 
         socket.on("disconnecting", () => {
