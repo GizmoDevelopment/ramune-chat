@@ -236,6 +236,11 @@ export default class Server {
                     }
                 }
 
+            } else if (callback) {
+                callback({
+                    type: "error",
+                    message: "Room doesn't exist"
+                });
             }
 
             logger.info(`{${ socket.id }} Client joined roomID {${ sanitizedRoomId }}`);
@@ -569,7 +574,7 @@ export default class Server {
         });
 
         socket.on("client:fetch_rooms", (callback: Function) => {
-            
+
             const preparedRooms = Array.from(this.rooms.values()).map((room: Room) => {
                 return prepareRoomForSending(this, room);
             });
