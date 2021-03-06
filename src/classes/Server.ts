@@ -92,7 +92,7 @@ export default class Server {
                                 });
 
                                 this.rooms.set(roomId, updatedRoom);
-                                socket.to(roomId).emit("client:update_room", updatedRoom);
+                                socket.to(roomId).emit("client:update_room", prepareRoomForSending(this, updatedRoom));
                             }
                         }
 
@@ -104,7 +104,7 @@ export default class Server {
                             const updatedRoom = updateRoom(room, { data });
 
                             this.rooms.set(roomId, updatedRoom);
-                            socket.to(roomId).emit("client:update_room", updatedRoom);
+                            socket.to(roomId).emit("client:update_room", prepareRoomForSending(this, updatedRoom));
                         }
 
                         break;
@@ -278,8 +278,9 @@ export default class Server {
                     // Choose next host
                     if (room.host === socket.id) {
                         room.host = room.sockets[0];
+                        socket.to(roomId).emit("client:update_room", prepareRoomForSending(this, room));
                     }
-
+                    
                 }
 
                 this.ioServer.to(sanitizedRoomId).emit("client:leave_room", user.id);
