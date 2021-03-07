@@ -22,7 +22,7 @@ export default class Server {
 
         this.ioServer = new io.Server(Number(port), {
             cors: {
-                origin: "*"
+                origin: "https://gizmo.moe"
             }
         });
         this.ioServer.sockets.on("connection", this.handleSocketConnection.bind(this));
