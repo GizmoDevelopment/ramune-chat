@@ -22,7 +22,9 @@ function getDateLabel () {
  * @param message 
  * @param color 
  */
-function log (message: string, color: string = COLORS.NC) {
+function log (message: any, color: string = COLORS.NC) {
+
+    message = JSON.stringify(message);
 
     // Color words in 'single quotes' and {curly braces}
     message = message.replace(/('.*?')|({.*?})/g, `${COLORS.BrightBlue}$1$2${color}`);
