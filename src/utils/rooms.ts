@@ -1,6 +1,7 @@
 // Modules
 import { Socket } from "socket.io";
 import randtoken from "rand-token";
+import sanitizeHtml from "sanitize-html";
 
 // Classes
 import Server from "../classes/Server";
@@ -16,7 +17,7 @@ export function sanitizeRoomId (roomId: string) {
 export function constructRoom (socket: Socket, roomName: string): Room {
     return {
         id: randtoken.generate(32),
-        name: roomName.slice(0, 40),
+        name: sanitizeHtml(roomName.slice(0, 40)),
         host: socket.id,
         sockets: [],
         messages: [],
