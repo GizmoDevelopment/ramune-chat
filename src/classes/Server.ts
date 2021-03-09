@@ -104,7 +104,7 @@ export default class Server {
                             const updatedRoom = updateRoom(room, { data });
 
                             this.rooms.set(roomId, updatedRoom);
-                            socket.to(roomId).emit("client:update_room", prepareRoomForSending(this, updatedRoom));
+                            socket.to(roomId).emit("client:update_room_data", data);
                         }
 
                         break;
@@ -498,7 +498,7 @@ export default class Server {
             }
         });
 
-        socket.on("client:update_room", (data: { showId: string, episodeId: string, timestamp?: number }, callback: Function) => {
+        socket.on("client:update_room_data", (data: { showId: string, episodeId: string, timestamp?: number }, callback: Function) => {
 
             if (!data) {
                 return callback({
@@ -524,7 +524,7 @@ export default class Server {
                     };
 
                     this.updateRoom(socket, "update_data", hostOfRoom, newRoomContent);
-                    socket.to(hostOfRoom).emit("client:update_room", newRoomContent);
+                    socket.to(hostOfRoom).emit("client:update_room_data", newRoomContent);
 
                     callback({
                         type: "success",
