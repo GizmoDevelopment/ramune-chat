@@ -31,7 +31,7 @@
     "@sentry/tracing": "^6.2.0",
     "@types/sanitize-html": "^1.27.1",
     "@types/socket.io": "^2.1.13",
-    "gizmo-api": "^0.1.1",
+    "gizmo-api": "^0.1.2",
     "rand-token": "^1.0.1",
     "sanitize-html": "^2.3.2",
     "socket.io": "^3.1.2",
