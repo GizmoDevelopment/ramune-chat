@@ -7,7 +7,7 @@ import sanitizeHtml from "sanitize-html";
 import Server from "../classes/Server";
 
 // Types
-import { User } from "gizmo-api";
+import { User } from "gizmo-api/lib/types";
 import { Room, SimpleRoom } from "../types";
 
 export function sanitizeRoomId (roomId: string) {

@@ -1,6 +1,6 @@
 // Modules
 import { Socket } from "socket.io";
-import { User } from "gizmo-api";
+import { User } from "gizmo-api/lib/types";
 
 // Types
 import { Client, ExtendedUser } from "../types";

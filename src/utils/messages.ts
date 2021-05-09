@@ -2,7 +2,7 @@
 import sanitizeHtml from "sanitize-html";
 
 // Types
-import { User } from "gizmo-api";
+import { User } from "gizmo-api/lib/types";
 import { Room, Message } from "../types";
 
 function cleanMessageContent (content: string) {

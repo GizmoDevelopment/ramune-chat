@@ -1,6 +1,6 @@
 // Types
 import { Socket } from "socket.io";
-import { User } from "gizmo-api";
+import { User } from "gizmo-api/lib/types";
 
 declare global {
     namespace NodeJS {

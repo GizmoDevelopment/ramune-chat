@@ -1,5 +1,5 @@
 // Modules
-import gizmo, { User } from "gizmo-api";
+import { getAuthenticatedUser} from "gizmo-api";
 import io, { Socket } from "socket.io";
 
 // Utils
@@ -9,6 +9,7 @@ import { constructRoom, prepareRoomForSending, sanitizeRoomId, updateRoom } from
 import { constructMessage } from "../utils/messages";
 
 // Types
+import { User } from "gizmo-api/lib/types";
 import { Client, Room } from "../types";
 
 export default class Server {
@@ -357,7 +358,7 @@ export default class Server {
             try {
     
                 const
-                    user = await gizmo.getUser(data.token),
+                    user = await getAuthenticatedUser(data.token),
                     client = constructClient(socket, user),
                     extendedUser = constructExtendedUser(client);
 
