@@ -23,9 +23,11 @@ export default class Server {
 
         this.ioServer = new io.Server(Number(port), {
             cors: {
-                origin: "*"
+                origin: process.env.CORS_ORIGIN_DOMAIN,
+				credentials: true
             }
         });
+		
         this.ioServer.sockets.on("connection", this.handleSocketConnection.bind(this));
 
         logger.info(`Listening on port '${ port }'`);
