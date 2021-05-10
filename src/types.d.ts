@@ -7,6 +7,8 @@ declare global {
         export interface ProcessEnv {
             NODE_ENV: string;
             PORT: string;
+			CORS_ORIGIN_DOMAIN: string;
+			SENTRY_DSN: string;
         }
     }
 }
