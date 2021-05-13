@@ -152,7 +152,7 @@ export default class Server {
                 if (callback) {
                     callback({
                         type: "success",
-                        message: prepareRoomForSending(this, room)
+                        data: prepareRoomForSending(this, room)
                     });
                 }
 
@@ -229,12 +229,12 @@ export default class Server {
                     if (preparedRoom) {
                         callback({
                             type: "success",
-                            message: preparedRoom
+                            data: preparedRoom
                         });
                     } else {
                         callback({
                             type: "success",
-                            message: {}
+                            data: {}
                         });
                     }
                 }
@@ -298,7 +298,7 @@ export default class Server {
             if (callback) {
                 callback({
                     type: "success",
-                    message: sanitizedRoomId
+                    data: sanitizedRoomId
                 });
             }
             
@@ -368,7 +368,7 @@ export default class Server {
 
                 callback({
                     type: "success",
-                    message: extendedUser
+                    data: extendedUser
                 });
 
                 // Not needed at the moment
@@ -451,7 +451,7 @@ export default class Server {
                     if (callback) {
                         callback({
                             type: "success",
-                            message
+                            data: message
                         });
                     }
 
@@ -531,7 +531,7 @@ export default class Server {
 
                     callback({
                         type: "success",
-                        message: prepareRoomForSending(this, hostOfRoom)
+                        data: prepareRoomForSending(this, hostOfRoom)
                     });
 
                 } else {
@@ -548,7 +548,7 @@ export default class Server {
                 if (this.roomExists(data.roomId)) {
                     callback({
                         type: "success",
-                        message: prepareRoomForSending(this, data.roomId)
+                        data: prepareRoomForSending(this, data.roomId)
                     });
                 } else {
                     callback({
@@ -563,7 +563,7 @@ export default class Server {
                 if (room) {
                     callback({
                         type: "success",
-                        message: prepareRoomForSending(this, room)
+                        data: prepareRoomForSending(this, room)
                     });
                 } else {
                     callback({
@@ -588,7 +588,7 @@ export default class Server {
 
             callback({
                 type: "success",
-                message: preparedRooms
+                data: preparedRooms
             });
         });
 
