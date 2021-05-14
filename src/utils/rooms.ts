@@ -17,7 +17,7 @@ export function sanitizeRoomId (roomId: string) {
 export function constructRoom (socket: Socket, roomName: string): Room {
     return {
         id: randtoken.generate(32),
-        name: sanitizeHtml(roomName.slice(0, 40)),
+        name: sanitizeHtml(roomName.slice(0, 25)),
         host: socket.id,
         sockets: [],
         messages: [],
