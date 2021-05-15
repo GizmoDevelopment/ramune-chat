@@ -10,7 +10,7 @@ import { constructMessage } from "../utils/messages";
 
 // Types
 import { User } from "gizmo-api/lib/types";
-import { Client, Room } from "../types";
+import { Client, Room, RoomOptions } from "../types";
 
 export default class Server {
 
@@ -388,9 +388,9 @@ export default class Server {
     
         });
 
-        socket.on("client:create_room", (data: { roomName: string }, callback: Function) => {
-            if (typeof data?.roomName === "string") {
-                this.createRoom(socket, data.roomName, callback);
+        socket.on("client:create_room", (data: RoomOptions | any, callback: Function) => {
+            if (typeof data?.name === "string") {
+                this.createRoom(socket, data.name, callback);
             } else {
                 callback({
                     type: "error",
@@ -399,9 +399,9 @@ export default class Server {
             }
         });
 
-        socket.on("client:join_room", (data: { roomId: string }, callback: Function) => {
-            if (typeof data?.roomId === "string") {
-                this.joinRoom(socket, data.roomId, callback);
+        socket.on("client:join_room", (roomId: string | any, callback: Function) => {
+            if (typeof roomId === "string") {
+                this.joinRoom(socket, roomId, callback);
             } else {
                 callback({
                     type: "error",
@@ -410,9 +410,9 @@ export default class Server {
             }
         });
 
-        socket.on("client:leave_room", (data: { roomId: string }, callback: Function) => {
-            if (typeof data?.roomId === "string") {
-                this.leaveRoom(socket, data.roomId, callback);
+        socket.on("client:leave_room", (roomId: string | any, callback: Function) => {
+            if (typeof roomId === "string") {
+                this.leaveRoom(socket, roomId, callback);
             } else {
                 callback({
                     type: "error",

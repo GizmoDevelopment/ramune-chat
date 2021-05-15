@@ -56,3 +56,7 @@ export interface Message {
     content: string;
     author: User;
 }
+
+export interface RoomOptions {
+	name: string;
+}
