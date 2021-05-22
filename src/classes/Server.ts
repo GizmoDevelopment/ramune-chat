@@ -390,7 +390,13 @@ export default class Server {
 
         socket.on("client:create_room", (data: RoomOptions | any, callback: Function) => {
             if (typeof data?.name === "string") {
-                this.createRoom(socket, data.name, callback);
+                this.createRoom(socket, data.name, (res: any) => {
+					if (res.type === "success") {
+						this.joinRoom(socket, res.data.id, callback);
+					} else {
+						callback(res);
+					}
+				});
             } else {
                 callback({
                     type: "error",
