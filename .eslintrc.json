@@ -1,15 +1,15 @@
 {
-    "parser": "@typescript-eslint/parser",
-    "plugins": [
-        "@typescript-eslint"
-    ],
-    "extends": [
-        "eslint:recommended",
-        "plugin:@typescript-eslint/eslint-recommended"
-    ],
-    "rules": {
-        "semi": "error",
-        "no-unused-vars": "off",
-        "@typescript-eslint/no-unused-vars": ["error"]
-    }
+	"parser": "@typescript-eslint/parser",
+	"plugins": [
+		"@typescript-eslint"
+	],
+	"extends": [
+		"eslint:recommended",
+		"plugin:@typescript-eslint/eslint-recommended"
+	],
+	"rules": {
+		"semi": "error",
+		"no-unused-vars": "off",
+		"@typescript-eslint/no-unused-vars": ["error"]
+	}
 }

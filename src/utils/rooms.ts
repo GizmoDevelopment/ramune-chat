@@ -1,75 +1,47 @@
 // Modules
-import { Socket } from "socket.io";
-import randtoken from "rand-token";
-import sanitizeHtml from "sanitize-html";
-
-// Classes
-import Server from "../classes/Server";
+import { v4 as uuidv4 } from "uuid";
 
 // Types
+import { Room, RoomOptions } from "@typings/room";
 import { User } from "gizmo-api/lib/types";
-import { Room, SimpleRoom } from "../types";
 
-export function sanitizeRoomId (roomId: string) {
-    return roomId; // DIY string sanitization, please don't actually do this
+// Variables
+const rooms: Map<string, Room> = new Map();
+
+export function createRoom (host: User, options: RoomOptions): Room {
+
+	const room = {
+		id: uuidv4(),
+		name: options.name,
+		host: host,
+		users: [ host ],
+		data: null
+	};
+
+	rooms.set(room.id, room);
+
+	return room;
 }
 
-export function constructRoom (socket: Socket, roomName: string): Room {
-    return {
-        id: randtoken.generate(32),
-        name: sanitizeHtml(roomName.slice(0, 25)),
-        host: socket.id,
-        sockets: [],
-        messages: [],
-        data: null
-    };
+export function destroyRoom (roomId: string) {
+	rooms.delete(roomId);
 }
 
-export function updateRoom (oldRoom: Room, newRoom: Record<string, any>): Room {
-    return {
-        ...oldRoom,
-        data: {
-            ...(oldRoom?.data || {}),
-            ...(newRoom?.data || {})
-        }
-    };
+export function addUserToRoom (room: Room, user: User): Room {
+	if 
 }
 
-export function prepareRoomForSending (server: Server, room: Room): SimpleRoom | undefined;
-export function prepareRoomForSending (server: Server, roomId: string): SimpleRoom | undefined;
-export function prepareRoomForSending (server: Server, roomOrRoomId: Room | string): SimpleRoom | undefined {
-    
-    let _room: Room | undefined;
+export function removeUserFromRoom (room: Room, user: User): Room {
 
-    // RoomID was passed
-    if (typeof roomOrRoomId === "string") {
-        const _roomResult = server.rooms.get(roomOrRoomId);
-        if (_roomResult) _room = _roomResult;
-    } else {
-        _room = roomOrRoomId;
-    }
-    if (_room) {
+	room.users = room.users.filter(_user => _user.id !== user.id);
 
-        const hostUser = server.getUserFromSocketId(_room.host);
+	return room;
+}
 
-        if (hostUser) {
+export function getRooms (): Room[] {
+	return Array.from(rooms.values());
+}
 
-            // Go fuck yourself TypeShit
-            const userList = _room.sockets.reduce((users: User[], socketId: string) => {
-                const user = server.getUserFromSocketId(socketId);
-                if (user) users.push(user);
-                return users;
-            }, [] as User[]);
-
-            return {
-                id: _room.id,
-                name: _room.name,
-                host: hostUser,
-                users: userList,
-                data: _room.data,
-                messages: []
-            };
-        }
-    }
-
+export function getRoom (roomId: string): Room | null {
+	return rooms.get(roomId) || null;
 }

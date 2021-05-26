@@ -1,44 +1,42 @@
 {
-  "name": "gizmo-chat-backend",
-  "version": "1.0.0",
-  "description": "",
-  "author": "Tjaz (https://github.com/GizmoTjaz)",
-  "license": "Apache 2.0",
-  "repository": {
-    "type": "git",
-    "url": "git+https://github.com/GizmoDevelopment/gizmo-chat-backend.git"
-  },
-  "main": "build/index.js",
-  "engines": {
-    "node": "14"
-  },
-  "scripts": {
-    "start": "node ./build/index.js",
-    "dev": "nodemon --exec npm run start",
-    "build": "rm -rf ./build && tsc",
-    "build:watch": "rm -rf ./build && tsc -w"
-  },
-  "devDependencies": {
-    "@sentry/types": "^6.2.1",
-    "@types/node": "^14.14.31",
-    "@typescript-eslint/eslint-plugin": "^4.15.2",
-    "@typescript-eslint/parser": "^4.15.2",
-    "eslint": "^7.20.0",
-    "nodemon": "^2.0.7"
-  },
-  "dependencies": {
-    "@sentry/node": "^6.2.0",
-    "@sentry/tracing": "^6.2.0",
-    "@types/sanitize-html": "^1.27.1",
-    "@types/socket.io": "^2.1.13",
-    "gizmo-api": "^1.0.5",
-    "rand-token": "^1.0.1",
-    "sanitize-html": "^2.3.2",
-    "socket.io": "^3.1.2",
-    "typescript": "^4.2.3"
-  },
-  "optionalDependencies": {
-    "bufferutil": "^4.0.3",
-    "utf-8-validate": "^5.0.4"
-  }
+	"name": "gizmo-chat-backend",
+	"version": "1.0.0",
+	"description": "",
+	"author": "Tjaz (https://github.com/GizmoTjaz)",
+	"license": "Apache 2.0",
+	"repository": {
+		"type": "git",
+		"url": "git+https://github.com/GizmoDevelopment/gizmo-chat-backend.git"
+	},
+	"main": "build/index.js",
+	"engines": {
+		"node": "14"
+	},
+	"scripts": {
+		"start": "ts-node -r tsconfig-paths/register -r dotenv/config ./src/index.ts"
+	},
+	"devDependencies": {
+		"@sentry/types": "^6.2.1",
+		"@types/node": "^14.14.31",
+		"@types/redis": "^2.8.28",
+		"@types/sanitize-html": "^2.3.1",
+		"@types/uuid": "^8.3.0",
+		"@typescript-eslint/eslint-plugin": "^4.15.2",
+		"@typescript-eslint/parser": "^4.15.2",
+		"eslint": "^7.20.0",
+		"ts-node": "^9.1.1",
+		"tsconfig-paths": "^3.9.0"
+	},
+	"dependencies": {
+		"@sentry/node": "^6.2.0",
+		"@sentry/tracing": "^6.2.0",
+		"dotenv": "^10.0.0",
+		"gizmo-api": "^1.0.5",
+		"socket.io": "^3.1.2",
+		"typescript": "^4.2.3"
+	},
+	"optionalDependencies": {
+		"bufferutil": "^4.0.3",
+		"utf-8-validate": "^5.0.4"
+	}
 }

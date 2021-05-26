@@ -1,618 +1,153 @@
 // Modules
-import { getAuthenticatedUser} from "gizmo-api";
-import io, { Socket } from "socket.io";
+import { Server as ioServer, Socket } from "socket.io";
+import { getAuthenticatedUser } from "gizmo-api";
 
 // Utils
-import logger from "../utils/logger";
-import { constructClient, constructExtendedUser } from "../utils/users";
-import { constructRoom, prepareRoomForSending, sanitizeRoomId, updateRoom } from "../utils/rooms";
-import { constructMessage } from "../utils/messages";
+import logger from "@utils/logger";
+import { createRoom, getRoom } from "@utils/rooms";
 
 // Types
+import { SocketCallback } from "@typings/main";
 import { User } from "gizmo-api/lib/types";
-import { Client, Room, RoomOptions } from "../types";
+import { createResponse } from "@utils/essentials";
+import { Room, RoomOptions } from "@typings/room";
+
+// Constants
+const WEBSOCKET_PORT = Number(process.env.WEBSOCKET_PORT);
+const CORS_ORIGIN_DOMAIN = process.env.CORS_ORIGIN_DOMAIN;
 
 export default class Server {
+	
+	readonly ready = false;
+	private readonly ioServer: ioServer;
 
-    private readonly ioServer: io.Server;
+	// Socket IDs mapped to their respective Users
+	private users: Map<string, User> = new Map();
 
-    clients: Map<string, Client> = new Map();
-    rooms: Map<string, Room> = new Map();
+	constructor () {
 
-    constructor (port: number | string) {
-
-        this.ioServer = new io.Server(Number(port), {
-            cors: {
-                origin: process.env.CORS_ORIGIN_DOMAIN,
+		this.ioServer = new ioServer(WEBSOCKET_PORT, {
+			cors: {
+				origin: CORS_ORIGIN_DOMAIN,
 				credentials: true
-            }
-        });
+			}
+		});
+
+		this.ioServer.sockets.on("connection", this.handleSocketConnetion.bind(this));
+
+		logger.success(`Successfully started WebSocket server on port '${ WEBSOCKET_PORT }'`);
+
+		process.once("SIGINT", () => {
+			this.ioServer.close();
+		});
+
+	}
+
+	private handleSocketConnetion (socket: Socket) {
 		
-        this.ioServer.sockets.on("connection", this.handleSocketConnection.bind(this));
-
-        logger.info(`Listening on port '${ port }'`);
-    }
+		logger.info(`[S-${ socket.id }] Socket connected`);
 
-    private addClient (client: Client) {
-        this.clients.set(client.socket.id, client);
-    }
+		socket.on("CLIENT:AUTHENTICATE", async (data: { token?: string }, callback: SocketCallback<User>) => {
+			if (typeof data?.token === "string") {
 
-    private socketExists (socket: Socket) {
-        return this.clients.has(socket.id);
-    }
+				try {
 
-    private removeSocket (socket: Socket) {
-        this.clients.delete(socket.id);
-    }
+					const user = await getAuthenticatedUser(data.token);
 
-    private getClientFromSocket (socket: Socket) {
-        return this.clients.get(socket.id);
-    }
+					this.addUser(socket, user);
+					callback(createResponse<User>("success", user));
 
-    private getClientFromSocketId (socketId: string) {
-        return this.clients.get(socketId);
-    }
+					logger.info(`[${ socket.id }] [${ user.username }] Successfully authenticated`);
 
-    private roomExists (roomId: string) {
-        return this.rooms.has(roomId);
-    }
+				} catch (err) {
+					callback(createResponse("error", "Something went wrong."));
+				}
 
-    getUserFromSocketId (socketId: string): User | undefined {
-        return this.getClientFromSocketId(socketId)?.user;
-    }
+			} else {
+				callback(createResponse("error", "User token is required."));
+			}
+		});
 
-    private getRoomById (roomId: string): Room | undefined {
-        return this.rooms.get(roomId);
-    }
+		socket.on("CLIENT:FETCH_ROOMS", async (callback: SocketCallback<Room[]>) => {
+			
+		});
 
-    private getRoomByName (roomName: string): Room | undefined {
-        return Array.from(this.rooms.values()).find(({ name }) => name === roomName);
-    }
+		socket.on("CLIENT:CREATE_ROOM", async (options: RoomOptions, callback: SocketCallback<Room>) => {
+			if (typeof options?.name === "string") {
+				
+				const user = this.getUser(socket);
 
-    private updateRoom (socket: Socket, type: string, roomId: string, data?: Record<string, any>) {
-        if (this.roomExists(roomId)) {
+				if (user) {
 
-            const room = this.getRoomById(roomId);
+					const room = createRoom(user, options);
 
-            if (room) {
-                switch (type) {
-                    case "change_host":
-    
-                        if (data && typeof data.host === "string") {
+					socket.join(room.id);
 
-                            const newHostClient = this.getClientFromSocketId(data.host);
-
-                            if (newHostClient) {
+					callback(createResponse<Room>("success", room));
+					logger.info(`[S-${ socket.id }] [R-${ room.id }] [${ user.username }] Created new room`);
 
-                                const updatedRoom = updateRoom(room, { host: data.host });
-
-                                this.modifyClientData(socket, {
-                                    hostOfRoom: null
-                                });
-        
-                                this.modifyClientData(newHostClient.socket, {
-                                    hostOfRoom: roomId
-                                });
-
-                                this.rooms.set(roomId, updatedRoom);
-                                socket.to(roomId).emit("client:update_room", prepareRoomForSending(this, updatedRoom));
-                            }
-                        }
+				} else {
+					callback(createResponse("error", "Something went wrong."));
+				}
 
-                        break;
-                    case "update_data":
+			} else {
+				callback(createResponse("error", "Missing room options."));
+			}
+		});
 
-                        if (typeof data === "object") {
-                            
-                            const updatedRoom = updateRoom(room, { data });
+		socket.on("CLIENT:JOIN_ROOM", async ({ roomId }: { roomId: string }, callback: SocketCallback<Room>) => {
+			if (typeof roomId === "string") {
 
-                            this.rooms.set(roomId, updatedRoom);
-                            socket.to(roomId).emit("client:update_room_data", data);
-                        }
+				const user = this.getUser(socket);
 
-                        break;
-                    case "sync_data":
-                        
-                        if (typeof data === "object") {
+				if (user) {
 
-                            const updatedRoom = updateRoom(room, { data });
-                            
-                            this.rooms.set(roomId, updatedRoom);
+					const room = getRoom(roomId);
 
-                            /**
-                             * There's no need to emit 'client:update_room' for this,
-                             * it only matters during 'client:fetch_room'
-                             */
-                        }
+					if (room) {
+						
+						
 
-                        break;
-                    default:
-                }
-            }
-        }
-    }
-
-    private createRoom (socket: Socket, roomName: string, callback?: Function) {
-
-        const existingRoom = this.getRoomByName(roomName);
-
-        if (!existingRoom) {
-
-            const room = constructRoom(socket, roomName);
-
-            if (room) {
-
-                // New room (promote to host)
-                this.modifyClientData(socket, {
-                    hostOfRoom: room.id
-                });
-
-                this.rooms.set(room.id, room);
-
-                if (callback) {
-                    callback({
-                        type: "success",
-                        data: prepareRoomForSending(this, room)
-                    });
-                }
-
-                logger.info(`{${ socket.id }} Client created roomID {${ room.id }}`);
-
-            } else if (callback) {
-                callback({
-                    type: "error",
-                    message: "Something went wrong"
-                });
-            }
-
-        } else if (callback) {
-            callback({
-                type: "error",
-                message: "Room already exists"
-            });
-        }
-    }
-
-    private async removeRoom (roomId: string) {
-        if (this.roomExists(roomId)) {
-            
-            const socketsInRoom = await this.ioServer.to(roomId).allSockets();
-
-            if (socketsInRoom) {
-                socketsInRoom.forEach(socketId => {
-                    
-                    const client = this.getClientFromSocketId(socketId);
-
-                    if (client) {
-                        this.leaveRoom(client.socket, roomId);
-                    }
-
-                });
-            }
-
-            this.rooms.delete(roomId);
-            logger.info(`Removed roomID {${ roomId }}`);
-        }
-    }
-
-    private async joinRoom (socket: Socket, roomId: string, callback?: Function) {
-
-        const
-            sanitizedRoomId = sanitizeRoomId(roomId),
-            user = this.getClientFromSocket(socket)?.user;
-
-        if (user) {
-
-            this.leaveAllSocketRooms(socket);
-
-            if ((await this.ioServer.to(sanitizedRoomId).allSockets()).size > 0) {
-                this.modifyClientData(socket, {
-                    hostOfRoom: null
-                });
-            }
-
-            const room = this.getRoomById(roomId);
-
-            if (room) {
-
-                socket.join(sanitizedRoomId);
-                this.ioServer.to(sanitizedRoomId).emit("client:join_room", user);
-
-                if (!room.sockets.includes(socket.id)) {
-                    room.sockets.push(socket.id);
-                }
-
-                if (callback) {
-
-                    const preparedRoom = prepareRoomForSending(this, room);
-    
-                    if (preparedRoom) {
-                        callback({
-                            type: "success",
-                            data: preparedRoom
-                        });
-                    } else {
-                        callback({
-                            type: "success",
-                            data: {}
-                        });
-                    }
-                }
-
-            } else if (callback) {
-                callback({
-                    type: "error",
-                    message: "Room doesn't exist"
-                });
-            }
-
-            logger.info(`{${ socket.id }} Client joined roomID {${ sanitizedRoomId }}`);
-            
-        } else if (callback) {
-            callback({
-                type: "error",
-                message: "Client doesn't exist"
-            });
-        }
-    }
-
-    private async leaveRoom (socket: Socket, roomId: string, callback?: Function) {
-
-        const
-            sanitizedRoomId = sanitizeRoomId(roomId),
-            user = this.getClientFromSocket(socket)?.user;
-
-        if (user) {
-
-            socket.leave(sanitizedRoomId);
-
-            if ((await this.ioServer.to(sanitizedRoomId).allSockets()).size > 0) {
-                
-                const room = this.getRoomById(sanitizedRoomId);
-
-                if (room) {
-                    
-                    // Remove socket from socket array
-                    if (room.sockets.includes(socket.id)) {
-                        room.sockets.splice(room.sockets.indexOf(socket.id), 1);
-                    }
-
-                    // Choose next host
-                    if (room.host === socket.id) {
-
-                        room.host = room.sockets[0];
-                        socket.to(roomId).emit("client:update_room", prepareRoomForSending(this, room));
-
-                        logger.info(`{${ socket.id }} Updated host for roomID {${ sanitizedRoomId }}`);
-                    }
-                    
-                    this.rooms.set(sanitizedRoomId, room);
-                }
-
-                this.ioServer.to(sanitizedRoomId).emit("client:leave_room", user.id);
-
-            } else {
-                this.removeRoom(sanitizedRoomId);
-            }
-
-            if (callback) {
-                callback({
-                    type: "success",
-                    data: sanitizedRoomId
-                });
-            }
-            
-            logger.info(`{${ socket.id }} Client left roomID {${ sanitizedRoomId }}`);
-
-        } else if (callback) {
-            callback({
-                type: "error",
-                message: "Client doesn't exist"
-            });
-        }
-    }
-
-    private leaveAllSocketRooms (socket: Socket) {
-
-        const client = this.getClientFromSocket(socket);
-
-        if (client) {
-            socket.rooms.forEach(roomId => {
-                if (roomId !== socket.id) {
-                    this.leaveRoom(socket, roomId);
-                }
-            });
-        }
-    }
-
-    private modifyClientData (socket: Socket, data: Record<string, any>) {
-
-        const client = this.getClientFromSocket(socket);
-
-        if (client) {
-            this.clients.set(client.socket.id, {
-                ...client,
-                data: {
-                    ...client.data,
-                    ...data
-                }
-            });
-        }
-
-    }
-
-    private handleSocketConnection (socket: Socket) {
-
-        logger.info(`{${ socket.id }} Client connected`);
-
-        socket.on("client:authenticate", async (data: { token: string }, callback: Function) => {
-
-            if (typeof data?.token !== "string") {
-
-                callback({
-                    type: "error",
-                    message: "User token is required"
-                });
-
-                return socket.disconnect(true);
-            }
-    
-            try {
-    
-                const
-                    user = await getAuthenticatedUser(data.token),
-                    client = constructClient(socket, user),
-                    extendedUser = constructExtendedUser(client);
-
-                this.addClient(client);
-
-                callback({
-                    type: "success",
-                    data: extendedUser
-                });
-
-                // Not needed at the moment
-                socket.broadcast.emit("client:connect", extendedUser);
-
-                logger.info(`{${ socket.id }} Authenticated client with userID {${ user.id }}`);
-    
-            } catch (err) {
-    
-                callback({
-                    type: "error",
-                    message: "Something went wrong"
-                });
-    
-                throw err;
-            }
-    
-        });
-
-        socket.on("client:create_room", (data: RoomOptions | any, callback: Function) => {
-            if (typeof data?.name === "string") {
-                this.createRoom(socket, data.name, (res: any) => {
-					if (res.type === "success") {
-						this.joinRoom(socket, res.data.id, callback);
 					} else {
-						callback(res);
+						callback(createResponse("error", "Room not found."));
 					}
-				});
-            } else {
-                callback({
-                    type: "error",
-                    message: "Room name is required"
-                });
-            }
-        });
 
-        socket.on("client:join_room", (roomId: string | any, callback: Function) => {
-            if (typeof roomId === "string") {
-                this.joinRoom(socket, roomId, callback);
-            } else {
-                callback({
-                    type: "error",
-                    message: "Room ID is required"
-                });
-            }
-        });
+				} else {
+					callback(createResponse("error", "Something went wrong."));
+				}
 
-        socket.on("client:leave_room", (roomId: string | any, callback: Function) => {
-            if (typeof roomId === "string") {
-                this.leaveRoom(socket, roomId, callback);
-            } else {
-                callback({
-                    type: "error",
-                    message: "Room ID is required"
-                });
-            }
-        });
+			} else {
+				callback(createResponse("error", "Missing RoomID."));
+			}
+		});
 
-        socket.on("client:send_message", (data: { content: string, roomId: string }, callback: Function) => {
+		socket.on("disconnect", (reason: string) => {
 
-            if (typeof data?.content !== "string" || typeof data?.roomId !== "string") {
-                return callback({
-                    type: "error",
-                    message: "Invalid message payload"
-                });
-            }
+			const user = this.getUser(socket);
 
-            const client = this.getClientFromSocket(socket);
+			if (user) {
 
-            if (client) {
+				
 
-                const
-                    user = client.user,
-                    sanitizedRoomId = sanitizeRoomId(data.roomId),
-                    room = this.getRoomById(sanitizedRoomId);
+				this.removeUser(socket);
 
-                if (room) {
-                    
-                    const message = constructMessage(room, user, data.content);
+				logger.info(`[S-${ socket.id }] Disconnected with reason '${ reason }'`);
+			}
 
-                    room.messages.push(message);
-                    this.rooms.set(sanitizedRoomId, room);
+		});
 
-                    this.ioServer.to(sanitizedRoomId).emit("client:send_message", message);
+	}
 
-                    if (callback) {
-                        callback({
-                            type: "success",
-                            data: message
-                        });
-                    }
+	private addUser (socket: Socket, user: User) {
+		this.users.set(socket.id, user);
+	}
 
-                } else if (callback) {
-                    callback({
-                        type: "error",
-                        message: "Room does not exist"
-                    });
-                }
-            }
-        });
+	private getUser (socket: Socket): User | null {
+		return this.users.get(socket.id) || null;		
+	}
 
-        socket.on("client:sync_player", (data: { timestamp: number, paused: boolean }, callback: Function) => {
-            
-            if (!data) {
-                return callback({
-                    type: "error",
-                    message: "You are trying to sync with an empty payload"
-                });
-            }
-
-            const client = this.getClientFromSocket(socket);
-
-            if (client) {
-
-                const {
-                    hostOfRoom
-                } = client.data;
-
-                if (hostOfRoom) {
-
-                    this.updateRoom(socket, "sync_data", hostOfRoom, {
-                        timestamp: data.timestamp
-                    });
-
-                    socket.to(hostOfRoom).emit("client:sync_player", {
-                        timestamp: Number(data.timestamp) ?? 0,
-                        paused: !!data.paused
-                    });
-
-                } else {
-                    callback({
-                        type: "error",
-                        message: "You aren't the host"
-                    });
-                }
-            }
-        });
-
-        socket.on("client:update_room_data", (data: { showId: string, episodeId: string, timestamp?: number }, callback: Function) => {
-
-            if (!data) {
-                return callback({
-                    type: "error",
-                    message: "You are trying to update a room with an empty payload"
-                });
-            }
-
-            const client = this.getClientFromSocket(socket);
-
-            if (client) {
-
-                const {
-                    hostOfRoom
-                } = client.data;
-
-                if (hostOfRoom) {
-
-                    const newRoomContent = {
-                        showId: data.showId,
-                        episodeId: data.episodeId,
-                        timestamp: data.timestamp
-                    };
-
-                    this.updateRoom(socket, "update_data", hostOfRoom, newRoomContent);
-                    socket.to(hostOfRoom).emit("client:update_room_data", newRoomContent);
-
-                    callback({
-                        type: "success",
-                        data: prepareRoomForSending(this, hostOfRoom)
-                    });
-
-                } else {
-                    callback({
-                        type: "error",
-                        message: "You aren't the host"
-                    });
-                }
-            }
-        });
-
-        socket.on("client:fetch_room", (data: { roomId?: string, roomName?: string }, callback: Function) => {
-            if (data.roomId) {
-                if (this.roomExists(data.roomId)) {
-                    callback({
-                        type: "success",
-                        data: prepareRoomForSending(this, data.roomId)
-                    });
-                } else {
-                    callback({
-                        type: "error",
-                        message: "Room doesn't exist"
-                    });
-                }
-            } else if (data.roomName) {
-
-                const room = this.getRoomByName(data.roomName);
-                
-                if (room) {
-                    callback({
-                        type: "success",
-                        data: prepareRoomForSending(this, room)
-                    });
-                } else {
-                    callback({
-                        type: "error",
-                        message: "Room doesn't exist"
-                    });
-                }
-
-            } else {
-                callback({
-                    type: "error",
-                    message: "No search filter provided"
-                });
-            }
-        });
-
-        socket.on("client:fetch_rooms", (callback: Function) => {
-
-            const preparedRooms = Array.from(this.rooms.values()).map((room: Room) => {
-                return prepareRoomForSending(this, room);
-            });
-
-            callback({
-                type: "success",
-                data: preparedRooms
-            });
-        });
-
-        socket.on("disconnecting", () => {
-            if (this.socketExists(socket)) {
-                this.leaveAllSocketRooms(socket);
-            }
-        });
-
-        socket.on("disconnect", (reason: string) => {
-            
-            if (this.socketExists(socket)) {
-                this.removeSocket(socket);
-            }
-
-            logger.info(`{${ socket.id }} Client disconnected with reason '${ reason }'`);
-        });
-
-    }
+	private removeUser (socket: Socket) {
+		this.users.delete(socket.id);
+	}
 
 }
