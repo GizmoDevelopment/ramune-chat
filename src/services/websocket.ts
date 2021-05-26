@@ -6,7 +6,7 @@ import { getAuthenticatedUser } from "gizmo-api";
 import Service from "@classes/Service";
 
 // Utils
-import logger from "../../FIREBASE/old/src/utils/logger";
+import logger from "@utils/logger";
 import { createResponse } from "@utils/essentials";
 
 // Types
