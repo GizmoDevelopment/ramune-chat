@@ -45,7 +45,7 @@ export default class Cluster {
 
 	}
 
-	getService (name: string): Service | null {
+	getService (name: string): any | null {
 		return this.services.get(name) || null;
 	}
 
