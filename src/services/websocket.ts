@@ -23,7 +23,7 @@ interface InputRoomData {
 const WEBSOCKET_PORT = Number(process.env.WEBSOCKET_PORT);
 const CORS_ORIGIN_DOMAIN = process.env.CORS_ORIGIN_DOMAIN;
 
-class Websocket extends Service {
+class WebsocketService extends Service {
 
 	private readonly ioServer: ioServer;
 	private readonly sockets: Map<string, User> = new Map();
@@ -171,4 +171,4 @@ class Websocket extends Service {
 
 }
 
-export default Websocket;
+export default WebsocketService;
