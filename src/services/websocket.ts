@@ -27,7 +27,7 @@ const CORS_ORIGIN_DOMAIN = process.env.CORS_ORIGIN_DOMAIN;
 
 class WebsocketService extends Service {
 
-	private readonly ioServer: ioServer;
+	readonly ioServer: ioServer;
 	private readonly sockets: Map<string, User> = new Map();
 
 	constructor (cluster: Cluster) {
@@ -78,7 +78,10 @@ class WebsocketService extends Service {
 		});
 	
 		socket.on("CLIENT:FETCH_ROOMS", async (callback: SocketCallback<Room[]>) => {
-			if (this.isAuthenticated(socket)) {
+
+			const user = this.getAuthenticatedUser(socket);
+
+			if (user) {
 
 				const roomService = this.cluster.getService("room");
 
@@ -94,7 +97,10 @@ class WebsocketService extends Service {
 		});
 
 		socket.on("CLIENT:CREATE_ROOM", async (options: RoomOptions, callback: SocketCallback<Room>) => {
-			if (this.isAuthenticated(socket)) {
+
+			const user = this.getAuthenticatedUser(socket);
+
+			if (user) {
 
 				/**
 				 * - check if user is already in room
@@ -103,13 +109,26 @@ class WebsocketService extends Service {
 				 * - add user as host
 				 */
 
+				const roomService = this.cluster.getService("room");
+
+				if (roomService instanceof RoomService) {
+					
+					
+
+				} else {
+					callback(createResponse("error", "Room service currently isn't available."));
+				}
+
 			} else {
 				callback(createResponse("error", "You must be authenticated."));
 			}
 		});
 	
 		socket.on("CLIENT:JOIN_ROOM", async (roomId: string, callback: SocketCallback<Room>) => {
-			if (this.isAuthenticated(socket)) {
+			
+			const user = this.getAuthenticatedUser(socket);
+
+			if (user) {
 
 				/**
 				 * - check if room exists
@@ -117,13 +136,43 @@ class WebsocketService extends Service {
 				 * - join room
 				 */
 
+				const roomService = this.cluster.getService("room");
+
+				if (roomService instanceof RoomService) {
+
+					const room = roomService.getRoom(roomId);
+
+					if (room) {
+
+						const currentRoom = roomService.getUserCurrentRoom(user);
+
+						if (currentRoom) {
+							socket.leave(currentRoom.id);
+							currentRoom.leave(user);
+						}
+
+						room.join(user);
+						socket.join(room.id);
+
+						callback(createResponse("success", room));
+
+					} else {
+						callback(createResponse("error", "Room doesn't exist."));
+					}
+				} else {
+					callback(createResponse("error", "Room service currently isn't available."));
+				}
+
 			} else {
 				callback(createResponse("error", "You must be authenticated."));
 			}
 		});
 
-		socket.on("CLIENT:LEAVE_ROOM", async (callback: SocketCallback<Room>) => {
-			if (this.isAuthenticated(socket)) {
+		socket.on("CLIENT:LEAVE_ROOM", async (callback: SocketCallback<string>) => {
+
+			const user = this.getAuthenticatedUser(socket);
+			
+			if (user) {
 
 				/**
 				 * - get user's current room and leave it
@@ -131,6 +180,27 @@ class WebsocketService extends Service {
 				 * - promote first roommate on list to host using ROOM:UPDATE
 				 * - if room is empty, remove it
 				 */
+
+				const roomService = this.cluster.getService("room");
+
+				if (roomService instanceof RoomService) {
+
+					const currentRoom = roomService.getUserCurrentRoom(user);
+
+					if (currentRoom) {
+
+						socket.leave(currentRoom.id);
+						currentRoom.leave(user);
+
+						callback(createResponse("success", "Successfully left room."));
+
+					} else {
+						callback(createResponse("error", "You aren't in any rooms."));
+					}
+					
+				} else {
+					callback(createResponse("error", "Room service currently isn't available."));
+				}
 
 			} else {
 				callback(createResponse("error", "You must be authenticated."));
@@ -175,6 +245,10 @@ class WebsocketService extends Service {
 
 	private isAuthenticated (socket: Socket) {
 		return this.sockets.has(socket.id);
+	}
+
+	private getAuthenticatedUser (socket: Socket): User | null {
+		return this.sockets.get(socket.id) || null;
 	}
 
 }
