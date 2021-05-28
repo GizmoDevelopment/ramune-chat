@@ -14,7 +14,7 @@ interface BaseResponse {
 	message?: string;
 }
 
-export interface SuccessResponse<T = undefined> extends BaseResponse {
+export interface SuccessResponse<T> extends BaseResponse {
 	type: "success";
 	data: T;
 }
@@ -24,7 +24,7 @@ export interface ErrorResponse extends BaseResponse {
 	message: string;
 }
 
-export type ServerResponse<T = undefined> = SuccessResponse<T> | ErrorResponse;
+export type ServerResponse<T> = SuccessResponse<T> | ErrorResponse;
 
-export type SocketCallback<T = undefined> = (response: ServerResponse<T>) => void;
+export type SocketCallback<T> = (response: ServerResponse<T>) => void;
 export type SocketErrorCallback = (response: ErrorResponse) => void;
