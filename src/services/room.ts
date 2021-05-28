@@ -40,6 +40,20 @@ class RoomService extends Service {
 		}
 	}
 
+	createRoom (name: string, host: User) {
+
+		const wsService = this.cluster.services.get("websocket");
+
+		if (wsService instanceof WebsocketService) {
+		
+			const room = new Room(name, host, wsService);
+			
+			this.rooms.set(room.id, room);
+
+		}
+
+	}
+
 }
 
 export default RoomService;
