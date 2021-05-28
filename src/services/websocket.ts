@@ -257,7 +257,10 @@ class WebsocketService extends Service {
 		});
 
 		socket.on("CLIENT:SYNC_ROOM", async (syncData: RoomSyncData, callback: SocketErrorCallback) => {
-			if (this.isAuthenticated(socket)) {
+
+			const user = this.getAuthenticatedUser(socket);
+
+			if (user) {
 
 				/**
 				 * - check whether the user is in a room
@@ -265,6 +268,41 @@ class WebsocketService extends Service {
 				 * - validate `syncData`
 				 * - send RoomSyncData to everyone with ROOM:SYNC
 				 */
+
+				const roomService = this.cluster.getService("room");
+
+				if (roomService instanceof RoomService) {
+
+					const room = roomService.getUserCurrentRoom(user);
+
+					if (room) {
+
+						if (room.host.id === user.id) {
+
+							if (typeof syncData.currentTime === "number" && typeof syncData.playing === "boolean") {
+
+								syncData = {
+									currentTime: syncData.currentTime,
+									playing: syncData.playing
+								};
+
+								socket.to(room.id).emit("ROOM:SYNC", syncData);
+
+							} else {
+								callback(createResponse("error", "Invalid sync data."));
+							}
+
+						} else {
+							callback(createResponse("error", "You aren't the host."));
+						}
+						
+					} else {
+						callback(createResponse("error", "You aren't in a room."));
+					}
+
+				} else {
+					callback(createResponse("error", "Room service currently isn't available."));
+				}
 
 			} else {
 				callback(createResponse("error", "You must be authenticated."));
