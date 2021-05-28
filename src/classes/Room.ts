@@ -81,5 +81,13 @@ export default class Room implements RoomConstruct {
 		logger.info(`[R-${ this.id }] Updated room with '${ data }'`);
 	}
 
+	updateData (data: RoomData) {
+
+		this.data = data;
+		this.websocketService.ioServer.to(this.id).send("ROOM:UPDATE_ROOM_DATA", data);
+
+		logger.info(`[R-${ this.id }] Updated room data with '${ data }'`);
+	}
+
 
 }

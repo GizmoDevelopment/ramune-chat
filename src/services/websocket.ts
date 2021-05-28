@@ -13,8 +13,9 @@ import { createResponse } from "@utils/essentials";
 // Types
 import { User } from "gizmo-api/lib/types";
 import { SocketCallback, SocketErrorCallback } from "@typings/main";
-import { Room, RoomOptions, RoomSyncData } from "@typings/room";
+import { Room, RoomData, RoomOptions, RoomSyncData } from "@typings/room";
 import RoomService from "./room";
+import { getShow } from "@utils/ramune";
 
 interface InputRoomData {
 	showId: string;
@@ -242,7 +243,10 @@ class WebsocketService extends Service {
 		});
 
 		socket.on("CLIENT:UPDATE_ROOM_DATA", async (roomData: InputRoomData, callback: SocketErrorCallback) => {
-			if (this.isAuthenticated(socket)) {
+
+			const user = this.getAuthenticatedUser(socket);
+
+			if (user) {
 
 				/**
 				 * - check whether the user is in a room
@@ -250,6 +254,47 @@ class WebsocketService extends Service {
 				 * - validate `roomData`
 				 * - fetch show and send RoomData to everyone with ROOM:UPDATE_DATA 
 				 */
+
+				const roomService = this.cluster.getService("room");
+
+				if (roomService instanceof RoomService) {
+
+					const room = roomService.getUserCurrentRoom(user);
+
+					if (room) {
+
+						if (room.host.id === user.id) {
+
+							if (typeof roomData.showId === "string" && typeof roomData.episodeId === "number") {
+
+								const show = await getShow(roomData.showId);
+
+								if (show) {
+
+									room.updateData({
+										show,
+										episodeId: roomData.episodeId
+									});
+	
+								} else {
+									callback(createResponse("error", "Show doesn't exist."));
+								}
+
+							} else {
+								callback(createResponse("error", "Invalid room data."));
+							}
+
+						} else {
+							callback(createResponse("error", "You aren't the host."));
+						}
+						
+					} else {
+						callback(createResponse("error", "You aren't in a room."));
+					}
+
+				} else {
+					callback(createResponse("error", "Room service currently isn't available."));
+				}
 
 			} else {
 				callback(createResponse("error", "You must be authenticated."));
