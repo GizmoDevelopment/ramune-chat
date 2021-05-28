@@ -40,7 +40,7 @@ class RoomService extends Service {
 		}
 	}
 
-	createRoom (name: string, host: User) {
+	createRoom (name: string, host: User): Room | null {
 
 		const wsService = this.cluster.services.get("websocket");
 
@@ -50,6 +50,9 @@ class RoomService extends Service {
 			
 			this.rooms.set(room.id, room);
 
+			return room;
+		} else {
+			return null;
 		}
 
 	}
