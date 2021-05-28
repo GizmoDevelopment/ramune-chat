@@ -42,7 +42,7 @@ class WebsocketService extends Service {
 			}
 		});
 
-		this.ioServer.sockets.on("connection", this.handleSocketConnection);
+		this.ioServer.sockets.on("connection", this.handleSocketConnection.bind(this));
 
 		process.once("SIGINT", () => {
 			this.ioServer.close();
@@ -58,7 +58,7 @@ class WebsocketService extends Service {
 	
 		socket.on("CLIENT:AUTHENTICATE", async (data: { token?: any }, callback: SocketCallback<User>) => {
 			if (typeof data.token === "string") {
-	
+
 				try {
 	
 					const user = await getAuthenticatedUser(data.token);
@@ -358,10 +358,6 @@ class WebsocketService extends Service {
 
 	private addUser (socket: Socket, user: User) {
 		this.sockets.set(socket.id, user);
-	}
-
-	private isAuthenticated (socket: Socket) {
-		return this.sockets.has(socket.id);
 	}
 
 	private getAuthenticatedUser (socket: Socket): User | null {
