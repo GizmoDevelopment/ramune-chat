@@ -1,5 +1,5 @@
 // Modules
-import { randomUUID } from "crypto";
+import { v4 as uuidv4 } from "uuid";
 
 // Classes
 import WebsocketService from "services/websocket";
@@ -39,7 +39,7 @@ export default class Room implements RoomConstruct {
 
 		this.websocketService = wsService;
 
-		this.id = randomUUID({ disableEntropyCache: true });
+		this.id = uuidv4();
 		this.name = name;
 
 		this.host = host;
