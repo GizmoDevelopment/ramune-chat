@@ -113,7 +113,40 @@ class WebsocketService extends Service {
 
 				if (roomService instanceof RoomService) {
 					
-					
+					const { name: roomName }: { name: string } = options;
+
+					if (typeof roomName === "string") {
+
+						const _room = roomService.getRoom(roomName);
+
+						if (!_room) {
+
+							const currentRoom = roomService.getUserCurrentRoom(user);
+
+							if (currentRoom) {
+								socket.leave(currentRoom.id);
+								currentRoom.leave(user);
+							}
+
+							const newRoom = roomService.createRoom(roomName, user);
+
+							if (newRoom) {
+
+								newRoom.join(user);
+								socket.join(newRoom.id);
+
+								callback(createResponse("success", newRoom));
+							} else {
+								callback(createResponse("error", "Something went wrong."));
+							}
+
+						} else {
+							callback(createResponse("error", "Room already exists."));
+						}
+
+					} else {
+						callback(createResponse("error", "Invalid room name."));
+					}
 
 				} else {
 					callback(createResponse("error", "Room service currently isn't available."));
@@ -159,6 +192,7 @@ class WebsocketService extends Service {
 					} else {
 						callback(createResponse("error", "Room doesn't exist."));
 					}
+
 				} else {
 					callback(createResponse("error", "Room service currently isn't available."));
 				}
@@ -197,7 +231,7 @@ class WebsocketService extends Service {
 					} else {
 						callback(createResponse("error", "You aren't in any rooms."));
 					}
-					
+
 				} else {
 					callback(createResponse("error", "Room service currently isn't available."));
 				}
