@@ -4,7 +4,7 @@ import { getAuthenticatedUser } from "gizmo-api";
 
 // Classes
 import Service from "@classes/Service";
-import Cluster from "@classes/Cluster";
+import PoopShitter from "@classes/PoopShitter";
 
 // Utils
 import logger from "@utils/logger";
@@ -31,7 +31,7 @@ class WebsocketService extends Service {
 	readonly ioServer: ioServer;
 	private readonly sockets: Map<string, User> = new Map();
 
-	constructor (cluster: Cluster) {
+	constructor (cluster: PoopShitter) {
 
 		super("websocket", cluster);
 		

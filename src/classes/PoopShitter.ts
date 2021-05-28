@@ -11,7 +11,7 @@ import logger from "@utils/logger";
 // Constants
 const SERVICES_DIR = path.join(__dirname, "../services");
 
-export default class Cluster {
+export default class PoopShitters {
 
 	name: string;
 	services: Map<string, Service> = new Map();
@@ -41,7 +41,7 @@ export default class Cluster {
 			}
 		});
 
-		logger.success(`Successfully started Cluster '${ this.name }'`);
+		logger.success(`Successfully started PoopShitter '${ this.name }'`);
 
 	}
 

@@ -1,5 +1,5 @@
 // Classes
-import Cluster from "@classes/Cluster";
+import PoopShitter from "@classes/PoopShitter";
 import Service from "@classes/Service";
 import WebsocketService from "./websocket";
 
@@ -12,7 +12,7 @@ class RoomService extends Service {
 	rooms: Map<string, Room> = new Map();
 	userToRoomMap: Record<string, string> = {};
 
-	constructor (cluster: Cluster) {
+	constructor (cluster: PoopShitter) {
 		super("room", cluster);
 	}
 

@@ -2,7 +2,7 @@
 import * as Sentry from "@sentry/node";
 
 // Clases
-import Cluster from "@classes/Cluster";
+import PoopShitter from "@classes/PoopShitter";
 
 // Utils
 import logger from "@utils/logger";
@@ -37,4 +37,4 @@ if (process.env.NODE_ENV === "production") {
 
 logger.info(`Started in environment '${ process.env.NODE_ENV || "development" }'`);
 
-new Cluster("cluster");
+new PoopShitter("Blame User");

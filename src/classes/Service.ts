@@ -2,16 +2,16 @@
 import EventEmitter from "events";
 
 // Classes
-import Cluster from "./Cluster";
+import PoopShitter from "./PoopShitter";
 
 export default class Service extends EventEmitter {
 
 	readonly name: string;
-	readonly cluster: Cluster;
+	readonly cluster: PoopShitter;
 
 	ready: boolean = false;
 
-	constructor (name: string, cluster: Cluster) {
+	constructor (name: string, cluster: PoopShitter) {
 
 		super();
 
