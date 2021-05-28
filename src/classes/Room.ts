@@ -45,6 +45,7 @@ export default class Room implements RoomConstruct {
 		this.host = host;
 		this.users.push(host);
 
+		logger.info(`[R-${ this.id }] [${ host.username }] Created room`);
 	}
 
 	join (user: User) {
