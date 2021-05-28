@@ -4,6 +4,7 @@ import { getAuthenticatedUser } from "gizmo-api";
 
 // Classes
 import Service from "@classes/Service";
+import Cluster from "@classes/Cluster";
 
 // Utils
 import logger from "@utils/logger";
@@ -13,6 +14,7 @@ import { createResponse } from "@utils/essentials";
 import { User } from "gizmo-api/lib/types";
 import { SocketCallback, SocketErrorCallback } from "@typings/main";
 import { Room, RoomOptions, RoomSyncData } from "@typings/room";
+import { createReadStream } from "fs";
 
 interface InputRoomData {
 	showId: string;
@@ -28,9 +30,9 @@ class WebsocketService extends Service {
 	private readonly ioServer: ioServer;
 	private readonly sockets: Map<string, User> = new Map();
 
-	constructor () {
+	constructor (cluster: Cluster) {
 
-		super("websocket");
+		super("websocket", cluster);
 		
 		this.ioServer = new ioServer(WEBSOCKET_PORT, {
 			cors: {
@@ -78,8 +80,11 @@ class WebsocketService extends Service {
 		socket.on("CLIENT:FETCH_ROOMS", async (callback: SocketCallback<Room[]>) => {
 			if (this.isAuthenticated(socket)) {
 
-				// return list of rooms
+				const roomService = this.cluster.getService("room");
 
+				if (roomService) {
+					callback(createReadStream("success", roomService.getRooms()))
+				}
 			} else {
 				callback(createResponse("error", "You must be authenticated."));
 			}
