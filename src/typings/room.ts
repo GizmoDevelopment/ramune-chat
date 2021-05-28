@@ -1,14 +1,7 @@
 // Types
-import { User } from "gizmo-api/lib/types";
 import { Show } from "@typings/show";
 
-export interface Room {
-	id: string;
-	name: string;
-	host: User;
-	users: User[];
-	data: RoomData | null;
-}
+export { default as Room } from "@classes/Room";
 
 export interface RoomData {
 	show: Show;
