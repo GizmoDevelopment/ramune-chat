@@ -8,7 +8,7 @@ import WebsocketService from "services/websocket";
 import logger from "@utils/logger";
 
 // Types
-import { RoomData } from "@typings/room";
+import { RoomData, UpdatableRoomProperties } from "@typings/room";
 import { User } from "gizmo-api/lib/types";
 
 interface RoomConstruct {
@@ -63,7 +63,22 @@ export default class Room implements RoomConstruct {
 
 		this.websocketService.ioServer.to(this.id).send("ROOM:USER_LEAVE", user);
 
+		this.update({ host: this.users[0] });
+
 		logger.info(`[R-${ this.id }] [${ user.username }] Left room`);
+	}
+
+	update (data: UpdatableRoomProperties) {
+
+		const { host: newHost } = data;
+
+		if (newHost) {
+			this.host = newHost;
+		}
+
+		this.websocketService.ioServer.to(this.id).send("ROOM:UPDATE", data);
+
+		logger.info(`[R-${ this.id }] Updated room with '${ data }'`);
 	}
 
 
