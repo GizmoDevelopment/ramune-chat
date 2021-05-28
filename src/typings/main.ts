@@ -14,7 +14,7 @@ interface BaseResponse {
 	message?: string;
 }
 
-export interface SuccessResponse<T> extends BaseResponse {
+export interface SuccessResponse<T = undefined> extends BaseResponse {
 	type: "success";
 	data: T;
 }
