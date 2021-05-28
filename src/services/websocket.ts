@@ -14,7 +14,7 @@ import { createResponse } from "@utils/essentials";
 import { User } from "gizmo-api/lib/types";
 import { SocketCallback, SocketErrorCallback } from "@typings/main";
 import { Room, RoomOptions, RoomSyncData } from "@typings/room";
-import { createReadStream } from "fs";
+import RoomService from "./room";
 
 interface InputRoomData {
 	showId: string;
@@ -82,9 +82,12 @@ class WebsocketService extends Service {
 
 				const roomService = this.cluster.getService("room");
 
-				if (roomService) {
-					callback(createReadStream("success", roomService.getRooms()))
+				if (roomService instanceof RoomService) {
+					callback(createResponse("success", roomService.getRooms()));
+				} else {
+					callback(createResponse("error", "Room service currently isn't available."));
 				}
+
 			} else {
 				callback(createResponse("error", "You must be authenticated."));
 			}
