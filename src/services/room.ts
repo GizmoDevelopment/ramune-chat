@@ -1,6 +1,7 @@
 // Classes
 import Cluster from "@classes/Cluster";
 import Service from "@classes/Service";
+import WebsocketService from "./websocket";
 
 // Types
 import { Room } from "@typings/room";
@@ -13,10 +14,6 @@ class RoomService extends Service {
 
 	constructor (cluster: Cluster) {
 		super("room", cluster);
-	}
-
-	addRoom (room: Room) {
-		this.rooms.set(room.id, room);
 	}
 
 	getRoom (roomId: string): Room | null {
@@ -41,14 +38,6 @@ class RoomService extends Service {
 		} else {
 			return null;
 		}
-	}
-
-	joinRoom (user: User, room: Room) {
-		room.join(user);
-	}
-
-	leaveRoom (user: User, room: Room) {
-		room.leave(user);
 	}
 
 }
