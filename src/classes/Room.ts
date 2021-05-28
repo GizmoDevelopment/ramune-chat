@@ -1,6 +1,9 @@
 // Modules
 import { randomUUID } from "crypto";
 
+// Classes
+import WebsocketService from "services/websocket";
+
 // Utils
 import logger from "@utils/logger";
 
@@ -9,22 +12,32 @@ import { RoomData } from "@typings/room";
 import { User } from "gizmo-api/lib/types";
 
 interface RoomConstruct {
-	id: string;
-	name: string;
+
+	readonly websocketService: WebsocketService;
+
+	readonly id: string;
+	readonly name: string;
+
 	host: User;
 	users: User[];
 	data: RoomData | null;
+
 }
 
 export default class Room implements RoomConstruct {
 
+	readonly websocketService: WebsocketService;
+
 	readonly id: string;
 	readonly name: string;
+
 	host: User;
 	users: User[] = [];
 	data: RoomData | null = null;
 
-	constructor (name: string, host: User) {
+	constructor (name: string, host: User, wsService: WebsocketService) {
+
+		this.websocketService = wsService;
 
 		this.id = randomUUID({ disableEntropyCache: true });
 		this.name = name;
@@ -39,12 +52,16 @@ export default class Room implements RoomConstruct {
 		this.users = this.users.filter(_user => _user.id !== user.id);
 		this.users.push(user);
 
+		this.websocketService.ioServer.to(this.id).send("ROOM:USER_JOIN", user);
+
 		logger.info(`[R-${ this.id }] [${ user.username }] Joined room`);
 	}
 
 	leave (user: User) {
 
 		this.users = this.users.filter(_user => _user.id !== user.id);
+
+		this.websocketService.ioServer.to(this.id).send("ROOM:USER_LEAVE", user);
 
 		logger.info(`[R-${ this.id }] [${ user.username }] Left room`);
 	}
