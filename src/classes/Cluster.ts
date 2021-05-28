@@ -29,7 +29,7 @@ export default class Cluster {
 
 				if (typeof serviceClass === "function") {
 
-					const service: any = new serviceClass();
+					const service: any = new serviceClass(this);
 
 					if (service instanceof Service) {
 						this.services.set(service.name, service);
@@ -43,6 +43,10 @@ export default class Cluster {
 
 		logger.success(`Successfully started Cluster '${ this.name }'`);
 
+	}
+
+	getService (name: string): Service | null {
+		return this.services.get(name) || null;
 	}
 
 }
