@@ -4,7 +4,7 @@ declare global {
             NODE_ENV: string;
 			SENTRY_DSN: string;
 			WEBSOCKET_PORT: string;
-			REDIS_PORT: string;
+			SHOW_ENDPOINT: string;
         }
     }
 }
