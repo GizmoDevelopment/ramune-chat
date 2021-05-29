@@ -77,8 +77,11 @@ class RoomService extends Service {
 	}
 
 	deleteRoom (room: Room) {
+
 		delete this.roomNameToRoomIdMap[room.name];
 		this.rooms.delete(room.id);
+
+		logger.info(`[R-${ room.id }] Room deleted`);
 	}
 
 	joinRoom (room: Room, user: User, socket: Socket): Room {
