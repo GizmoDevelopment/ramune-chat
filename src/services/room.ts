@@ -144,7 +144,7 @@ class RoomService extends Service {
 		// Broadcast
 		this.ioServer.to(room.id).emit("ROOM:UPDATE_ROOM_DATA", data);
 
-		logger.info(`[R-${ room.id }] Updated room data with '${ JSON.stringify(data) }'`);
+		logger.info(`[R-${ room.id }] Updated room data with '${ JSON.stringify({ show: data.show.title, episodeId: data.episodeId }) }'`);
 	}
 
 	syncRoom (room: Room, data: RoomSyncData, socket: Socket) {
