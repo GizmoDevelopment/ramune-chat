@@ -21,7 +21,11 @@
 			"@typings/*": ["typings/*"],
 			"@utils/*": ["utils/*"],
 			"@classes/*": ["classes/*"]
-		}
-    },
-	"exclude": [ "old" ]
+		},
+		"plugins": [
+			{
+				"transform": "typescript-transform-paths"
+			},
+		]
+    }
 }
