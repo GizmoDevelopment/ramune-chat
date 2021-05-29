@@ -297,7 +297,7 @@ class WebsocketService extends Service {
 			}
 		});
 
-		socket.on("disconnect", () => {
+		socket.on("disconnect", (reason: string) => {
 
 			const user = this.getAuthenticatedUser(socket);
 
@@ -313,6 +313,7 @@ class WebsocketService extends Service {
 
 			}
 
+			logger.info(`[S-${ socket.id }] Socket disconnected with reason '${ reason }'`);
 		})
 	;
 	}
