@@ -3,7 +3,7 @@
 	"version": "1.0.0",
 	"description": "",
 	"author": "Tjaz (https://github.com/GizmoTjaz)",
-	"license": "Apache 2.0",
+	"license": "MIT",
 	"repository": {
 		"type": "git",
 		"url": "git+https://github.com/GizmoDevelopment/gizmo-chat-backend.git"
@@ -13,7 +13,8 @@
 		"node": "14"
 	},
 	"scripts": {
-		"start": "ts-node -r tsconfig-paths/register -r dotenv/config ./src/index.ts"
+		"start": "ts-node -r tsconfig-paths/register -r dotenv/config ./src/index.ts",
+		"build": "tsc"
 	},
 	"devDependencies": {
 		"@sentry/types": "^6.2.1",
@@ -25,7 +26,8 @@
 		"@typescript-eslint/parser": "^4.15.2",
 		"eslint": "^7.20.0",
 		"ts-node": "^9.1.1",
-		"tsconfig-paths": "^3.9.0"
+		"tsconfig-paths": "^3.9.0",
+		"typescript": "^4.3.2"
 	},
 	"dependencies": {
 		"@sentry/node": "^6.2.0",
@@ -34,7 +36,6 @@
 		"dotenv": "^10.0.0",
 		"gizmo-api": "^1.0.5",
 		"socket.io": "^4.1.2",
-		"typescript": "^4.2.3",
 		"uuid": "^8.3.2"
 	},
 	"optionalDependencies": {
