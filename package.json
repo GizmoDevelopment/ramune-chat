@@ -14,6 +14,7 @@
 	},
 	"scripts": {
 		"start": "ts-node -r tsconfig-paths/register -r dotenv/config ./src/index.ts",
+		"start:production": "node -r dotenv/config ./build/index.js",
 		"build": "tsc"
 	},
 	"devDependencies": {
