@@ -48,8 +48,8 @@ class WebsocketService extends Service {
 			this.ioServer.close();
 		});
 
-		this.emit("ready");
 		logger.success(`Successfully started WebSocket server on port '${ WEBSOCKET_PORT }'`);
+		this.emit("ready");
 	}
 
 	private handleSocketConnection (socket: Socket) {
@@ -63,7 +63,7 @@ class WebsocketService extends Service {
 	
 					const user = await getAuthenticatedUser(data.token);
 	
-					this.addUser(socket, user);
+					this.addAuthenticatedUser(socket, user);
 				
 					callback(createResponse<User>("success", user));
 	
@@ -83,14 +83,10 @@ class WebsocketService extends Service {
 			const user = this.getAuthenticatedUser(socket);
 
 			if (user) {
+				
+				const roomService: RoomService = this.cluster.getService("room");
 
-				const roomService = this.cluster.getService("room");
-
-				if (roomService instanceof RoomService) {
-					callback(createResponse("success", roomService.getRooms()));
-				} else {
-					callback(createResponse("error", "Room service currently isn't available."));
-				}
+				callback(createResponse("success", roomService.getRooms()));
 
 			} else {
 				callback(createResponse("error", "You must be authenticated."));
@@ -104,53 +100,38 @@ class WebsocketService extends Service {
 			if (user) {
 
 				/**
-				 * - check if user is already in room
 				 * - check if room exists
+				 * - check if user is already in room & leave if so
 				 * - create room
 				 * - add user as host
 				 */
 
-				const roomService = this.cluster.getService("room");
+				if (typeof options.name === "string") {
 
-				if (roomService instanceof RoomService) {
-					
-					const { name: roomName }: { name: string } = options;
+					const
+						roomService: RoomService = this.cluster.getService("room"),
+						_targetRoom = roomService.getRoomByName(options.name);
 
-					if (typeof roomName === "string") {
+					if (!_targetRoom) {
 
-						const _room = roomService.getRoom(roomName);
+						const currentRoom = roomService.getUserCurrentRoom(user);
 
-						if (!_room) {
-
-							const currentRoom = roomService.getUserCurrentRoom(user);
-
-							if (currentRoom) {
-								socket.leave(currentRoom.id);
-								currentRoom.leave(user);
-							}
-
-							const newRoom = roomService.createRoom(roomName, user);
-
-							if (newRoom) {
-
-								newRoom.join(user);
-								socket.join(newRoom.id);
-
-								callback(createResponse("success", newRoom));
-							} else {
-								callback(createResponse("error", "Something went wrong."));
-							}
-
-						} else {
-							callback(createResponse("error", "Room already exists."));
+						if (currentRoom) {
+							roomService.leaveRoom(currentRoom, user, socket);
 						}
 
+						// Create & join
+						let newRoom = roomService.createRoom(options, user);
+						newRoom = roomService.joinRoom(newRoom, user, socket);
+
+						callback(createResponse("success", newRoom));
+
 					} else {
-						callback(createResponse("error", "Invalid room name."));
+						callback(createResponse("error", "Room already exists."));
 					}
 
 				} else {
-					callback(createResponse("error", "Room service currently isn't available."));
+					callback(createResponse("error", "Invalid room data."));
 				}
 
 			} else {
@@ -170,32 +151,23 @@ class WebsocketService extends Service {
 				 * - join room
 				 */
 
-				const roomService = this.cluster.getService("room");
+				const
+					roomService: RoomService = this.cluster.getService("room"),
+					targetRoom = roomService.getRoom(roomId);
 
-				if (roomService instanceof RoomService) {
+				if (targetRoom) {
 
-					const room = roomService.getRoom(roomId);
+					const currentRoom = roomService.getUserCurrentRoom(user);
 
-					if (room) {
-
-						const currentRoom = roomService.getUserCurrentRoom(user);
-
-						if (currentRoom) {
-							socket.leave(currentRoom.id);
-							currentRoom.leave(user);
-						}
-
-						room.join(user);
-						socket.join(room.id);
-
-						callback(createResponse("success", room));
-
-					} else {
-						callback(createResponse("error", "Room doesn't exist."));
+					if (currentRoom) {
+						roomService.leaveRoom(currentRoom, user, socket);
 					}
 
+					const newRoom = roomService.joinRoom(targetRoom, user, socket);
+
+					callback(createResponse("success", newRoom));
 				} else {
-					callback(createResponse("error", "Room service currently isn't available."));
+					callback(createResponse("error", "Room doesn't exist."));
 				}
 
 			} else {
@@ -216,25 +188,18 @@ class WebsocketService extends Service {
 				 * - if room is empty, remove it
 				 */
 
-				const roomService = this.cluster.getService("room");
+				const
+					roomService: RoomService = this.cluster.getService("room"),
+					currentRoom = roomService.getUserCurrentRoom(user);
 
-				if (roomService instanceof RoomService) {
+				if (currentRoom) {
 
-					const currentRoom = roomService.getUserCurrentRoom(user);
+					roomService.leaveRoom(currentRoom, user, socket);
 
-					if (currentRoom) {
-
-						socket.leave(currentRoom.id);
-						currentRoom.leave(user);
-
-						callback(createResponse("success", "Successfully left room."));
-
-					} else {
-						callback(createResponse("error", "You aren't in any rooms."));
-					}
+					callback(createResponse("success", "Successfully left room."));
 
 				} else {
-					callback(createResponse("error", "Room service currently isn't available."));
+					callback(createResponse("error", "You aren't in a room."));
 				}
 
 			} else {
@@ -255,45 +220,35 @@ class WebsocketService extends Service {
 				 * - fetch show and send RoomData to everyone with ROOM:UPDATE_DATA 
 				 */
 
-				const roomService = this.cluster.getService("room");
+				const
+					roomService: RoomService = this.cluster.getService("room"),
+					currentRoom = roomService.getUserCurrentRoom(user);
 
-				if (roomService instanceof RoomService) {
+				if (currentRoom) {
+					if (currentRoom.host.id === user.id) {
+						if (typeof roomData.showId === "string" && typeof roomData.episodeId === "number") {
 
-					const room = roomService.getUserCurrentRoom(user);
+							const show = await getShow(roomData.showId);
 
-					if (room) {
+							if (show) {
 
-						if (room.host.id === user.id) {
-
-							if (typeof roomData.showId === "string" && typeof roomData.episodeId === "number") {
-
-								const show = await getShow(roomData.showId);
-
-								if (show) {
-
-									room.updateData({
-										show,
-										episodeId: roomData.episodeId
-									});
-	
-								} else {
-									callback(createResponse("error", "Show doesn't exist."));
-								}
+								roomService.updateRoomData(currentRoom, {
+									show,
+									episodeId: roomData.episodeId
+								});
 
 							} else {
-								callback(createResponse("error", "Invalid room data."));
+								callback(createResponse("error", "Couldn't fetch show."));
 							}
 
 						} else {
-							callback(createResponse("error", "You aren't the host."));
+							callback(createResponse("error", "Invalid room data."));
 						}
-						
 					} else {
-						callback(createResponse("error", "You aren't in a room."));
+						callback(createResponse("error", "You aren't the room host."));
 					}
-
 				} else {
-					callback(createResponse("error", "Room service currently isn't available."));
+					callback(createResponse("error", "You aren't in a room."));
 				}
 
 			} else {
@@ -314,39 +269,27 @@ class WebsocketService extends Service {
 				 * - send RoomSyncData to everyone with ROOM:SYNC
 				 */
 
-				const roomService = this.cluster.getService("room");
+				const
+					roomService: RoomService = this.cluster.getService("room"),
+					currentRoom = roomService.getUserCurrentRoom(user);
 
-				if (roomService instanceof RoomService) {
+				if (currentRoom) {
+					if (currentRoom.host.id === user.id) {
+						if (typeof syncData.currentTime === "number" && typeof syncData.playing === "boolean") {
 
-					const room = roomService.getUserCurrentRoom(user);
-
-					if (room) {
-
-						if (room.host.id === user.id) {
-
-							if (typeof syncData.currentTime === "number" && typeof syncData.playing === "boolean") {
-
-								syncData = {
-									currentTime: syncData.currentTime,
-									playing: syncData.playing
-								};
-
-								socket.to(room.id).emit("ROOM:SYNC", syncData);
-
-							} else {
-								callback(createResponse("error", "Invalid sync data."));
-							}
+							roomService.syncRoom(currentRoom, {
+								currentTime: syncData.currentTime,
+								playing: syncData.playing
+							}, socket);
 
 						} else {
-							callback(createResponse("error", "You aren't the host."));
+							callback(createResponse("error", "Invalid room sync data."));
 						}
-						
 					} else {
-						callback(createResponse("error", "You aren't in a room."));
+						callback(createResponse("error", "You aren't the room host."));
 					}
-
 				} else {
-					callback(createResponse("error", "Room service currently isn't available."));
+					callback(createResponse("error", "You aren't in a room."));
 				}
 
 			} else {
@@ -356,7 +299,7 @@ class WebsocketService extends Service {
 	
 	}
 
-	private addUser (socket: Socket, user: User) {
+	private addAuthenticatedUser (socket: Socket, user: User) {
 		this.sockets.set(socket.id, user);
 	}
 
