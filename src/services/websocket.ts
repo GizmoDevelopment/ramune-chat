@@ -296,7 +296,25 @@ class WebsocketService extends Service {
 				callback(createResponse("error", "You must be authenticated."));
 			}
 		});
-	
+
+		socket.on("disconnect", () => {
+
+			const user = this.getAuthenticatedUser(socket);
+
+			if (user) {
+
+				const
+					roomService: RoomService = this.cluster.getService("room"),
+					currentRoom = roomService.getUserCurrentRoom(user);
+
+				if (currentRoom) {
+					roomService.leaveRoom(currentRoom, user, socket);
+				}
+
+			}
+
+		})
+	;
 	}
 
 	private addAuthenticatedUser (socket: Socket, user: User) {
