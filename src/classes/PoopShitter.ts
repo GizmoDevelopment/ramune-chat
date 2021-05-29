@@ -21,7 +21,7 @@ export default class PoopShitters {
 		this.name = name;
 
 		fs.readdirSync(SERVICES_DIR).forEach(serviceFile => {
-			if (path.extname(serviceFile) === ".ts") {
+			if (path.extname(serviceFile) === ".ts" || path.extname(serviceFile) === ".js") {
 
 				const
 					servicePath = path.join(SERVICES_DIR, serviceFile),
