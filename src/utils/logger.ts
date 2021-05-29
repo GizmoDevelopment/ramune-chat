@@ -1,5 +1,5 @@
 // Variables
-import { COLORS } from "./constants";
+import { COLORS } from "@utils/constants";
 
 /**
  * Returns formatted date label for use in console
@@ -27,7 +27,7 @@ function log (message: any, color: string = COLORS.NC) {
     message = String(message);
 
     // Color words in 'single quotes' and {curly braces}
-    message = message.replace(/('.*?')|({.*?})/g, `${COLORS.BrightBlue}$1$2${color}`);
+    message = message.replace(/('.*?')|(\[.*?\])/g, `${COLORS.BrightBlue}$1$2${color}`);
 
     console.log(`${getDateLabel()}${color} ${message}${COLORS.NC}`);
 }

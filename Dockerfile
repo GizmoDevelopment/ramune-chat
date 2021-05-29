@@ -14,4 +14,4 @@ EXPOSE 1337
 ENV PORT=1337
 ENV NODE_ENV=production
 
-CMD [ "npm", "start" ] 
+CMD [ "npm", "run", "start:production" ] 

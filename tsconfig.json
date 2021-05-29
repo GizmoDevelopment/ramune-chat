@@ -9,13 +9,23 @@
         "moduleResolution": "node",
         "resolveJsonModule": true,
         "types": [
-            "node",
-            "socket.io",
-            "sanitize-html"
+            "node"
         ],
         "typeRoots": [
             "./node_modules/@types",
             "./node_modules/@sentry/types"
-        ]
+        ],
+		"baseUrl": "src",
+		"paths": {
+			"@/*": ["/*"],
+			"@typings/*": ["typings/*"],
+			"@utils/*": ["utils/*"],
+			"@classes/*": ["classes/*"]
+		},
+		"plugins": [
+			{
+				"transform": "typescript-transform-paths"
+			},
+		]
     }
 }
