@@ -1,9 +1,11 @@
 FROM node:14
 
-RUN npm ci
+RUN mkdir dist
+WORKDIR /dist
 
-RUN npm run build
-WORKDIR /build
+COPY package*.json .
+RUN npm ci
+COPY . .
 
 EXPOSE 1337
 
