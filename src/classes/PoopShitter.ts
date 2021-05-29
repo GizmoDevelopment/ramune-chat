@@ -45,8 +45,8 @@ export default class PoopShitters {
 
 	}
 
-	getService (name: string): any | null {
-		return this.services.get(name) || null;
+	getService (name: string): any {
+		return this.services.get(name)!;
 	}
 
 }
