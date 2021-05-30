@@ -9,6 +9,7 @@ import WebsocketService from "./websocket";
 
 // Utils
 import logger from "@utils/logger";
+import { sanitize } from "@utils/essentials";
 
 // Types
 import { Room, RoomData, RoomOptions, RoomSyncData, UpdatableRoomProperties } from "@typings/room";
@@ -63,7 +64,7 @@ class RoomService extends Service {
 
 		const room: Room = {
 			id: uuidv4(),
-			name: options.name,
+			name: sanitize(options.name),
 			host: user,
 			users: [],
 			data: null
