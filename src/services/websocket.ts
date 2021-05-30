@@ -12,7 +12,7 @@ import { createResponse } from "@utils/essentials";
 
 // Types
 import { User } from "gizmo-api/lib/types";
-import { SocketCallback, SocketErrorCallback } from "@typings/main";
+import { SocketCallback } from "@typings/main";
 import { Room, RoomOptions, RoomSyncData } from "@typings/room";
 import RoomService from "./room";
 import { getShow } from "@utils/ramune";
@@ -207,7 +207,7 @@ class WebsocketService extends Service {
 			}
 		});
 
-		socket.on("CLIENT:UPDATE_ROOM_DATA", async (roomData: InputRoomData, callback: SocketErrorCallback) => {
+		socket.on("CLIENT:UPDATE_ROOM_DATA", async (roomData: InputRoomData, callback: SocketCallback<string>) => {
 
 			const user = this.getAuthenticatedUser(socket);
 
@@ -237,6 +237,8 @@ class WebsocketService extends Service {
 									episodeId: roomData.episodeId
 								});
 
+								callback(createResponse("success", "Successfully updated data."));
+
 							} else {
 								callback(createResponse("error", "Couldn't fetch show."));
 							}
@@ -256,7 +258,7 @@ class WebsocketService extends Service {
 			}
 		});
 
-		socket.on("CLIENT:SYNC_ROOM", async (syncData: RoomSyncData, callback: SocketErrorCallback) => {
+		socket.on("CLIENT:SYNC_ROOM", async (syncData: RoomSyncData, callback: SocketCallback<string>) => {
 
 			const user = this.getAuthenticatedUser(socket);
 
@@ -281,6 +283,8 @@ class WebsocketService extends Service {
 								currentTime: syncData.currentTime,
 								playing: syncData.playing
 							}, socket);
+
+							callback(createResponse("success", "Successfully synced room."));
 
 						} else {
 							callback(createResponse("error", "Invalid room sync data."));
