@@ -1,3 +1,6 @@
+// Modules
+import sanitizeHtml from "sanitize-html";
+
 // Types
 import { ErrorResponse, SuccessResponse } from "@typings/main";
 
@@ -15,4 +18,12 @@ export function createResponse (type: "success" | "error", dataOrMessage: any) {
 			message: dataOrMessage
 		};
 	}
+}
+
+export function sanitize (input: string): string {
+	return sanitizeHtml(input, {
+		allowedAttributes: {},
+		allowedTags: [],
+		allowedStyles: {}
+	});
 }
