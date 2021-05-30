@@ -8,6 +8,9 @@
         "esModuleInterop": true,
         "moduleResolution": "node",
         "resolveJsonModule": true,
+		"sourceMap": true,
+		"inlineSources": true,
+		"sourceRoot": "./src",
         "types": [
             "node"
         ],
