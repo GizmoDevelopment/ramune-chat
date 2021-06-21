@@ -11,7 +11,7 @@ import logger from "@utils/logger";
 import { createResponse } from "@utils/essentials";
 
 // Types
-import { User } from "gizmo-api/lib/types";
+import { User } from "gizmo-api/lib/typings/user";
 import { SocketCallback } from "@typings/main";
 import { Room, RoomOptions, RoomSyncData } from "@typings/room";
 import RoomService from "./room";
