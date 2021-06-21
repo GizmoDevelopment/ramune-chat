@@ -1,5 +1,5 @@
 // Types
-import { User } from "gizmo-api/lib/typings/user";
+import { User } from "gizmo-api/lib/types";
 import { Show } from "@typings/show";
 
 export interface Room {
