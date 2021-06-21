@@ -36,7 +36,7 @@
 		"@sentry/tracing": "^6.2.0",
 		"axios": "^0.21.1",
 		"dotenv": "^10.0.0",
-		"gizmo-api": "^1.0.8",
+		"gizmo-api": "^1.0.9",
 		"sanitize-html": "^2.4.0",
 		"socket.io": "^4.1.2",
 		"uuid": "^8.3.2"
