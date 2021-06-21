@@ -12,7 +12,7 @@ import logger from "@utils/logger";
 import { sanitize } from "@utils/essentials";
 
 // Types
-import { User } from "gizmo-api/lib/typings/user";
+import { User } from "gizmo-api/lib/types";
 import { Room, RoomData, RoomOptions, RoomSyncData, UpdatableRoomProperties } from "@typings/room";
 import { Socket } from "socket.io";
 
