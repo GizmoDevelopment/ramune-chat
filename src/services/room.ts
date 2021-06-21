@@ -12,8 +12,8 @@ import logger from "@utils/logger";
 import { sanitize } from "@utils/essentials";
 
 // Types
-import { Room, RoomData, RoomOptions, RoomSyncData, UpdatableRoomProperties } from "@typings/room";
 import { User } from "gizmo-api/lib/types";
+import { Room, RoomData, RoomOptions, RoomSyncData, UpdatableRoomProperties } from "@typings/room";
 import { Socket } from "socket.io";
 
 class RoomService extends Service {
