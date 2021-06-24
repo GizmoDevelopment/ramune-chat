@@ -9,11 +9,12 @@ import PoopShitter from "@classes/PoopShitter";
 // Utils
 import logger from "@utils/logger";
 import { createResponse } from "@utils/essentials";
+import { constructMessage } from "@utils/message";
 
 // Types
 import { User } from "gizmo-api/lib/types";
 import { SocketCallback } from "@typings/main";
-import { Room, RoomOptions, RoomSyncData } from "@typings/room";
+import { Room, RoomOptions, RoomSyncData, SentMessagePayload } from "@typings/room";
 import RoomService from "./room";
 import { getShow } from "@utils/ramune";
 
@@ -34,7 +35,7 @@ class WebsocketService extends Service {
 	constructor (cluster: PoopShitter) {
 
 		super("websocket", cluster);
-		
+
 		this.ioServer = new ioServer(WEBSOCKET_PORT, {
 			cors: {
 				origin: CORS_ORIGIN_DOMAIN,
@@ -55,35 +56,35 @@ class WebsocketService extends Service {
 	private handleSocketConnection (socket: Socket) {
 
 		logger.info(`[S-${ socket.id }] Socket connected`);
-	
+
 		socket.on("CLIENT:AUTHENTICATE", async (data: { token?: any }, callback: SocketCallback<User>) => {
 			if (typeof data.token === "string") {
 
 				try {
-	
+
 					const user = await getAuthenticatedUser(data.token);
-	
+
 					this.addAuthenticatedUser(socket, user);
-				
+
 					callback(createResponse<User>("success", user));
-	
+
 					logger.info(`[S-${ socket.id }] [${ user.username }] Successfully authenticated`);
-	
+
 				} catch (err) {
 					callback(createResponse("error", "Something went wrong."));
 				}
-	
+
 			} else {
 				callback(createResponse("error", "User token is required."));
 			}
 		});
-	
+
 		socket.on("CLIENT:FETCH_ROOMS", async (callback: SocketCallback<Room[]>) => {
 
 			const user = this.getAuthenticatedUser(socket);
 
 			if (user) {
-				
+
 				const roomService: RoomService = this.cluster.getService("room");
 
 				callback(createResponse("success", roomService.getRooms()));
@@ -138,9 +139,9 @@ class WebsocketService extends Service {
 				callback(createResponse("error", "You must be authenticated."));
 			}
 		});
-	
+
 		socket.on("CLIENT:JOIN_ROOM", async (roomId: string, callback: SocketCallback<Room>) => {
-			
+
 			const user = this.getAuthenticatedUser(socket);
 
 			if (user) {
@@ -178,7 +179,7 @@ class WebsocketService extends Service {
 		socket.on("CLIENT:LEAVE_ROOM", async (callback: SocketCallback<string>) => {
 
 			const user = this.getAuthenticatedUser(socket);
-			
+
 			if (user) {
 
 				/**
@@ -217,7 +218,7 @@ class WebsocketService extends Service {
 				 * - check whether the user is in a room
 				 * - check whether the user is the room host
 				 * - validate `roomData`
-				 * - fetch show and send RoomData to everyone with ROOM:UPDATE_DATA 
+				 * - fetch show and send RoomData to everyone with ROOM:UPDATE_DATA
 				 */
 
 				const
@@ -292,6 +293,31 @@ class WebsocketService extends Service {
 					} else {
 						callback(createResponse("error", "You aren't the room host."));
 					}
+				} else {
+					callback(createResponse("error", "You aren't in a room."));
+				}
+
+			} else {
+				callback(createResponse("error", "You must be authenticated."));
+			}
+		});
+
+		socket.on("CLIENT:SEND_MESSAGE", async (data: SentMessagePayload, callback: SocketCallback<string>) => {
+
+			const user = this.getAuthenticatedUser(socket);
+
+			if (user) {
+
+				const
+					roomService: RoomService = this.cluster.getService("room"),
+					currentRoom = roomService.getUserCurrentRoom(user);
+
+				if (currentRoom) {
+
+					socket.to(currentRoom.id).emit("ROOM:MESSAGE", constructMessage(user, data.content));
+
+					callback(createResponse("success", "Successfully sent message."));
+
 				} else {
 					callback(createResponse("error", "You aren't in a room."));
 				}
