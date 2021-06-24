@@ -30,3 +30,7 @@ export interface RoomSyncData {
 export interface UpdatableRoomProperties {
 	host?: User;
 }
+
+export interface SentMessagePayload {
+	content: string;
+}
