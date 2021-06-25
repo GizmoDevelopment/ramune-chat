@@ -17,6 +17,7 @@ import { SocketCallback } from "@typings/main";
 import { Room, RoomOptions, RoomSyncData, SentMessagePayload } from "@typings/room";
 import RoomService from "./room";
 import { getShow } from "@utils/ramune";
+import { Message } from "@typings/message";
 
 interface InputRoomData {
 	showId: string;
@@ -302,7 +303,7 @@ class WebsocketService extends Service {
 			}
 		});
 
-		socket.on("CLIENT:SEND_MESSAGE", async (data: SentMessagePayload, callback: SocketCallback<string>) => {
+		socket.on("CLIENT:SEND_MESSAGE", async (data: SentMessagePayload, callback: SocketCallback<Message>) => {
 
 			const user = this.getAuthenticatedUser(socket);
 
@@ -314,9 +315,11 @@ class WebsocketService extends Service {
 
 				if (currentRoom) {
 
-					socket.to(currentRoom.id).emit("ROOM:MESSAGE", constructMessage(user, data.content));
+					const message = constructMessage(user, data.content);
 
-					callback(createResponse("success", "Successfully sent message."));
+					socket.to(currentRoom.id).emit("ROOM:MESSAGE", message);
+
+					callback(createResponse("success", message));
 
 				} else {
 					callback(createResponse("error", "You aren't in a room."));
