@@ -8,6 +8,6 @@ import { Message } from "@typings/message";
 export function constructMessage (user: User, messageContent: string): Message {
 	return {
 		userId: user.id,
-		content: sanitize(messageContent.trim())
+		content: sanitize(messageContent.trim().slice(0, 300))
 	};
 }
