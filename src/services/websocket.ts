@@ -308,23 +308,26 @@ class WebsocketService extends Service {
 			const user = this.getAuthenticatedUser(socket);
 
 			if (user) {
+				if (data.content?.trim()?.length > 0) {
 
-				const
-					roomService: RoomService = this.cluster.getService("room"),
-					currentRoom = roomService.getUserCurrentRoom(user);
+					const
+						roomService: RoomService = this.cluster.getService("room"),
+						currentRoom = roomService.getUserCurrentRoom(user);
 
-				if (currentRoom) {
+					if (currentRoom) {
 
-					const message = constructMessage(user, data.content);
+						const message = constructMessage(user, data.content);
 
-					socket.to(currentRoom.id).emit("ROOM:MESSAGE", message);
+						socket.to(currentRoom.id).emit("ROOM:MESSAGE", message);
 
-					callback(createResponse("success", message));
+						callback(createResponse("success", message));
 
+					} else {
+						callback(createResponse("error", "You aren't in a room."));
+					}
 				} else {
-					callback(createResponse("error", "You aren't in a room."));
+					callback(createResponse("error", "You cannot send an empty message."));
 				}
-
 			} else {
 				callback(createResponse("error", "You must be authenticated."));
 			}
