@@ -7,7 +7,7 @@ import { Message } from "@typings/message";
 
 export function constructMessage (user: User, messageContent: string): Message {
 	return {
-		userId: user.id,
+		user,
 		content: sanitize(messageContent.trim().slice(0, 300))
 	};
 }
