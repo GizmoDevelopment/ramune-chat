@@ -8,9 +8,6 @@ import logger from "@utils/logger";
 // Types
 import { Show, Episode } from "@typings/show";
 
-// Variables
-const showCache: Map<string, Show> = new Map();
-
 export async function getShow (showId: string): Promise<Show|null> {
 	try {
 
@@ -22,49 +19,6 @@ export async function getShow (showId: string): Promise<Show|null> {
 			throw new Error(response.message);
 		}
 
-	} catch (err) {
-		logger.error(err);
-		return null;
-	}
-}
-
-export async function getEpisode (showId: string, episodeId: number): Promise<Episode|null> {
-	try {
-
-		let episode: Episode | null = null;
-
-		if (showCache.has(showId)) {
-
-			const _show = showCache.get(showId);
-
-			if (_show) {
-
-				const _episode = getEpisodeById(_show, episodeId);
-
-				if (_episode) {
-					episode = _episode;
-				}
-
-			}
-
-		}
-
-		if (!episode) {
-
-			const _show = await getShow(showId);
-
-			if (_show) {
-
-				const _episode = getEpisodeById(_show, episodeId);
-
-				if (_episode) {
-					episode = _episode;
-				}
-			}
-
-		}
-
-		return episode;
 	} catch (err) {
 		logger.error(err);
 		return null;
