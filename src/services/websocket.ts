@@ -16,7 +16,7 @@ import { User } from "gizmo-api/lib/types";
 import { SocketCallback } from "@typings/main";
 import { Room, RoomOptions, RoomSyncData, SentMessagePayload } from "@typings/room";
 import RoomService from "./room";
-import { getShow } from "@utils/ramune";
+import { getEpisodeById, getShow } from "@utils/ramune";
 import { Message } from "@typings/message";
 
 interface InputRoomData {
@@ -230,6 +230,24 @@ class WebsocketService extends Service {
 					if (currentRoom.host.id === user.id) {
 						if (typeof roomData.showId === "string" && typeof roomData.episodeId === "number") {
 
+							// Same show already picked, just search through saved show
+							if (currentRoom.data?.show?.id === roomData.showId) {
+
+								const episode = getEpisodeById(currentRoom.data.show, roomData.episodeId);
+
+								// Episode exists, just push episodeId to other clients
+								if (episode) {
+
+									roomService.updateRoomData(currentRoom, {
+										show: currentRoom.data.show,
+										episodeId: roomData.episodeId
+									});
+
+									return callback(createResponse("success", "Successfully updated data."));
+								}
+							}
+
+							// If the episode couldn't be found, re-fetch the entire show
 							const show = await getShow(roomData.showId);
 
 							if (show) {
