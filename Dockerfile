@@ -23,4 +23,4 @@ ENV NODE_ENV=production
 ENV CORS_ORIGIN_DOMAIN=${CORS_ORIGIN_DOMAIN}
 ENV SENTRY_DSN=${WEBSOCKET_PORT}
 
-CMD [ "pm2-runtime", "--json", "./build/index.js" ]
+CMD [ "node", "./build/index.js" ]
