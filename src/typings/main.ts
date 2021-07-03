@@ -5,6 +5,7 @@ declare global {
 			SENTRY_DSN: string;
 			WEBSOCKET_PORT: string;
 			SHOW_ENDPOINT: string;
+			CORS_ORIGIN_DOMAIN: string;
         }
     }
 }
