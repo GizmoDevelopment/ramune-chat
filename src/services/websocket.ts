@@ -40,7 +40,7 @@ class WebsocketService extends Service {
 		this.ioServer = new ioServer(WEBSOCKET_PORT, {
 			cors: {
 				origin: CORS_ORIGIN_DOMAIN,
-				credentials: true
+				methods: [ "GET", "POST" ]
 			}
 		});
 
