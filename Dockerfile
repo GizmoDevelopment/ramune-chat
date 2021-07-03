@@ -15,5 +15,6 @@ EXPOSE 8080
 
 ENV WEBSOCKET_PORT=8080
 ENV NODE_ENV=production
+ENV CORS_ORIGIN_DOMAIN=CORS_ORIGIN_DOMAIN
 
-CMD [ "pm2-runtime", "--json", "./build/index.js" ] 
+CMD [ "pm2-runtime", "--json", "./build/index.js" ]
