@@ -32,6 +32,7 @@ class WebsocketService extends Service {
 
 	readonly ioServer: ioServer;
 	private readonly sockets: Map<string, User> = new Map();
+	private readonly userIdToSocketIdMap: Record<string, string> = {};
 
 	constructor (cluster: PoopShitter) {
 
@@ -65,11 +66,17 @@ class WebsocketService extends Service {
 
 					const user = await getAuthenticatedUser(data.token);
 
-					this.addAuthenticatedUser(socket, user);
+					// Prevent the same user from connecting twice
+					if (!this.userIdToSocketIdMap[user.id]) {
 
-					callback(createResponse<User>("success", user));
+						this.addAuthenticatedUser(socket, user);
 
-					logger.info(`[S-${ socket.id }] [${ user.username }] Successfully authenticated`);
+						callback(createResponse<User>("success", user));
+
+						logger.info(`[S-${socket.id}] [${user.username}] Successfully authenticated`);
+					} else {
+						callback(createResponse("error", "You are already connected somewhere else."));
+					}
 
 				} catch (err) {
 					callback(createResponse("error", "Something went wrong."));
@@ -365,6 +372,7 @@ class WebsocketService extends Service {
 					roomService.leaveRoom(currentRoom, user, socket);
 				}
 
+				this.removeAuthenticatedUser(socket, user);
 			}
 
 			logger.info(`[S-${ socket.id }] Socket disconnected with reason '${ reason }'`);
@@ -373,11 +381,17 @@ class WebsocketService extends Service {
 	}
 
 	private addAuthenticatedUser (socket: Socket, user: User) {
+		this.userIdToSocketIdMap[user.id] = socket.id;
 		this.sockets.set(socket.id, user);
 	}
 
 	private getAuthenticatedUser (socket: Socket): User | null {
 		return this.sockets.get(socket.id) || null;
+	}
+
+	private removeAuthenticatedUser (socket: Socket, user: User) {
+		delete this.userIdToSocketIdMap[user.id];
+		this.sockets.delete(socket.id);
 	}
 
 }
