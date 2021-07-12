@@ -14,7 +14,7 @@ import { constructMessage } from "@utils/message";
 // Types
 import { User } from "gizmo-api/lib/types";
 import { SocketCallback } from "@typings/main";
-import { Room, RoomOptions, RoomSyncData, SentMessagePayload } from "@typings/room";
+import { PartialRoom, Room, RoomOptions, RoomSyncData, SentMessagePayload } from "@typings/room";
 import RoomService from "./room";
 import { getEpisodeById, getShow } from "@utils/ramune";
 import { Message } from "@typings/message";
@@ -80,7 +80,7 @@ class WebsocketService extends Service {
 			}
 		});
 
-		socket.on("CLIENT:FETCH_ROOMS", async (callback: SocketCallback<Room[]>) => {
+		socket.on("CLIENT:FETCH_ROOMS", async (callback: SocketCallback<PartialRoom[]>) => {
 
 			const user = this.getAuthenticatedUser(socket);
 

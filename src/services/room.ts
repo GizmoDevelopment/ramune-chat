@@ -13,7 +13,7 @@ import { sanitize } from "@utils/essentials";
 
 // Types
 import { User } from "gizmo-api/lib/types";
-import { Room, RoomData, RoomOptions, RoomSyncData, UpdatableRoomProperties } from "@typings/room";
+import { PartialRoom, Room, RoomData, RoomOptions, RoomSyncData, UpdatableRoomProperties } from "@typings/room";
 import { Socket } from "socket.io";
 
 class RoomService extends Service {
@@ -30,8 +30,15 @@ class RoomService extends Service {
 		super("room", cluster);
 	}
 
-	getRooms (): Room[] {
-		return Array.from(this.rooms.values());
+	getRooms (): PartialRoom[] {
+		return Array.from(this.rooms.values()).map((room: Room) => {
+			return {
+				id: room.id,
+				name: room.name,
+				host: room.host,
+				users: room.users
+			};
+		});
 	}
 
 	getRoom (roomId: string): Room | null {
@@ -39,7 +46,7 @@ class RoomService extends Service {
 	}
 
 	getRoomByName (roomName: string): Room | null {
-		
+
 		const roomId = this.roomNameToRoomIdMap[roomName];
 
 		if (roomId) {
@@ -72,7 +79,7 @@ class RoomService extends Service {
 
 		this.rooms.set(room.id, room);
 		this.roomNameToRoomIdMap[room.name] = room.id;
-		
+
 		logger.info(`[R-${room.id}] [${user.username}] Created room`);
 		return room;
 	}
