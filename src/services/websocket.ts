@@ -343,9 +343,12 @@ class WebsocketService extends Service {
 
 						const message = constructMessage(user, data.content);
 
-						socket.to(currentRoom.id).emit("ROOM:MESSAGE", message);
-
-						callback(createResponse("success", message));
+						if (message.content.length > 0) {
+							socket.to(currentRoom.id).emit("ROOM:MESSAGE", message);
+							callback(createResponse("success", message));
+						} else {
+							callback(createResponse("error", "You cannot send an empty message."));
+						}
 
 					} else {
 						callback(createResponse("error", "You aren't in a room."));
