@@ -20,10 +20,12 @@ export function createResponse (type: "success" | "error", dataOrMessage: any) {
 	}
 }
 
-export function sanitize (input: string): string {
+export function sanitize (input: string, options?: sanitizeHtml.IOptions): string {
 	return sanitizeHtml(input, {
 		allowedAttributes: {},
 		allowedTags: [],
-		allowedStyles: {}
+		allowedStyles: {},
+		disallowedTagsMode: "recursiveEscape",
+		...(options || {})
 	});
 }
