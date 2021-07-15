@@ -9,6 +9,7 @@ import logger from "@utils/logger";
 
 // Constants
 import { FACE_OF_APATHY } from "@utils/constants";
+import { version } from "../package.json";
 
 console.log(FACE_OF_APATHY);
 
@@ -24,7 +25,7 @@ if (process.env.NODE_ENV === "production") {
         logger.error(error);
         Sentry.captureException(error);
     });
-    
+
     process.on("unhandledRejection", (error) => {
         logger.error(error);
         Sentry.captureException(error);
@@ -35,6 +36,7 @@ if (process.env.NODE_ENV === "production") {
     process.on("unhandledRejection", logger.error);
 }
 
-logger.info(`Started in environment '${ process.env.NODE_ENV || "development" }'`);
+logger.info(`Version '${ version }'`);
+logger.info(`Environment '${process.env.NODE_ENV || "development" }'`);
 
 new PoopShitter("Blame User");
