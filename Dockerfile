@@ -14,7 +14,7 @@ RUN npm ci
 COPY . .
 RUN npm run build
 
-RUN npm install -g pm2
+# RUN npm install -g pm2
 
 EXPOSE ${WEBSOCKET_PORT}
 
