@@ -23,4 +23,4 @@ ENV NODE_ENV=production
 ENV CORS_ORIGIN_DOMAIN=${CORS_ORIGIN_DOMAIN}
 ENV SENTRY_DSN=${WEBSOCKET_PORT}
 
-CMD [ "node", "./build/index.js" ]
+CMD [ "node", "./build/src/index.js" ]
