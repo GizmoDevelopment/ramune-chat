@@ -118,8 +118,8 @@ class RoomService extends Service {
 		this.rooms.set(room.id, room);
 
 		// Broadcast
-		socket.leave(room.id);
 		this.ioServer.to(room.id).emit("ROOM:USER_LEAVE", user);
+		socket.leave(room.id);
 
 		// If the host left, promote first user to host
 		if (room.host.id === user.id) {
