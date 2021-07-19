@@ -6,3 +6,7 @@ export interface Message {
 	user: User;
 	content: string;
 }
+
+export interface MessagePayload {
+	content: string;
+}
