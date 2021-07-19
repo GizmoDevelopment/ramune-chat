@@ -14,10 +14,10 @@ import { constructMessage } from "@utils/message";
 // Types
 import { User } from "gizmo-api/lib/types";
 import { SocketCallback } from "@typings/main";
-import { PartialRoom, Room, RoomOptions, RoomSyncData, SentMessagePayload } from "@typings/room";
+import { PartialRoom, Room, RoomOptions, RoomSyncData } from "@typings/room";
 import RoomService from "./room";
 import { getEpisodeById, getShow } from "@utils/ramune";
-import { Message } from "@typings/message";
+import { Message, MessagePayload } from "@typings/message";
 
 interface InputRoomData {
 	showId: string;
@@ -91,18 +91,15 @@ class WebsocketService extends Service {
 
 			const user = this.getAuthenticatedUser(socket);
 
-			if (user) {
+			if (!user)
+				return callback(createResponse("error", "You must be authenticated."));
 
-				const roomService: RoomService = this.cluster.getService("room");
+			const roomService: RoomService = this.cluster.getService("room");
 
-				callback(createResponse("success", roomService.getRooms()));
-
-			} else {
-				callback(createResponse("error", "You must be authenticated."));
-			}
+			callback(createResponse("success", roomService.getRooms()));
 		});
 
-		socket.on("CLIENT:CREATE_ROOM", async (options: RoomOptions|any, callback: SocketCallback<Room>) => {
+		socket.on("CLIENT:CREATE_ROOM", async (options: RoomOptions | any, callback: SocketCallback<Room>) => {
 
 			const user = this.getAuthenticatedUser(socket);
 
@@ -147,17 +144,20 @@ class WebsocketService extends Service {
 			}
 		});
 
-		socket.on("CLIENT:JOIN_ROOM", async (roomId: string, callback: SocketCallback<Room>) => {
+		socket.on("CLIENT:JOIN_ROOM", async (roomId: string | any, callback: SocketCallback<Room>) => {
 
 			const user = this.getAuthenticatedUser(socket);
 
-			if (user) {
+			if (!user)
+				return callback(createResponse("error", "You must be authenticated."));
 
-				/**
-				 * - check if room exists
-				 * - leave the room the user is currently in
-				 * - join room
-				 */
+			/**
+			 * - check if room exists
+			 * - leave the room the user is currently in
+			 * - join room
+			 */
+
+			if (typeof roomId === "string") {
 
 				const
 					roomService: RoomService = this.cluster.getService("room"),
@@ -177,9 +177,8 @@ class WebsocketService extends Service {
 				} else {
 					callback(createResponse("error", "Room doesn't exist."));
 				}
-
 			} else {
-				callback(createResponse("error", "You must be authenticated."));
+				callback(createResponse("error", "Invalid RoomID"));
 			}
 		});
 
@@ -187,46 +186,46 @@ class WebsocketService extends Service {
 
 			const user = this.getAuthenticatedUser(socket);
 
-			if (user) {
+			if (!user)
+				return callback(createResponse("error", "You must be authenticated."));
 
-				/**
-				 * - get user's current room and leave it
-				 * - send ROOM:USER_LEAVE to all other roommates
-				 * - promote first roommate on list to host using ROOM:UPDATE
-				 * - if room is empty, remove it
-				 */
+			/**
+			 * - get user's current room and leave it
+			 * - send ROOM:USER_LEAVE to all other roommates
+			 * - promote first roommate on list to host using ROOM:UPDATE
+			 * - if room is empty, remove it
+			 */
 
-				const
-					roomService: RoomService = this.cluster.getService("room"),
-					currentRoom = roomService.getUserCurrentRoom(user);
+			const
+				roomService: RoomService = this.cluster.getService("room"),
+				currentRoom = roomService.getUserCurrentRoom(user);
 
-				if (currentRoom) {
+			if (currentRoom) {
 
-					roomService.leaveRoom(currentRoom, user, socket);
+				roomService.leaveRoom(currentRoom, user, socket);
 
-					callback(createResponse("success", "Successfully left room."));
-
-				} else {
-					callback(createResponse("error", "You aren't in a room."));
-				}
+				callback(createResponse("success", "Successfully left room."));
 
 			} else {
-				callback(createResponse("error", "You must be authenticated."));
+				callback(createResponse("error", "You aren't in a room."));
 			}
 		});
 
-		socket.on("CLIENT:UPDATE_ROOM_DATA", async (roomData: InputRoomData, callback: SocketCallback<string>) => {
+		socket.on("CLIENT:UPDATE_ROOM_DATA", async (roomData: InputRoomData | any, callback: SocketCallback<string>) => {
 
 			const user = this.getAuthenticatedUser(socket);
 
-			if (user) {
+			if (!user)
+				return callback(createResponse("error", "You must be authenticated."));
 
-				/**
-				 * - check whether the user is in a room
-				 * - check whether the user is the room host
-				 * - validate `roomData`
-				 * - fetch show and send RoomData to everyone with ROOM:UPDATE_DATA
-				 */
+			/**
+			 * - check whether the user is in a room
+			 * - check whether the user is the room host
+			 * - validate `roomData`
+			 * - fetch show and send RoomData to everyone with ROOM:UPDATE_DATA
+			 */
+
+			if (typeof roomData?.showId === "string" && typeof roomData?.episodeId === "number") {
 
 				const
 					roomService: RoomService = this.cluster.getService("room"),
@@ -234,68 +233,66 @@ class WebsocketService extends Service {
 
 				if (currentRoom) {
 					if (currentRoom.host.id === user.id) {
-						if (typeof roomData.showId === "string" && typeof roomData.episodeId === "number") {
 
-							// Same show already picked, just search through saved show
-							if (currentRoom.data?.show?.id === roomData.showId) {
+						// Same show already picked, just search through saved show
+						if (currentRoom.data && currentRoom.data.show.id === roomData.showId) {
 
-								const episode = getEpisodeById(currentRoom.data.show, roomData.episodeId);
+							const episode = getEpisodeById(currentRoom.data.show, roomData.episodeId);
 
-								// Episode exists, just push episodeId to other clients
-								if (episode) {
-
-									roomService.updateRoomData(currentRoom, {
-										show: currentRoom.data.show,
-										episodeId: roomData.episodeId
-									});
-
-									return callback(createResponse("success", "Successfully updated data."));
-								}
-							}
-
-							// If the episode couldn't be found, re-fetch the entire show
-							const show = await getShow(roomData.showId);
-
-							if (show) {
+							// Episode exists, just push episodeId to other clients
+							if (episode) {
 
 								roomService.updateRoomData(currentRoom, {
-									show,
+									show: currentRoom.data.show,
 									episodeId: roomData.episodeId
 								});
 
-								callback(createResponse("success", "Successfully updated data."));
-
-							} else {
-								callback(createResponse("error", "Couldn't fetch show."));
+								return callback(createResponse("success", "Successfully updated data."));
 							}
+						}
+
+						// If the episode couldn't be found, re-fetch the entire show
+						const show = await getShow(roomData.showId);
+
+						if (show) {
+
+							roomService.updateRoomData(currentRoom, {
+								show,
+								episodeId: roomData.episodeId
+							});
+
+							callback(createResponse("success", "Successfully updated data."));
 
 						} else {
-							callback(createResponse("error", "Invalid room data."));
+							callback(createResponse("error", "Couldn't fetch show."));
 						}
+
 					} else {
 						callback(createResponse("error", "You aren't the room host."));
 					}
 				} else {
 					callback(createResponse("error", "You aren't in a room."));
 				}
-
 			} else {
-				callback(createResponse("error", "You must be authenticated."));
+				callback(createResponse("error", "Invalid room data."));
 			}
 		});
 
-		socket.on("CLIENT:SYNC_ROOM", async (syncData: RoomSyncData, callback: SocketCallback<string>) => {
+		socket.on("CLIENT:SYNC_ROOM", async (syncData: RoomSyncData | any, callback: SocketCallback<string>) => {
 
 			const user = this.getAuthenticatedUser(socket);
 
-			if (user) {
+			if (!user)
+				return callback(createResponse("error", "You must be authenticated."));
 
-				/**
-				 * - check whether the user is in a room
-				 * - check whether the user is the room host
-				 * - validate `syncData`
-				 * - send RoomSyncData to everyone with ROOM:SYNC
-				 */
+			/**
+			 * - check whether the user is in a room
+			 * - check whether the user is the room host
+			 * - validate `syncData`
+			 * - send RoomSyncData to everyone with ROOM:SYNC
+			 */
+
+			if (typeof syncData?.currentTime === "number" && typeof syncData?.playing === "boolean") {
 
 				const
 					roomService: RoomService = this.cluster.getService("room"),
@@ -303,18 +300,14 @@ class WebsocketService extends Service {
 
 				if (currentRoom) {
 					if (currentRoom.host.id === user.id) {
-						if (typeof syncData.currentTime === "number" && typeof syncData.playing === "boolean") {
 
-							roomService.syncRoom(currentRoom, {
-								currentTime: syncData.currentTime,
-								playing: syncData.playing
-							}, socket);
+						roomService.syncRoom(currentRoom, {
+							currentTime: syncData.currentTime,
+							playing: syncData.playing
+						}, socket);
 
-							callback(createResponse("success", "Successfully synced room."));
+						callback(createResponse("success", "Successfully synced room."));
 
-						} else {
-							callback(createResponse("error", "Invalid room sync data."));
-						}
 					} else {
 						callback(createResponse("error", "You aren't the room host."));
 					}
@@ -323,16 +316,19 @@ class WebsocketService extends Service {
 				}
 
 			} else {
-				callback(createResponse("error", "You must be authenticated."));
+				callback(createResponse("error", "Invalid room sync data."));
 			}
 		});
 
-		socket.on("CLIENT:SEND_MESSAGE", async (data: SentMessagePayload, callback: SocketCallback<Message>) => {
+		socket.on("CLIENT:SEND_MESSAGE", async (data: MessagePayload | any, callback: SocketCallback<Message>) => {
 
 			const user = this.getAuthenticatedUser(socket);
 
-			if (user) {
-				if (data.content?.trim()?.length > 0) {
+			if (!user)
+				return callback(createResponse("error", "You must be authenticated."));
+
+			if (typeof data?.content === "string") {
+				if (data.content.trim().length > 0) {
 
 					const
 						roomService: RoomService = this.cluster.getService("room"),
@@ -356,7 +352,7 @@ class WebsocketService extends Service {
 					callback(createResponse("error", "You cannot send an empty message."));
 				}
 			} else {
-				callback(createResponse("error", "You must be authenticated."));
+				callback(createResponse("error", "Invalid message payload."));
 			}
 		});
 
