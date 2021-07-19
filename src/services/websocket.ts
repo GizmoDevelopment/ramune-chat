@@ -356,6 +356,10 @@ class WebsocketService extends Service {
 			}
 		});
 
+		socket.on("CLIENT:FETCH_ONLINE_USERS", async (callback: SocketCallback<User[]>) => {
+			callback(createResponse("success", Array.from(this.sockets.values())));
+		});
+
 		socket.on("disconnect", (reason: string) => {
 
 			const user = this.getAuthenticatedUser(socket);
@@ -374,8 +378,7 @@ class WebsocketService extends Service {
 			}
 
 			logger.info(`[S-${ socket.id }] Socket disconnected with reason '${ reason }'`);
-		})
-	;
+		});
 	}
 
 	private addAuthenticatedUser (socket: Socket, user: User) {
