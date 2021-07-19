@@ -24,7 +24,7 @@
 		"@types/uuid": "^8.3.0",
 		"@typescript-eslint/eslint-plugin": "^4.15.2",
 		"@typescript-eslint/parser": "^4.15.2",
-		"eslint": "^7.20.0",
+		"eslint": "^7.31.0",
 		"ts-node": "^9.1.1",
 		"tsconfig-paths": "^3.9.0",
 		"ttypescript": "^1.5.12",
