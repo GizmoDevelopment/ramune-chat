@@ -102,21 +102,22 @@ class WebsocketService extends Service {
 			}
 		});
 
-		socket.on("CLIENT:CREATE_ROOM", async (options: RoomOptions, callback: SocketCallback<Room>) => {
+		socket.on("CLIENT:CREATE_ROOM", async (options: RoomOptions|any, callback: SocketCallback<Room>) => {
 
 			const user = this.getAuthenticatedUser(socket);
 
-			if (user) {
+			if (!user)
+				return callback(createResponse("error", "You must be authenticated."));
 
-				/**
-				 * - check if room exists
-				 * - check if user is already in room & leave if so
-				 * - create room
-				 * - add user as host
-				 */
+			/**
+			 * - check if room exists
+			 * - check if user is already in room & leave if so
+			 * - create room
+			 * - add user as host
+			 */
 
-				if (typeof options.name === "string") {
-
+			if (typeof options.name === "string") {
+				if (options.name.trim().length > 0) {
 					const
 						roomService: RoomService = this.cluster.getService("room"),
 						_targetRoom = roomService.getRoomByName(options.name);
@@ -138,13 +139,11 @@ class WebsocketService extends Service {
 					} else {
 						callback(createResponse("error", "Room already exists."));
 					}
-
 				} else {
-					callback(createResponse("error", "Invalid room data."));
+					callback(createResponse("error", "Room name cannot be empty."));
 				}
-
 			} else {
-				callback(createResponse("error", "You must be authenticated."));
+				callback(createResponse("error", "Invalid room data."));
 			}
 		});
 
