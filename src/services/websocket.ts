@@ -360,6 +360,52 @@ class WebsocketService extends Service {
 			callback(createResponse("success", Array.from(this.sockets.values())));
 		});
 
+		socket.on("CLIENT:KICK_USER", async (userId: number|any, callback: SocketCallback<string>) => {
+
+			const user = this.getAuthenticatedUser(socket);
+
+			if (!user)
+				return callback(createResponse("error", "You must be authenticated."));
+
+			if (typeof userId === "number") {
+
+				const
+					roomService: RoomService = this.cluster.getService("room"),
+					currentRoom = roomService.getUserCurrentRoom(user);
+
+				if (currentRoom) {
+					if (currentRoom.host.id === user.id) {
+
+						const
+							targetUser = currentRoom.users.find((user: User) => user.id === userId),
+							targetSocketId = targetUser && this.userIdToSocketIdMap[targetUser?.id];
+
+						if (targetUser && targetSocketId) {
+
+							const targetSocket = this.ioServer.sockets.sockets.get(targetSocketId);
+
+							if (targetSocket) {
+
+								roomService.leaveRoom(currentRoom, targetUser, targetSocket);
+
+								callback(createResponse("success", "Successfully kicked user."));
+							} else {
+								callback(createResponse("error", "Something went wrong."));
+							}
+						} else {
+							callback(createResponse("error", "The target user isn't in the room."));
+						}
+					} else {
+						callback(createResponse("error", "You aren't the room host."));
+					}
+				} else {
+					callback(createResponse("error", "You aren't in a room."));
+				}
+			} else {
+				callback(createResponse("error", "Invalid UserID."));
+			}
+		});
+
 		socket.on("disconnect", (reason: string) => {
 
 			const user = this.getAuthenticatedUser(socket);
