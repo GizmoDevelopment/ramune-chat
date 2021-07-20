@@ -239,7 +239,7 @@ class WebsocketService extends Service {
 
 					const newRoomProperties: UpdatableRoomProperties = {};
 
-					if ("hostId" in newRoom && typeof newRoom.hostId === "string") {
+					if ("hostId" in newRoom && typeof newRoom.hostId === "number") {
 
 						const targetUser = roomService.getUserInRoom(currentRoom, newRoom.hostId);
 
