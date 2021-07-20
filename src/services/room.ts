@@ -135,11 +135,12 @@ class RoomService extends Service {
 
 	updateRoom (room: Room, data: UpdatableRoomProperties) {
 
-		const { host: newHost } = data;
+		const _room: Room = {
+			...room,
+			...data
+		};
 
-		if (newHost) {
-			room.host = newHost;
-		}
+		this.rooms.set(room.id, _room);
 
 		// Broadcast
 		this.ioServer.to(room.id).emit("ROOM:UPDATE", data);
