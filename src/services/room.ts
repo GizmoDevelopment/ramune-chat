@@ -166,6 +166,13 @@ class RoomService extends Service {
 		logger.info(`[R-${room.id}] Synced room with data '${ JSON.stringify(data) }'`);
 	}
 
+	getUserInRoom (room: Room, userId: number): User | null {
+
+		const targetUser = room.users.find(({ id }) => id === userId);
+
+		return targetUser || null;
+	}
+
 }
 
 export default RoomService;
