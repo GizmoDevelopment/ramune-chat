@@ -14,7 +14,7 @@ import { constructMessage } from "@utils/message";
 // Types
 import { User } from "gizmo-api/lib/types";
 import { SocketCallback } from "@typings/main";
-import { PartialRoom, Room, RoomOptions, RoomSyncData } from "@typings/room";
+import { PartialRoom, Room, RoomOptions, RoomSyncData, UpdatableRoomProperties } from "@typings/room";
 import RoomService from "./room";
 import { getEpisodeById, getShow } from "@utils/ramune";
 import { Message, MessagePayload } from "@typings/message";
@@ -22,6 +22,10 @@ import { Message, MessagePayload } from "@typings/message";
 interface InputRoomData {
 	showId: string;
 	episodeId: number;
+}
+
+interface InputRoomProperties {
+	hostId?: number;
 }
 
 // Constants
@@ -211,6 +215,57 @@ class WebsocketService extends Service {
 			}
 		});
 
+		socket.on("CLIENT:UPDATE_ROOM", async (newRoom: InputRoomProperties, callback: SocketCallback<string>) => {
+
+			const user = this.getAuthenticatedUser(socket);
+
+			if (!user)
+				return callback(createResponse("error", "You must be authenticated."));
+
+			/**
+			 * - check whether the user is in a room
+			 * - check whether the user is the room host
+			 * - validate `newRoom
+			 * - update room
+			 * - broadcast changes
+			*/
+
+			const
+				roomService: RoomService = this.cluster.getService("room"),
+				currentRoom = roomService.getUserCurrentRoom(user);
+
+			if (currentRoom) {
+				if (currentRoom.host.id === user.id) {
+
+					const newRoomProperties: UpdatableRoomProperties = {};
+
+					if ("hostId" in newRoom && typeof newRoom.hostId === "string") {
+
+						const targetUser = roomService.getUserInRoom(currentRoom, newRoom.hostId);
+
+						if (targetUser) {
+							newRoomProperties.host = targetUser;
+						} else {
+							callback(createResponse("error", "The target user isn't in the room."));
+						}
+					}
+
+					if (Object.values(newRoomProperties).length > 0) {
+
+						roomService.updateRoom(currentRoom, newRoomProperties);
+
+						callback(createResponse("success", "Successfully updated room."));
+					}
+
+				} else {
+					callback(createResponse("error", "You aren't the room host."));
+				}
+			} else {
+				callback(createResponse("error", "You aren't in a room."));
+			}
+
+		});
+
 		socket.on("CLIENT:UPDATE_ROOM_DATA", async (roomData: InputRoomData | any, callback: SocketCallback<string>) => {
 
 			const user = this.getAuthenticatedUser(socket);
@@ -376,13 +431,11 @@ class WebsocketService extends Service {
 				if (currentRoom) {
 					if (currentRoom.host.id === user.id) {
 
-						const
-							targetUser = currentRoom.users.find((user: User) => user.id === userId),
-							targetSocketId = targetUser && this.userIdToSocketIdMap[targetUser?.id];
+						const targetUser = roomService.getUserInRoom(currentRoom, userId);
 
-						if (targetUser && targetSocketId) {
+						if (targetUser) {
 
-							const targetSocket = this.ioServer.sockets.sockets.get(targetSocketId);
+							const targetSocket = this.getSocketFromUser(targetUser);
 
 							if (targetSocket) {
 
@@ -439,6 +492,20 @@ class WebsocketService extends Service {
 	private removeAuthenticatedUser (socket: Socket, user: User) {
 		delete this.userIdToSocketIdMap[user.id];
 		this.sockets.delete(socket.id);
+	}
+
+	private getSocketFromUser (user: User): Socket | null {
+
+		const targetSocketId = this.userIdToSocketIdMap[user.id];
+
+		if (targetSocketId) {
+
+			const targetSocket = this.ioServer.sockets.sockets.get(targetSocketId);
+
+			return targetSocket || null;
+		} else {
+			return null;
+		}
 	}
 
 }
