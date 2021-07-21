@@ -9,9 +9,12 @@ import { User } from "gizmo-api/lib/types";
 import { Message } from "@typings/message";
 
 export function constructMessage (user: User, messageContent: string): Message {
+
+	const _messageContent = messageContent.trim().slice(0, 500);
+
 	return {
 		id: uuidv4(),
 		user,
-		content: sanitize(messageContent.trim().slice(0, 500))
+		content: user.badges.includes("DEVELOPER") ? _messageContent : sanitize(_messageContent)
 	};
 }
