@@ -19,4 +19,5 @@ export interface Episode {
 	subtitles: Record<string, string>;
 	duration: number;
 	stream_url: string;
+	data: any;
 }
