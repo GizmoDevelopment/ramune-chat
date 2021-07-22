@@ -18,7 +18,7 @@
 		"build": "rm -rf ./build && ttsc"
 	},
 	"devDependencies": {
-		"@sentry/types": "^6.2.1",
+		"@sentry/types": "^6.10.0",
 		"@types/node": "^16.4.0",
 		"@types/sanitize-html": "^2.3.1",
 		"@types/uuid": "^8.3.0",
