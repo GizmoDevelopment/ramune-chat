@@ -3,6 +3,7 @@ export interface Show {
     title: string;
 	description: string;
     poster_url: string;
+	banner_url: string;
     seasons: Season[];
 }
 
