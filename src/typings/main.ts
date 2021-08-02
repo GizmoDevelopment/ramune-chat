@@ -10,8 +10,9 @@ declare global {
     }
 }
 
-interface BaseResponse {
+export interface BaseResponse {
 	type: "success" | "error";
+	protocol?: string;
 	message?: string;
 }
 
