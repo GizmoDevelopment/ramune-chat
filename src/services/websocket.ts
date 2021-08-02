@@ -93,6 +93,9 @@ class WebsocketService extends Service {
 
 		socket.on("CLIENT:FETCH_ROOMS", async (callback: SocketCallback<PartialRoom[]>) => {
 
+			if (typeof callback !== "function")
+				return socket.emit("exception", "You must provide a callback function.");
+
 			const user = this.getAuthenticatedUser(socket);
 
 			if (!user)
@@ -104,6 +107,9 @@ class WebsocketService extends Service {
 		});
 
 		socket.on("CLIENT:CREATE_ROOM", async (options: RoomOptions | any, callback: SocketCallback<Room>) => {
+
+			if (typeof callback !== "function")
+				return socket.emit("exception", "You must provide a callback function.");
 
 			const user = this.getAuthenticatedUser(socket);
 
@@ -150,6 +156,9 @@ class WebsocketService extends Service {
 
 		socket.on("CLIENT:JOIN_ROOM", async (roomId: string | any, callback: SocketCallback<Room>) => {
 
+			if (typeof callback !== "function")
+				return socket.emit("exception", "You must provide a callback function.");
+
 			const user = this.getAuthenticatedUser(socket);
 
 			if (!user)
@@ -188,6 +197,9 @@ class WebsocketService extends Service {
 
 		socket.on("CLIENT:LEAVE_ROOM", async (callback: SocketCallback<string>) => {
 
+			if (typeof callback !== "function")
+				return socket.emit("exception", "You must provide a callback function.");
+
 			const user = this.getAuthenticatedUser(socket);
 
 			if (!user)
@@ -216,6 +228,9 @@ class WebsocketService extends Service {
 		});
 
 		socket.on("CLIENT:UPDATE_ROOM", async (newRoom: InputRoomProperties, callback: SocketCallback<string>) => {
+
+			if (typeof callback !== "function")
+				return socket.emit("exception", "You must provide a callback function.");
 
 			const user = this.getAuthenticatedUser(socket);
 
@@ -267,6 +282,9 @@ class WebsocketService extends Service {
 		});
 
 		socket.on("CLIENT:UPDATE_ROOM_DATA", async (roomData: InputRoomData | any, callback: SocketCallback<string>) => {
+
+			if (typeof callback !== "function")
+				return socket.emit("exception", "You must provide a callback function.");
 
 			const user = this.getAuthenticatedUser(socket);
 
@@ -335,6 +353,9 @@ class WebsocketService extends Service {
 
 		socket.on("CLIENT:SYNC_ROOM", async (syncData: RoomSyncData | any, callback: SocketCallback<string>) => {
 
+			if (typeof callback !== "function")
+				return socket.emit("exception", "You must provide a callback function.");
+
 			const user = this.getAuthenticatedUser(socket);
 
 			if (!user)
@@ -381,6 +402,9 @@ class WebsocketService extends Service {
 
 		socket.on("CLIENT:SEND_MESSAGE", async (data: MessagePayload | any, callback: SocketCallback<Message>) => {
 
+			if (typeof callback !== "function")
+				return socket.emit("exception", "You must provide a callback function.");
+
 			const user = this.getAuthenticatedUser(socket);
 
 			if (!user)
@@ -416,10 +440,17 @@ class WebsocketService extends Service {
 		});
 
 		socket.on("CLIENT:FETCH_ONLINE_USERS", async (callback: SocketCallback<User[]>) => {
+
+			if (typeof callback !== "function")
+				return socket.emit("exception", "You must provide a callback function.");
+
 			callback(createResponse("success", Array.from(this.sockets.values())));
 		});
 
 		socket.on("CLIENT:KICK_USER", async (userId: number|any, callback: SocketCallback<string>) => {
+
+			if (typeof callback !== "function")
+				return socket.emit("exception", "You must provide a callback function.");
 
 			const user = this.getAuthenticatedUser(socket);
 
