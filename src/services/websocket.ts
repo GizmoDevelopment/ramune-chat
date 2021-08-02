@@ -347,6 +347,8 @@ class WebsocketService extends Service {
 			 * - send RoomSyncData to everyone with ROOM:SYNC
 			 */
 
+			const startTimestamp = Date.now();
+
 			if (typeof syncData?.currentTime === "number" && typeof syncData?.playing === "boolean") {
 
 				const
@@ -356,8 +358,10 @@ class WebsocketService extends Service {
 				if (currentRoom) {
 					if (currentRoom.host.id === user.id) {
 
+						const finishTimestamp = Date.now();
+
 						roomService.syncRoom(currentRoom, {
-							currentTime: syncData.currentTime,
+							currentTime: syncData.currentTime + (finishTimestamp - startTimestamp) / 1000,
 							playing: syncData.playing
 						}, socket);
 
