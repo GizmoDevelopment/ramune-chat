@@ -39,3 +39,30 @@ export interface RoomSyncData {
 export interface UpdatableRoomProperties {
 	host?: User;
 }
+
+export interface InputRoomData {
+	showId: string;
+	episodeId: number;
+}
+
+export interface InputRoomProperties {
+	hostId?: number;
+}
+
+// Type Guards
+
+export function isRoomOptions (x: unknown): x is RoomOptions {
+	return typeof x === "object" && x !== null && typeof (x as RoomOptions)?.name === "string";
+}
+
+export function isInputRoomData (x: unknown): x is InputRoomData {
+	return typeof x === "object" && x !== null && typeof (x as InputRoomData)?.showId === "string" && typeof (x as InputRoomData)?.episodeId === "string";
+}
+
+export function isInputRoomProperties (x: unknown): x is InputRoomProperties {
+	return typeof x === "object" && x !== null;
+}
+
+export function isRoomSyncData (x: unknown): x is RoomSyncData {
+	return typeof x === "object" && x !== null && typeof (x as RoomSyncData)?.currentTime === "number" && typeof (x as RoomSyncData)?.playing === "boolean";
+}
