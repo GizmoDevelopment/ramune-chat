@@ -14,29 +14,33 @@ import { version } from "../package.json";
 console.log(FACE_OF_APATHY);
 
 // Set up error logging
-if (process.env.NODE_ENV === "production") {
+if (process.env.NODE_ENV === "production" && process.env.SENTRY_DSN) {
 
-    Sentry.init({
-        dsn: process.env.SENTRY_DSN,
-        tracesSampleRate: 1.0
-    });
+	Sentry.init({
+		dsn: process.env.SENTRY_DSN,
+		tracesSampleRate: 1.0
+	});
 
-    process.on("uncaughtException", (error) => {
-        logger.error(error);
-        Sentry.captureException(error);
-    });
+	process.on("uncaughtException", (error) => {
+		logger.error(error);
+		Sentry.captureException(error);
+	});
 
-    process.on("unhandledRejection", (error) => {
-        logger.error(error);
-        Sentry.captureException(error);
-    });
+	process.on("unhandledRejection", (error) => {
+		logger.error(error);
+		Sentry.captureException(error);
+	});
 
 } else {
-    process.on("uncaughtException", logger.error);
-    process.on("unhandledRejection", logger.error);
+	process.on("uncaughtException", logger.error);
+	process.on("unhandledRejection", logger.error);
 }
 
-logger.info(`Version '${ version }'`);
-logger.info(`Environment '${process.env.NODE_ENV || "development" }'`);
+if (!process.env.CORS_ORIGIN_DOMAIN) throw Error("Missing environmental variable 'CORS_ORIGIN_DOMAIN'");
+if (!process.env.WEBSOCKET_PORT) throw Error("Missing environmental variable 'WEBSOCKET_PORT'");
+if (!process.env.SHOW_ENDPOINT) throw Error("Missing environmental variable 'SHOW_ENDPOINT'");
+
+logger.info(`Version '${version}'`);
+logger.info(`Environment '${process.env.NODE_ENV || "development"}'`);
 
 new PoopShitter("Blame User");
