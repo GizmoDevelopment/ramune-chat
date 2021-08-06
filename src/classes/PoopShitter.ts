@@ -30,7 +30,7 @@ export default class PoopShitters {
 
 				if (typeof serviceClass === "function") {
 
-					const service: any = new serviceClass(this);
+					const service: unknown = new serviceClass(this);
 
 					if (service instanceof Service) {
 						this.services.set(service.name, service);
@@ -46,8 +46,8 @@ export default class PoopShitters {
 
 	}
 
-	getService (name: string): any {
-		return this.services.get(name)!;
+	getService (name: string): Service | null {
+		return this.services.get(name) || null;
 	}
 
 }

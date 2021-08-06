@@ -6,7 +6,7 @@ import { BaseResponse, ErrorResponse, SuccessResponse } from "@typings/main";
 
 export function createResponse<T> (type: "success", data: T, protocol?: string): SuccessResponse<T>;
 export function createResponse (type: "error", message: string, protocol?: string): ErrorResponse;
-export function createResponse (type: "success" | "error", dataOrMessage: any, protocol?: string): any {
+export function createResponse (type: "success" | "error", dataOrMessage: any, protocol?: string): unknown {
 
 	const res: BaseResponse = {
 		type
@@ -17,7 +17,7 @@ export function createResponse (type: "success" | "error", dataOrMessage: any, p
 	}
 
 	if (type === "success") {
-		(res as SuccessResponse<any>).data = dataOrMessage;
+		(res as SuccessResponse<unknown>).data = dataOrMessage;
 	} else {
 		(res as ErrorResponse).message = dataOrMessage;
 	}

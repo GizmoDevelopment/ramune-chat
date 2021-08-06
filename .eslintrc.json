@@ -33,6 +33,14 @@
 		"eqeqeq": [ "error", "always" ],
 		"space-before-function-paren": "off",
 		"@typescript-eslint/space-before-function-paren": [ "error" ],
-		"template-curly-spacing": [ "error", "never" ]
+		"template-curly-spacing": [ "error", "never" ],
+		"@typescript-eslint/member-delimiter-style": [ "error", {
+			"multiline": {
+				"delimiter": "semi"
+			},
+			"singleline": {
+				"delimiter": "semi"
+			}
+		} ]
     }
 }
