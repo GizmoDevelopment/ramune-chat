@@ -9,7 +9,7 @@ export default class Service extends EventEmitter {
 	readonly name: string;
 	readonly cluster: PoopShitter;
 
-	ready: boolean = false;
+	ready = false;
 
 	constructor (name: string, cluster: PoopShitter) {
 

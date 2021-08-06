@@ -1,22 +1,22 @@
 export interface Show {
-    id: string;
-    title: string;
+	id: string;
+	title: string;
 	description: string;
-    poster_url: string;
+	poster_url: string;
 	banner_url: string;
-    seasons: Season[];
+	seasons: Season[];
 }
 
 export interface Season {
 	id: number;
-    title: string;
-    episodes: Episode[];
+	title: string;
+	episodes: Episode[];
 }
 
 export interface Episode {
-    id: number;
+	id: number;
 	title: string;
-    thumbnail_url: string;
+	thumbnail_url: string;
 	subtitles: Record<string, string>;
 	duration: number;
 	stream_url: string;

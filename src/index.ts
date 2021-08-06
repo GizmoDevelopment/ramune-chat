@@ -21,12 +21,12 @@ if (process.env.NODE_ENV === "production" && process.env.SENTRY_DSN) {
 		tracesSampleRate: 1.0
 	});
 
-	process.on("uncaughtException", (error) => {
+	process.on("uncaughtException", (error: Error) => {
 		logger.error(error);
 		Sentry.captureException(error);
 	});
 
-	process.on("unhandledRejection", (error) => {
+	process.on("unhandledRejection", (error: Error) => {
 		logger.error(error);
 		Sentry.captureException(error);
 	});

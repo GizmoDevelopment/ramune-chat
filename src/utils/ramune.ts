@@ -11,7 +11,7 @@ import { Show, Episode } from "@typings/show";
 export async function getShow (showId: string): Promise<Show|null> {
 	try {
 
-		const { data: response } = await axios.get(`${ SHOW_ENDPOINT }/shows/${ showId }`);
+		const { data: response } = await axios.get(`${SHOW_ENDPOINT}/shows/${showId}`);
 
 		if (response.type === "success" && response.data) {
 			return response.data;

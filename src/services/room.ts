@@ -84,12 +84,12 @@ class RoomService extends Service {
 		return room;
 	}
 
-	deleteRoom (room: Room) {
+	deleteRoom (room: Room): void {
 
 		delete this.roomNameToRoomIdMap[room.name];
 		this.rooms.delete(room.id);
 
-		logger.info(`[R-${ room.id }] Room deleted`);
+		logger.info(`[R-${room.id}] Room deleted`);
 	}
 
 	joinRoom (room: Room, user: User, socket: Socket): Room {
@@ -106,11 +106,11 @@ class RoomService extends Service {
 		this.ioServer.to(room.id).emit("ROOM:USER_JOIN", user);
 		socket.join(room.id);
 
-		logger.info(`[R-${ room.id }] [${ user.username }] Joined room`);
+		logger.info(`[R-${room.id}] [${user.username}] Joined room`);
 		return room;
 	}
 
-	leaveRoom (room: Room, user: User, socket: Socket) {
+	leaveRoom (room: Room, user: User, socket: Socket): void {
 
 		delete this.userIdToRoomIdMap[user.id];
 
@@ -126,14 +126,14 @@ class RoomService extends Service {
 			this.updateRoom(room, { host: room.users[0] });
 		}
 
-		logger.info(`[R-${ room.id }] [${ user.username }] Left room`);
+		logger.info(`[R-${room.id}] [${user.username}] Left room`);
 
 		if (room.users.length === 0) {
 			this.deleteRoom(room);
 		}
 	}
 
-	updateRoom (room: Room, data: UpdatableRoomProperties) {
+	updateRoom (room: Room, data: UpdatableRoomProperties): void {
 
 		const _room: Room = {
 			...room,
@@ -145,10 +145,10 @@ class RoomService extends Service {
 		// Broadcast
 		this.ioServer.to(room.id).emit("ROOM:UPDATE", data);
 
-		logger.info(`[R-${room.id}] Updated room with '${ JSON.stringify(data) }'`);
+		logger.info(`[R-${room.id}] Updated room with '${JSON.stringify(data)}'`);
 	}
 
-	updateRoomData (room: Room, data: RoomData) {
+	updateRoomData (room: Room, data: RoomData): void {
 
 		room.data = data;
 		this.rooms.set(room.id, room);
@@ -156,15 +156,15 @@ class RoomService extends Service {
 		// Broadcast
 		this.ioServer.to(room.id).emit("ROOM:UPDATE_ROOM_DATA", data);
 
-		logger.info(`[R-${ room.id }] Updated room data with '${ JSON.stringify({ show: data.show.title, episodeId: data.episodeId }) }'`);
+		logger.info(`[R-${room.id}] Updated room data with '${JSON.stringify({ show: data.show.title, episodeId: data.episodeId })}'`);
 	}
 
-	syncRoom (room: Room, data: RoomSyncData, socket: Socket) {
+	syncRoom (room: Room, data: RoomSyncData, socket: Socket): void {
 
 		// Broadcast
 		socket.to(room.id).emit("ROOM:SYNC", data);
 
-		logger.info(`[R-${room.id}] Synced room with data '${ JSON.stringify(data) }'`);
+		logger.info(`[R-${room.id}] Synced room with data '${JSON.stringify(data)}'`);
 	}
 
 	getUserInRoom (room: Room, userId: number): User | null {
