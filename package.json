@@ -20,7 +20,7 @@
 		"lint": "eslint src"
 	},
 	"devDependencies": {
-		"@gizmo-dev/eslint-config": "^1.0.0",
+		"@gizmo-dev/eslint-config": "^1.0.1",
 		"@sentry/types": "^6.10.0",
 		"@types/node": "^16.4.13",
 		"@types/sanitize-html": "^2.3.1",
