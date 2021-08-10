@@ -26,9 +26,7 @@
 			"@classes/*": ["classes/*"]
 		},
 		"plugins": [
-			{
-				"transform": "typescript-transform-paths"
-			},
+			{ "transform": "typescript-transform-paths" },
 		]
     }
 }
