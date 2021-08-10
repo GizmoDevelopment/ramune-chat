@@ -26,8 +26,8 @@ const CORS_ORIGIN_DOMAIN = process.env.CORS_ORIGIN_DOMAIN;
 class WebsocketService extends Service {
 
 	readonly ioServer: ioServer;
-	private readonly sockets: Map<string, User> = new Map();
-	private readonly userIdToSocketIdMap: Record<string, string> = {};
+	readonly sockets: Map<string, User> = new Map();
+	readonly userIdToSocketIdMap: Record<string, string> = {};
 
 	constructor (cluster: PoopShitter) {
 
@@ -50,21 +50,21 @@ class WebsocketService extends Service {
 		this.emit("ready");
 	}
 
-	private addAuthenticatedUser (socket: Socket, user: User): void {
+	addAuthenticatedUser (socket: Socket, user: User): void {
 		this.userIdToSocketIdMap[user.id] = socket.id;
 		this.sockets.set(socket.id, user);
 	}
 
-	private getAuthenticatedUser (socket: Socket): User | null {
+	getAuthenticatedUser (socket: Socket): User | null {
 		return this.sockets.get(socket.id) || null;
 	}
 
-	private removeAuthenticatedUser (socket: Socket, user: User): void {
+	removeAuthenticatedUser (socket: Socket, user: User): void {
 		delete this.userIdToSocketIdMap[user.id];
 		this.sockets.delete(socket.id);
 	}
 
-	private getSocketFromUser (user: User): Socket | null {
+	getSocketFromUser (user: User): Socket | null {
 
 		const targetSocketId = this.userIdToSocketIdMap[user.id];
 
@@ -78,7 +78,7 @@ class WebsocketService extends Service {
 		}
 	}
 
-	private handleSocketConnection (socket: Socket): void {
+	handleSocketConnection (socket: Socket): void {
 
 		logger.info(`[S-${socket.id}] Socket connected`);
 

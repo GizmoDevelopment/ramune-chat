@@ -8,7 +8,7 @@ import logger from "@utils/logger";
 // Types
 import { Show, Episode } from "@typings/show";
 
-export async function getShow (showId: string): Promise<Show|null> {
+export async function getShow (showId: string): Promise<Show | null> {
 	try {
 
 		const { data: response } = await axios.get(`${SHOW_ENDPOINT}/shows/${showId}`);
