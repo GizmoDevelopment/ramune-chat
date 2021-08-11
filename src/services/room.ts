@@ -1,6 +1,6 @@
 // Modules
+import { randomUUID } from "crypto";
 import { Server as ioServer } from "socket.io";
-import { v4 as uuidv4 } from "uuid";
 
 // Classes
 import PoopShitter from "@classes/PoopShitter";
@@ -71,7 +71,7 @@ class RoomService extends Service {
 	createRoom (options: CreateRoomOptions, user: User): Room {
 
 		const room: Room = {
-			id: uuidv4(),
+			id: randomUUID(),
 			name: sanitize(options.name),
 			locked: typeof options.password === "string",
 			host: user,

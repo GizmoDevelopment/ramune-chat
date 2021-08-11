@@ -1,5 +1,5 @@
 // Modules
-import { v4 as uuidv4 } from "uuid";
+import { randomUUID } from "crypto";
 
 // Utils
 import { sanitize } from "./essentials";
@@ -13,7 +13,7 @@ export function constructMessage (user: User, messageContent: string): Message {
 	const _messageContent = messageContent.trim().slice(0, 500);
 
 	return {
-		id: uuidv4(),
+		id: randomUUID(),
 		user,
 		content: user.badges.includes("DEVELOPER") ? _messageContent : sanitize(_messageContent)
 	};
