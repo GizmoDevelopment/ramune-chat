@@ -218,7 +218,7 @@ class WebsocketService extends Service {
 				roomService: RoomService = this.cluster.getService("room"),
 				targetRoom = roomService.getRoom(options.id);
 
-			if (options.password) {
+			if (typeof options.password === "string") {
 				if (options.password.length === 0) {
 					return callback(createErrorResponse("Password cannot be empty."));
 				} else if (options.password.length > LIMITS.ROOM_PASSWORD_LENGTH_LIMIT) {
