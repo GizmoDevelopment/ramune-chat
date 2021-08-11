@@ -20,6 +20,7 @@ import { getEpisodeById, getShow } from "@utils/ramune";
 import { isMessagePayload, Message, MessagePayload } from "@typings/message";
 
 // Constants
+import { LIMITS } from "@utils/constants";
 const WEBSOCKET_PORT = Number(process.env.WEBSOCKET_PORT);
 const CORS_ORIGIN_DOMAIN = process.env.CORS_ORIGIN_DOMAIN;
 
@@ -150,7 +151,22 @@ class WebsocketService extends Service {
 			 * - add user as host
 			 */
 
-			if (options.name.trim().length > 0) {
+			options.name = options.name.trim();
+
+			if (options.password) {
+				options.password = options.password.trim();
+			}
+
+			if (options.name.length > 0) {
+
+				if (options.password) {
+					if (options.password.length === 0) {
+						return callback(createErrorResponse("Password cannot be empty."));
+					} else if (options.password.length > LIMITS.ROOM_PASSWORD_LENGTH_LIMIT) {
+						return callback(createErrorResponse(`Password is longer than ${LIMITS.ROOM_PASSWORD_LENGTH_LIMIT} characters.`));
+					}
+				}
+
 				const
 					roomService: RoomService = this.cluster.getService("room"),
 					_targetRoom = roomService.getRoomByName(options.name);
@@ -173,7 +189,7 @@ class WebsocketService extends Service {
 					callback(createErrorResponse("Room already exists."));
 				}
 			} else {
-				callback(createErrorResponse("Room name cannot be empty."));
+				callback(createErrorResponse("Name cannot be empty."));
 			}
 		});
 
@@ -201,6 +217,14 @@ class WebsocketService extends Service {
 			const
 				roomService: RoomService = this.cluster.getService("room"),
 				targetRoom = roomService.getRoom(options.id);
+
+			if (options.password) {
+				if (options.password.length === 0) {
+					return callback(createErrorResponse("Password cannot be empty."));
+				} else if (options.password.length > LIMITS.ROOM_PASSWORD_LENGTH_LIMIT) {
+					return callback(createErrorResponse(`Password is longer than ${LIMITS.ROOM_PASSWORD_LENGTH_LIMIT} characters.`));
+				}
+			}
 
 			if (targetRoom) {
 
