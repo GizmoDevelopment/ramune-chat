@@ -14,7 +14,7 @@ import { constructMessage } from "@utils/message";
 // Types
 import { User } from "gizmo-api/lib/types";
 import { SocketCallback } from "@typings/main";
-import { CreateRoomOptions, ExportedRoom, InputRoomData, InputRoomProperties, isCreateRoomOptions, isInputRoomData, isInputRoomProperties, isJoinRoomOptions, isRoomSyncData, JoinRoomOptions, PartialRoom, RoomSyncData, UpdatableRoomProperties } from "@typings/room";
+import { CreateRoomOptions, ExportedRoom, InputRoomData, InputRoomProperties, isCreateRoomOptions, isInputRoomData, isInputRoomProperties, isJoinRoomOptions, isRoomSyncData, JoinRoomOptions, PartialRoom, Room, RoomSyncData, UpdatableRoomProperties } from "@typings/room";
 import RoomService from "./room";
 import { getEpisodeById, getShow } from "@utils/ramune";
 import { isMessagePayload, Message, MessagePayload } from "@typings/message";
@@ -98,7 +98,7 @@ class WebsocketService extends Service {
 
 						this.addAuthenticatedUser(socket, user);
 
-						callback(createSuccessResponse<User>(user));
+						callback(createSuccessResponse(user));
 
 						logger.info(`[S-${socket.id}] [${user.username}] Successfully authenticated`);
 					} else {
