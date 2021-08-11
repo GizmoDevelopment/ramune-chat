@@ -7,24 +7,38 @@ export interface PartialRoom {
 	readonly id: string;
 	readonly name: string;
 
-	host: User;
-	users: User[];
-	locked: boolean;
+	readonly locked: boolean;
+
+	readonly host: User;
+	readonly users: User[];
 }
 
 export interface ExportedRoom {
 
+	// Needed otherwise TS thinks ExportedRoom & Room are overlapping interfaces (fuck off)
+	readonly _exported: boolean;
+
 	readonly id: string;
 	readonly name: string;
 
-	host: User;
-	users: User[];
-	locked: boolean;
-	data: RoomData | null;
+	readonly locked: boolean;
+
+	readonly host: User;
+	readonly users: User[];
+	readonly data: RoomData | null;
 }
 
-export interface Room extends ExportedRoom {
+export interface Room {
+
+	readonly id: string;
+	readonly name: string;
+
+	locked: boolean;
 	password?: string;
+
+	host: User;
+	users: User[];
+	data: RoomData | null;
 }
 
 export interface RoomData {
