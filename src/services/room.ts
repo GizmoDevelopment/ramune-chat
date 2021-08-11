@@ -189,7 +189,7 @@ class RoomService extends Service {
 		return {
 			_exported: true,
 			id: room.id,
-			name: room.id,
+			name: room.name,
 			locked: room.locked,
 			host: room.host,
 			users: room.users,
