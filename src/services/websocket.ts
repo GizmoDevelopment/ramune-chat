@@ -30,6 +30,8 @@ class WebsocketService extends Service {
 	readonly sockets: Map<string, User> = new Map();
 	readonly userIdToSocketIdMap: Record<string, string> = {};
 
+	allowConnections = true;
+
 	constructor (cluster: PoopShitter) {
 
 		super("websocket", cluster);
@@ -45,6 +47,7 @@ class WebsocketService extends Service {
 
 		process.once("SIGINT", () => {
 			this.ioServer.close();
+			this.allowConnections = false;
 		});
 
 		logger.success(`Successfully started WebSocket server on port '${WEBSOCKET_PORT}'`);
@@ -80,6 +83,11 @@ class WebsocketService extends Service {
 	}
 
 	handleSocketConnection (socket: Socket): void {
+
+		if (!this.allowConnections) {
+			socket.disconnect(true);
+			return;
+		}
 
 		logger.info(`[S-${socket.id}] Socket connected`);
 
