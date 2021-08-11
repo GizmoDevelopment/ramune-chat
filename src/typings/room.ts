@@ -9,17 +9,22 @@ export interface PartialRoom {
 
 	host: User;
 	users: User[];
+	locked: boolean;
 }
 
-export interface Room {
+export interface ExportedRoom {
 
 	readonly id: string;
 	readonly name: string;
 
 	host: User;
 	users: User[];
+	locked: boolean;
 	data: RoomData | null;
+}
 
+export interface Room extends ExportedRoom {
+	password?: string;
 }
 
 export interface RoomData {
@@ -27,8 +32,14 @@ export interface RoomData {
 	episodeId: number;
 }
 
-export interface RoomOptions {
+export interface JoinRoomOptions {
+	id: string;
+	password?: string;
+}
+
+export interface CreateRoomOptions {
 	name: string;
+	password?: string;
 }
 
 export interface RoomSyncData {
@@ -51,8 +62,12 @@ export interface InputRoomProperties {
 
 // Type Guards
 
-export function isRoomOptions (x: unknown): x is RoomOptions {
-	return typeof x === "object" && x !== null && typeof (x as RoomOptions)?.name === "string";
+export function isJoinRoomOptions (x: unknown): x is JoinRoomOptions {
+	return typeof x === "object" && x !== null && typeof (x as JoinRoomOptions)?.id === "string";
+}
+
+export function isCreateRoomOptions (x: unknown): x is CreateRoomOptions {
+	return typeof x === "object" && x !== null && typeof (x as CreateRoomOptions)?.name === "string";
 }
 
 export function isInputRoomData (x: unknown): x is InputRoomData {

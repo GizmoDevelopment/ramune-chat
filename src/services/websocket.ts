@@ -14,7 +14,7 @@ import { constructMessage } from "@utils/message";
 // Types
 import { User } from "gizmo-api/lib/types";
 import { SocketCallback } from "@typings/main";
-import { InputRoomData, InputRoomProperties, isInputRoomData, isInputRoomProperties, isRoomOptions, isRoomSyncData, PartialRoom, Room, RoomOptions, RoomSyncData, UpdatableRoomProperties } from "@typings/room";
+import { CreateRoomOptions, InputRoomData, InputRoomProperties, isCreateRoomOptions, isInputRoomData, isInputRoomProperties, isJoinRoomOptions, isRoomSyncData, JoinRoomOptions, PartialRoom, Room, RoomSyncData, UpdatableRoomProperties } from "@typings/room";
 import RoomService from "./room";
 import { getEpisodeById, getShow } from "@utils/ramune";
 import { isMessagePayload, Message, MessagePayload } from "@typings/message";
@@ -129,13 +129,13 @@ class WebsocketService extends Service {
 			callback(createResponse("success", roomService.getRooms()));
 		});
 
-		socket.on("CLIENT:CREATE_ROOM", async (options: RoomOptions | unknown, callback: SocketCallback<Room>) => {
+		socket.on("CLIENT:CREATE_ROOM", async (options: CreateRoomOptions | unknown, callback: SocketCallback<Room>) => {
 
 			if (typeof callback !== "function")
 				return socket.emit("exception", createResponse("error", "You must provide a callback function.", "CLIENT:CREATE_ROOM"));
 
-			if (!isRoomOptions(options))
-				return callback(createResponse("error", "Invalid room data."));
+			if (!isCreateRoomOptions(options))
+				return callback(createResponse("error", "Invalid room options."));
 
 			const user = this.getAuthenticatedUser(socket);
 
@@ -177,13 +177,13 @@ class WebsocketService extends Service {
 			}
 		});
 
-		socket.on("CLIENT:JOIN_ROOM", async (roomId: string | unknown, callback: SocketCallback<Room>) => {
+		socket.on("CLIENT:JOIN_ROOM", async (options: JoinRoomOptions | unknown, callback: SocketCallback<Room>) => {
 
 			if (typeof callback !== "function")
 				return socket.emit("exception", createResponse("error", "You must provide a callback function.", "CLIENT:JOIN_ROOM"));
 
-			if (typeof roomId !== "string")
-				return callback(createResponse("error", "Invalid RoomID"));
+			if (!isJoinRoomOptions(options))
+				return callback(createResponse("error", "Invalid room options"));
 
 			const user = this.getAuthenticatedUser(socket);
 
@@ -193,15 +193,26 @@ class WebsocketService extends Service {
 			/**
 			 * - validate `roomId`
 			 * - check if room exists
+			 * - validate password if room is locked
 			 * - leave the room the user is currently in
 			 * - join room
 			 */
 
 			const
 				roomService: RoomService = this.cluster.getService("room"),
-				targetRoom = roomService.getRoom(roomId);
+				targetRoom = roomService.getRoom(options.id);
 
 			if (targetRoom) {
+
+				if (targetRoom.locked) {
+					if (typeof options.password === "string") {
+						if (!roomService.isValidRoomPassword(targetRoom, options.password)) {
+							return callback(createResponse("error", "Invalid password."));
+						}
+					} else {
+						return callback(createResponse("error", "The room requires a password."));
+					}
+				}
 
 				const currentRoom = roomService.getUserCurrentRoom(user);
 
