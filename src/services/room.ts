@@ -9,7 +9,7 @@ import WebsocketService from "./websocket";
 
 // Utils
 import logger from "@utils/logger";
-import { sanitize } from "@utils/essentials";
+import { generatePasswordHash, sanitize } from "@utils/essentials";
 
 // Types
 import { User } from "gizmo-api/lib/types";
@@ -81,7 +81,7 @@ class RoomService extends Service {
 
 		if (typeof options.password === "string") {
 			room.locked = true;
-			room.password = options.password;
+			room.password = generatePasswordHash(options.password);
 		}
 
 		this.rooms.set(room.id, room);
@@ -182,7 +182,7 @@ class RoomService extends Service {
 	}
 
 	isValidRoomPassword (room: Room, password: string): boolean {
-		return room.password === password;
+		return room.password === generatePasswordHash(password);
 	}
 
 	exportRoom (room: Room): ExportedRoom {

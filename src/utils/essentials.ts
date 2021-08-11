@@ -1,4 +1,5 @@
 // Modules
+import { randomBytes, pbkdf2Sync } from "crypto";
 import sanitizeHtml from "sanitize-html";
 
 // Types
@@ -43,4 +44,11 @@ export function sanitize (input: string, options?: sanitizeHtml.IOptions): strin
 		disallowedTagsMode: "recursiveEscape",
 		...(options || {})
 	});
+}
+
+export function generatePasswordHash (password: string): string {
+
+	const salt = randomBytes(16).toString("hex");
+
+	return pbkdf2Sync(password, salt, 1000, 64, "sha512").toString("hex");
 }
