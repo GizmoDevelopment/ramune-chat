@@ -14,7 +14,7 @@
 	},
 	"scripts": {
 		"prepare": "ts-patch install -s",
-		"start": "ts-node -r tsconfig-paths/register -r dotenv/config ./src/index.ts",
+		"start": "ts-node -r dotenv/config ./src/index.ts",
 		"start:production": "node -r dotenv/config ./build/index.js",
 		"build": "rm -rf ./build && tsc",
 		"lint": "eslint src"
