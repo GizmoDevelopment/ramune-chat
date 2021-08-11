@@ -1,7 +1,6 @@
-export interface BaseResponse {
+interface BaseResponse {
 	type: "success" | "error";
 	protocol?: string;
-	message?: string;
 }
 
 export interface SuccessResponse<T> extends BaseResponse {

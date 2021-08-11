@@ -2,27 +2,37 @@
 import sanitizeHtml from "sanitize-html";
 
 // Types
-import { BaseResponse, ErrorResponse, SuccessResponse } from "@typings/main";
+import { ErrorResponse, SuccessResponse } from "@typings/main";
 
-export function createResponse<T> (type: "success", data: T, protocol?: string): SuccessResponse<T>;
-export function createResponse (type: "error", message: string, protocol?: string): ErrorResponse;
-export function createResponse (type: "success" | "error", dataOrMessage: any, protocol?: string): unknown {
 
-	const res: BaseResponse = {
-		type
+// TODO: Rewrite using function overloads, since that has fucked me in the ass in the past
+
+export function createSuccessResponse<T> (data: T, protocol?: string): SuccessResponse<T> {
+
+	const response: SuccessResponse<T> = {
+		type: "success",
+		data
 	};
 
 	if (protocol) {
-		res.protocol = protocol;
+		response.protocol = protocol;
 	}
 
-	if (type === "success") {
-		(res as SuccessResponse<unknown>).data = dataOrMessage;
-	} else {
-		(res as ErrorResponse).message = dataOrMessage;
+	return response;
+}
+
+export function createErrorResponse (message: string, protocol?: string): ErrorResponse {
+
+	const response: ErrorResponse = {
+		type: "error",
+		message
+	};
+
+	if (protocol) {
+		response.protocol = protocol;
 	}
 
-	return res;
+	return response;
 }
 
 export function sanitize (input: string, options?: sanitizeHtml.IOptions): string {
