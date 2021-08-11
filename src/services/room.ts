@@ -13,7 +13,7 @@ import { sanitize } from "@utils/essentials";
 
 // Types
 import { User } from "gizmo-api/lib/types";
-import { CreateRoomOptions, PartialRoom, Room, RoomData, RoomSyncData, UpdatableRoomProperties } from "@typings/room";
+import { CreateRoomOptions, ExportedRoom, PartialRoom, Room, RoomData, RoomSyncData, UpdatableRoomProperties } from "@typings/room";
 import { Socket } from "socket.io";
 
 class RoomService extends Service {
@@ -73,7 +73,7 @@ class RoomService extends Service {
 		const room: Room = {
 			id: uuidv4(),
 			name: sanitize(options.name),
-			locked: false,
+			locked: typeof options.password === "string",
 			host: user,
 			users: [],
 			data: null
@@ -183,6 +183,18 @@ class RoomService extends Service {
 
 	isValidRoomPassword (room: Room, password: string): boolean {
 		return room.password === password;
+	}
+
+	exportRoom (room: Room): ExportedRoom {
+		return {
+			_exported: true,
+			id: room.id,
+			name: room.id,
+			locked: room.locked,
+			host: room.host,
+			users: room.users,
+			data: room.data
+		};
 	}
 
 }
