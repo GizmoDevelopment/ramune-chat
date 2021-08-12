@@ -85,7 +85,7 @@ export function isCreateRoomOptions (x: unknown): x is CreateRoomOptions {
 }
 
 export function isInputRoomData (x: unknown): x is InputRoomData {
-	return typeof x === "object" && x !== null && typeof (x as InputRoomData)?.showId === "string" && typeof (x as InputRoomData)?.episodeId === "string";
+	return typeof x === "object" && x !== null && typeof (x as InputRoomData)?.showId === "string" && typeof (x as InputRoomData)?.episodeId === "number";
 }
 
 export function isInputRoomProperties (x: unknown): x is InputRoomProperties {
