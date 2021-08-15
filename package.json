@@ -10,8 +10,11 @@
 	},
 	"main": "build/index.js",
 	"engines": {
-		"node": "14"
+		"node": ">=16"
 	},
+	"os": [
+		"!win32"
+	],
 	"scripts": {
 		"prepare": "ts-patch install -s",
 		"start": "ts-node -r dotenv/config ./src/index.ts",
