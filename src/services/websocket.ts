@@ -553,6 +553,40 @@ class WebsocketService extends Service {
 			}
 		});
 
+		socket.on("CLIENT:START_TYPING", () => {
+
+			const user = this.getAuthenticatedUser(socket);
+
+			if (!user)
+				return;
+
+			const
+				roomService: RoomService = this.cluster.getService("room"),
+				currentRoom = roomService.getUserCurrentRoom(user);
+
+			if (currentRoom) {
+				this.ioServer.to(currentRoom.id).emit("ROOM:USER_START_TYPING", user.id);
+			}
+
+		});
+
+		socket.on("CLIENT:STOP_TYPING", () => {
+
+			const user = this.getAuthenticatedUser(socket);
+
+			if (!user)
+				return;
+
+			const
+				roomService: RoomService = this.cluster.getService("room"),
+				currentRoom = roomService.getUserCurrentRoom(user);
+
+			if (currentRoom) {
+				this.ioServer.to(currentRoom.id).emit("ROOM:USER_STOP_TYPING", user.id);
+			}
+
+		});
+
 		socket.on("disconnect", (reason: string) => {
 
 			const user = this.getAuthenticatedUser(socket);
