@@ -37,11 +37,11 @@ function warn (message: string): void {
 /**
  * Logs an error message to the console
  */
-function error (message: string | Error): void {
-	if (typeof message === "string") {
-		log(message, COLORS.Red);
-	} else if (message.stack) {
+function error (message: unknown): void {
+	if (message instanceof Error && message.stack) {
 		log(message.stack, COLORS.Red);
+	} else {
+		log(`${message}`, COLORS.Red);
 	}
 }
 

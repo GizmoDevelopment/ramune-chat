@@ -19,7 +19,7 @@ export async function getShow (showId: string): Promise<Show | null> {
 			throw new Error(response.message);
 		}
 
-	} catch (err) {
+	} catch (err: unknown) {
 		logger.error(err);
 		return null;
 	}
