@@ -61,6 +61,11 @@ export interface RoomSyncData {
 	currentTime: number;
 }
 
+export interface RoomSyncClientData {
+	userId: number;
+	data: RoomSyncData;
+}
+
 export interface UpdatableRoomProperties {
 	host?: User;
 }
@@ -94,4 +99,8 @@ export function isInputRoomProperties (x: unknown): x is InputRoomProperties {
 
 export function isRoomSyncData (x: unknown): x is RoomSyncData {
 	return typeof x === "object" && x !== null && typeof (x as RoomSyncData)?.currentTime === "number" && typeof (x as RoomSyncData)?.playing === "boolean";
+}
+
+export function isRoomSyncClientData (x: unknown): x is RoomSyncClientData {
+	return typeof x === "object" && x !== null && typeof (x as RoomSyncClientData)?.userId === "number" && isRoomSyncData((x as RoomSyncClientData)?.data);
 }

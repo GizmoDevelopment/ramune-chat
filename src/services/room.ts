@@ -174,6 +174,14 @@ class RoomService extends Service {
 		logger.info(`[R-${room.id}] Synced room with data '${JSON.stringify(data)}'`);
 	}
 
+	syncRoomClient (room: Room, data: RoomSyncData, socket: Socket): void {
+
+		// Broadcast
+		socket.emit("ROOM:SYNC", data);
+
+		logger.info(`[R-${room.id}] Synced room with data '${JSON.stringify(data)}' to [S-${socket.id}]`);
+	}
+
 	getUserInRoom (room: Room, userId: number): User | null {
 
 		const targetUser = room.users.find(({ id }) => id === userId);

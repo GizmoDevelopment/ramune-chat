@@ -14,7 +14,7 @@ import { constructMessage } from "@utils/message";
 // Types
 import { User } from "gizmo-api/lib/types";
 import { SocketCallback } from "@typings/main";
-import { CreateRoomOptions, ExportedRoom, InputRoomData, InputRoomProperties, isCreateRoomOptions, isInputRoomData, isInputRoomProperties, isJoinRoomOptions, isRoomSyncData, JoinRoomOptions, PartialRoom, Room, RoomSyncData, UpdatableRoomProperties } from "@typings/room";
+import { CreateRoomOptions, ExportedRoom, InputRoomData, InputRoomProperties, isCreateRoomOptions, isInputRoomData, isInputRoomProperties, isJoinRoomOptions, isRoomSyncClientData, isRoomSyncData, JoinRoomOptions, PartialRoom, RoomSyncClientData, RoomSyncData, UpdatableRoomProperties } from "@typings/room";
 import RoomService from "./room";
 import { getEpisodeById, getShow } from "@utils/ramune";
 import { isMessagePayload, Message, MessagePayload } from "@typings/message";
@@ -453,9 +453,67 @@ class WebsocketService extends Service {
 					}, socket);
 
 					callback(createSuccessResponse("Successfully synced room."));
-
 				} else {
 					callback(createErrorResponse("You aren't the room host."));
+				}
+			} else {
+				callback(createErrorResponse("You aren't in a room."));
+			}
+		});
+
+		socket.on("CLIENT:SYNC_ROOM_CLIENT", async (syncData: RoomSyncClientData | unknown, callback: SocketCallback<string>) => {
+
+			if (typeof callback !== "function")
+				return socket.emit("exception", createErrorResponse("You must provide a callback function.", "CLIENT:SYNC_ROOM_CLIENT"));
+
+			if (!isRoomSyncClientData(syncData))
+				return callback(createErrorResponse("Invalid room client sync data."));
+
+			const user = this.getAuthenticatedUser(socket);
+
+			if (!user)
+				return callback(createErrorResponse("You must be authenticated."));
+
+			/**
+			 * - validate `syncData`
+			 * - check whether the user is in a room
+			 * - check whether the user is the room host
+			 * - send RoomSyncData to everyone with ROOM:SYNC
+			 */
+
+			const startTimestamp = Date.now();
+
+			const
+				roomService: RoomService = this.cluster.getService("room"),
+				currentRoom = roomService.getUserCurrentRoom(user);
+
+			if (currentRoom) {
+
+				const targetUser = roomService.getUserInRoom(currentRoom, syncData.userId);
+
+				if (targetUser) {
+
+					const targetSocket = this.getSocketFromUser(targetUser);
+
+					if (targetSocket) {
+						if (currentRoom.host.id === user.id) {
+
+							const finishTimestamp = Date.now();
+
+							roomService.syncRoomClient(currentRoom, {
+								currentTime: syncData.data.currentTime + (finishTimestamp - startTimestamp) / 1000,
+								playing: syncData.data.playing
+							}, targetSocket);
+
+							callback(createSuccessResponse("Successfully synced room client."));
+						} else {
+							callback(createErrorResponse("You aren't the room host."));
+						}
+					} else {
+						callback(createErrorResponse("Something went wrong."));
+					}
+				} else {
+					callback(createErrorResponse("Could not find user in room."));
 				}
 			} else {
 				callback(createErrorResponse("You aren't in a room."));
@@ -585,6 +643,27 @@ class WebsocketService extends Service {
 				this.ioServer.to(currentRoom.id).emit("ROOM:USER_STOP_TYPING", user.id);
 			}
 
+		});
+
+		socket.on("CLIENT:REQUEST_ROOM_SYNC", () => {
+
+			const user = this.getAuthenticatedUser(socket);
+
+			if (!user)
+				return;
+
+			const
+				roomService: RoomService = this.cluster.getService("room"),
+				currentRoom = roomService.getUserCurrentRoom(user);
+
+			if (currentRoom) {
+
+				const hostSocket = this.getSocketFromUser(currentRoom.host);
+
+				if (hostSocket) {
+					hostSocket.emit("ROOM:CLIENT_REQUEST_ROOM_SYNC", user.id);
+				}
+			}
 		});
 
 		socket.on("disconnect", (reason: string) => {
