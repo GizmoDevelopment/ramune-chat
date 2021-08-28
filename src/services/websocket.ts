@@ -143,13 +143,13 @@ class WebsocketService extends Service {
 			if (typeof callback !== "function")
 				return socket.emit("exception", createErrorResponse("You must provide a callback function.", "CLIENT:CREATE_ROOM"));
 
-			if (!isCreateRoomOptions(options))
-				return callback(createErrorResponse("Invalid room options."));
-
 			const user = this.getAuthenticatedUser(socket);
 
 			if (!user)
 				return callback(createErrorResponse("You must be authenticated."));
+
+			if (!isCreateRoomOptions(options))
+				return callback(createErrorResponse("Invalid room options."));
 
 			/**
 			 * - validate `options`
@@ -206,13 +206,13 @@ class WebsocketService extends Service {
 			if (typeof callback !== "function")
 				return socket.emit("exception", createErrorResponse("You must provide a callback function.", "CLIENT:JOIN_ROOM"));
 
-			if (!isJoinRoomOptions(options))
-				return callback(createErrorResponse("Invalid room options"));
-
 			const user = this.getAuthenticatedUser(socket);
 
 			if (!user)
 				return callback(createErrorResponse("You must be authenticated."));
+
+			if (!isJoinRoomOptions(options))
+				return callback(createErrorResponse("Invalid room options"));
 
 			/**
 			 * - validate `roomId`
@@ -297,13 +297,13 @@ class WebsocketService extends Service {
 			if (typeof callback !== "function")
 				return socket.emit("exception", createErrorResponse("You must provide a callback function.", "CLIENT:UPDATE_ROOM"));
 
-			if (!isInputRoomProperties(newRoom))
-				return callback(createErrorResponse("Invalid room properties."));
-
 			const user = this.getAuthenticatedUser(socket);
 
 			if (!user)
 				return callback(createErrorResponse("You must be authenticated."));
+
+			if (!isInputRoomProperties(newRoom))
+				return callback(createErrorResponse("Invalid room properties."));
 
 			/**
 			 * - validate `newRoom`
@@ -353,13 +353,13 @@ class WebsocketService extends Service {
 			if (typeof callback !== "function")
 				return socket.emit("exception", createErrorResponse("You must provide a callback function.", "CLIENT:UPDATE_ROOM_DATA"));
 
-			if (!isInputRoomData(roomData))
-				return callback(createErrorResponse("Invalid room data."));
-
 			const user = this.getAuthenticatedUser(socket);
 
 			if (!user)
 				return callback(createErrorResponse("You must be authenticated."));
+
+			if (!isInputRoomData(roomData))
+				return callback(createErrorResponse("Invalid room data."));
 
 			/**
 			 * - validate `roomData`
@@ -421,13 +421,13 @@ class WebsocketService extends Service {
 			if (typeof callback !== "function")
 				return socket.emit("exception", createErrorResponse("You must provide a callback function.", "CLIENT:SYNC_ROOM"));
 
-			if (!isRoomSyncData(syncData))
-				return callback(createErrorResponse("Invalid room sync data."));
-
 			const user = this.getAuthenticatedUser(socket);
 
 			if (!user)
 				return callback(createErrorResponse("You must be authenticated."));
+
+			if (!isRoomSyncData(syncData))
+				return callback(createErrorResponse("Invalid room sync data."));
 
 			/**
 			 * - validate `syncData`
@@ -466,13 +466,13 @@ class WebsocketService extends Service {
 			if (typeof callback !== "function")
 				return socket.emit("exception", createErrorResponse("You must provide a callback function.", "CLIENT:SYNC_ROOM_CLIENT"));
 
-			if (!isRoomSyncClientData(syncData))
-				return callback(createErrorResponse("Invalid room client sync data."));
-
 			const user = this.getAuthenticatedUser(socket);
 
 			if (!user)
 				return callback(createErrorResponse("You must be authenticated."));
+
+			if (!isRoomSyncClientData(syncData))
+				return callback(createErrorResponse("Invalid room client sync data."));
 
 			/**
 			 * - validate `syncData`
@@ -525,13 +525,13 @@ class WebsocketService extends Service {
 			if (typeof callback !== "function")
 				return socket.emit("exception", createErrorResponse("You must provide a callback function.", "CLIENT:SEND_MESSAGE"));
 
-			if (!isMessagePayload(data))
-				return callback(createErrorResponse("Invalid message payload."));
-
 			const user = this.getAuthenticatedUser(socket);
 
 			if (!user)
 				return callback(createErrorResponse("You must be authenticated."));
+
+			if (!isMessagePayload(data))
+				return callback(createErrorResponse("Invalid message payload."));
 
 			if (data.content.trim().length > 0) {
 
@@ -571,13 +571,13 @@ class WebsocketService extends Service {
 			if (typeof callback !== "function")
 				return socket.emit("exception", createErrorResponse("You must provide a callback function.", "CLIENT:KICK_USER"));
 
-			if (typeof userId !== "number")
-				return callback(createErrorResponse("Invalid UserID."));
-
 			const user = this.getAuthenticatedUser(socket);
 
 			if (!user)
 				return callback(createErrorResponse("You must be authenticated."));
+
+			if (typeof userId !== "number")
+				return callback(createErrorResponse("Invalid UserID."));
 
 			const
 				roomService: RoomService = this.cluster.getService("room"),
