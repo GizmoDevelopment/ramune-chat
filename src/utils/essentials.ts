@@ -6,7 +6,8 @@ import sanitizeHtml from "sanitize-html";
 import { ErrorResponse, SuccessResponse } from "@typings/main";
 
 // Variables
-const salt = randomBytes(16).toString("hex");
+const passwordSalt = randomBytes(16).toString("hex");
+const hashSalt = randomBytes(16).toString("hex");
 
 // TODO: Rewrite using function overloads, since that has fucked me in the ass in the past
 
@@ -49,5 +50,9 @@ export function sanitize (input: string, options?: sanitizeHtml.IOptions): strin
 }
 
 export function generatePasswordHash (password: string): string {
-	return pbkdf2Sync(password, salt, 1000, 64, "sha512").toString("hex");
+	return pbkdf2Sync(password, passwordSalt, 1000, 64, "sha512").toString("hex");
+}
+
+export function generateHash (key: string): string {
+	return pbkdf2Sync(key, hashSalt, 64, 8, "sha512").toString("hex");
 }

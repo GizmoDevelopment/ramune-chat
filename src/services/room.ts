@@ -1,5 +1,4 @@
 // Modules
-import { randomUUID } from "crypto";
 import { Server as ioServer } from "socket.io";
 
 // Classes
@@ -9,7 +8,7 @@ import WebsocketService from "./websocket";
 
 // Utils
 import logger from "@utils/logger";
-import { generatePasswordHash, sanitize } from "@utils/essentials";
+import { generateHash, generatePasswordHash, sanitize } from "@utils/essentials";
 
 // Types
 import { User } from "gizmo-api/lib/types";
@@ -71,7 +70,7 @@ class RoomService extends Service {
 	createRoom (options: CreateRoomOptions, user: User): Room {
 
 		const room: Room = {
-			id: randomUUID(),
+			id: generateHash(options.name),
 			name: sanitize(options.name),
 			locked: typeof options.password === "string",
 			host: user,
