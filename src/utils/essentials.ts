@@ -54,5 +54,5 @@ export function generatePasswordHash (password: string): string {
 }
 
 export function generateHash (key: string): string {
-	return pbkdf2Sync(key, hashSalt, 64, 8, "sha512").toString("hex");
+	return pbkdf2Sync(key, hashSalt, 64, 4, "sha512").toString("hex");
 }
