@@ -24,7 +24,7 @@
 	},
 	"devDependencies": {
 		"@gizmo-dev/eslint-config": "^1.0.25",
-		"@sentry/types": "^6.12.0",
+		"@sentry/types": "^6.13.1",
 		"@types/node": "^16.4.13",
 		"@types/sanitize-html": "^2.3.1",
 		"@typescript-eslint/eslint-plugin": "^4.31.1",
