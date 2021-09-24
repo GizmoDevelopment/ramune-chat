@@ -2,6 +2,7 @@ export interface Show {
 	id: string;
 	title: string;
 	description: string;
+	format?: ShowFormat;
 	poster_url: string;
 	banner_url: string;
 	seasons: Season[];
@@ -22,3 +23,5 @@ export interface Episode {
 	stream_url: string;
 	data: unknown;
 }
+
+export type ShowFormat = "movie";
