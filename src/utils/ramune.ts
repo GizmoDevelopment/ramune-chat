@@ -27,15 +27,22 @@ export async function getShow (showId: string): Promise<Show | null> {
 
 export function getEpisodeById (show: Show, episodeId: number): Episode | null {
 
-	let _episode: Episode | null = null;
+	let accumulativeLength = 0;
 
-	show.seasons.forEach(({ episodes }) => {
-		episodes.forEach((episode: Episode) => {
-			if (episode.id === episodeId) {
-				_episode = episode;
+	for (let i = 0; i <= show.seasons.length; i++) {
+
+		const season = show.seasons[i];
+
+		if (season) {
+
+			const _accumulativeLength = accumulativeLength;
+			accumulativeLength += season.episodes.length;
+
+			if (episodeId <= accumulativeLength) {
+				return season.episodes[episodeId - _accumulativeLength - 1];
 			}
-		});
-	});
+		}
+	}
 
-	return _episode;
+	return null;
 }
