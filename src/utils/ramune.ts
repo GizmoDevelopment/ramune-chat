@@ -7,13 +7,14 @@ import logger from "@utils/logger";
 
 // Types
 import { Show, Episode } from "@typings/show";
+import { APIResponse } from "@typings/main";
 
 export async function getShow (showId: string): Promise<Show | null> {
 	try {
 
-		const { data: response } = <any>await axios.get(`${SHOW_ENDPOINT}/shows/${showId}`);
+		const { data: response }: APIResponse<Show> = await axios.get(`${SHOW_ENDPOINT}/shows/${showId}`);
 
-		if (response.type === "success" && response.data) {
+		if (response.type === "success") {
 			return response.data;
 		} else {
 			throw Error(response.message);

@@ -17,3 +17,7 @@ export type ServerResponse<T> = SuccessResponse<T> | ErrorResponse;
 
 export type SocketCallback<T> = (response: ServerResponse<T>) => void;
 export type SocketErrorCallback = (response: ErrorResponse) => void;
+
+export interface APIResponse<T> {
+	data: SuccessResponse<T> | ErrorResponse;
+}
