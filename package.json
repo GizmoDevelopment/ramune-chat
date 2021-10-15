@@ -42,7 +42,7 @@
 		"dotenv": "^10.0.0",
 		"gizmo-api": "^1.1.0",
 		"sanitize-html": "^2.5.2",
-		"socket.io": "^4.2.0"
+		"socket.io": "^4.3.0"
 	},
 	"optionalDependencies": {
 		"bufferutil": "^4.0.5",
