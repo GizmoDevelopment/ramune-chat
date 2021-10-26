@@ -1,6 +1,6 @@
 // Types
-import { User } from "gizmo-api/lib/types";
-import { Show } from "@typings/show";
+import type { User } from "gizmo-api/lib/types";
+import type { Show } from "@typings/show";
 
 export interface PartialRoom {
 

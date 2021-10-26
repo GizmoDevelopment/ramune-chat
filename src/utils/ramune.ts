@@ -6,8 +6,8 @@ import { SHOW_ENDPOINT } from "@utils/constants";
 import logger from "@utils/logger";
 
 // Types
-import { Show, Episode } from "@typings/show";
-import { APIResponse } from "@typings/main";
+import type { Show, Episode } from "@typings/show";
+import type { APIResponse } from "@typings/main";
 
 export async function getShow (showId: string): Promise<Show | null> {
 	try {

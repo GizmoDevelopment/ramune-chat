@@ -2,7 +2,7 @@
 import EventEmitter from "events";
 
 // Classes
-import PoopShitter from "./PoopShitter";
+import type PoopShitter from "./PoopShitter";
 
 export default class Service extends EventEmitter {
 

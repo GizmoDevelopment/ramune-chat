@@ -3,7 +3,7 @@ import { randomBytes, pbkdf2Sync } from "crypto";
 import sanitizeHtml from "sanitize-html";
 
 // Types
-import { ErrorResponse, SuccessResponse } from "@typings/main";
+import type { ErrorResponse, SuccessResponse } from "@typings/main";
 
 // Variables
 const passwordSalt = randomBytes(16).toString("hex");

@@ -1,19 +1,17 @@
-// Modules
-import { Server as ioServer } from "socket.io";
-
 // Classes
-import PoopShitter from "@classes/PoopShitter";
 import Service from "@classes/Service";
-import WebsocketService from "./websocket";
+import type PoopShitter from "@classes/PoopShitter";
+import type WebsocketService from "./websocket";
 
 // Utils
 import logger from "@utils/logger";
 import { generateHash, generatePasswordHash, sanitize } from "@utils/essentials";
 
 // Types
-import { User } from "gizmo-api/lib/types";
-import { CreateRoomOptions, ExportedRoom, PartialRoom, Room, RoomData, RoomSyncData, UpdatableRoomProperties } from "@typings/room";
-import { Socket } from "socket.io";
+import type { Server as ioServer } from "socket.io";
+import type { User } from "gizmo-api/lib/types";
+import type { CreateRoomOptions, ExportedRoom, PartialRoom, Room, RoomData, RoomSyncData, UpdatableRoomProperties } from "@typings/room";
+import type { Socket } from "socket.io";
 
 class RoomService extends Service {
 
@@ -21,12 +19,12 @@ class RoomService extends Service {
 	userIdToRoomIdMap: Record<string, string> = {};
 	roomNameToRoomIdMap: Record<string, string> = {};
 
-	get ioServer (): ioServer {
-		return (this.cluster.getService("websocket") as WebsocketService).ioServer;
-	}
-
 	constructor (cluster: PoopShitter) {
 		super("room", cluster);
+	}
+
+	get ioServer (): ioServer {
+		return (this.cluster.getService("websocket") as WebsocketService).ioServer;
 	}
 
 	getRooms (): PartialRoom[] {

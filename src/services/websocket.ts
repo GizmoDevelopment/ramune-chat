@@ -1,23 +1,36 @@
 // Modules
-import { Server as ioServer, Socket } from "socket.io";
+import { Server as ioServer } from "socket.io";
 import { getAuthenticatedUser } from "gizmo-api";
 
 // Classes
 import Service from "@classes/Service";
-import PoopShitter from "@classes/PoopShitter";
+import type PoopShitter from "@classes/PoopShitter";
 
 // Utils
 import logger from "@utils/logger";
 import { createErrorResponse, createSuccessResponse } from "@utils/essentials";
 import { constructMessage } from "@utils/message";
+import { isCreateRoomOptions, isInputRoomData, isInputRoomProperties, isJoinRoomOptions, isRoomSyncClientData, isRoomSyncData } from "@typings/room";
+import { isMessagePayload } from "@typings/message";
+import { getEpisodeById, getShow } from "@utils/ramune";
 
 // Types
-import { User } from "gizmo-api/lib/types";
-import { SocketCallback } from "@typings/main";
-import { CreateRoomOptions, ExportedRoom, InputRoomData, InputRoomProperties, isCreateRoomOptions, isInputRoomData, isInputRoomProperties, isJoinRoomOptions, isRoomSyncClientData, isRoomSyncData, JoinRoomOptions, PartialRoom, RoomSyncClientData, RoomSyncData, UpdatableRoomProperties } from "@typings/room";
-import RoomService from "./room";
-import { getEpisodeById, getShow } from "@utils/ramune";
-import { isMessagePayload, Message, MessagePayload } from "@typings/message";
+import type { Socket } from "socket.io";
+import type { User } from "gizmo-api/lib/types";
+import type { SocketCallback } from "@typings/main";
+import type {
+	CreateRoomOptions,
+	ExportedRoom,
+	InputRoomData,
+	InputRoomProperties,
+	JoinRoomOptions,
+	PartialRoom,
+	RoomSyncClientData,
+	RoomSyncData,
+	UpdatableRoomProperties
+} from "@typings/room";
+import type RoomService from "./room";
+import type { Message, MessagePayload } from "@typings/message";
 
 // Constants
 import { LIMITS } from "@utils/constants";
