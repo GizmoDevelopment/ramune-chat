@@ -40,7 +40,7 @@
 		"@sentry/tracing": "^6.13.2",
 		"axios": "^0.24.0",
 		"dotenv": "^10.0.0",
-		"gizmo-api": "^1.1.0",
+		"gizmo-api": "^1.1.1",
 		"sanitize-html": "^2.5.2",
 		"socket.io": "^4.3.1"
 	},
