@@ -5,5 +5,6 @@ declare namespace NodeJS {
 		WEBSOCKET_PORT?: string;
 		SHOW_ENDPOINT?: string;
 		CORS_ORIGIN_DOMAIN?: string;
+		BOT_TOKEN?: string;
 	}
 }
