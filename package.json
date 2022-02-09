@@ -8,7 +8,7 @@
 		"type": "git",
 		"url": "git+https://github.com/GizmoDevelopment/gizmo-chat-backend.git"
 	},
-	"main": "build/index.js",
+	"main": "build/src/index.js",
 	"engines": {
 		"node": ">=16"
 	},
@@ -16,11 +16,11 @@
 		"!win32"
 	],
 	"scripts": {
-		"prepare": "ts-patch install -s",
-		"start": "ts-node -r dotenv/config ./src/index.ts",
-		"start:production": "node -r dotenv/config ./build/index.js",
+		"prepare": "npx ts-patch install -s",
+		"lint": "eslint src",
 		"build": "rm -rf ./build && tsc",
-		"lint": "eslint src"
+		"start": "ts-node -r dotenv/config ./src/index.ts",
+		"start:production": "node -r dotenv/config ./build/src/index.js"
 	},
 	"devDependencies": {
 		"@gizmo-dev/eslint-config": "^1.0.28",
