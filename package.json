@@ -38,7 +38,7 @@
 	"dependencies": {
 		"@sentry/node": "^6.17.6",
 		"@sentry/tracing": "^6.17.6",
-		"axios": "^0.25.0",
+		"axios": "^0.26.0",
 		"dotenv": "^10.0.0",
 		"gizmo-api": "^1.1.1",
 		"sanitize-html": "^2.7.0",
