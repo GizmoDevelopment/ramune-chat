@@ -23,26 +23,26 @@
 		"start:production": "node -r dotenv/config ./build/src/index.js"
 	},
 	"devDependencies": {
-		"@gizmo-dev/eslint-config": "^1.0.28",
-		"@sentry/types": "^6.17.6",
+		"@gizmo-dev/eslint-config": "^1.0.29",
+		"@sentry/types": "^6.18.1",
 		"@types/node": "^16.4.13",
 		"@types/sanitize-html": "^2.6.2",
-		"@typescript-eslint/eslint-plugin": "^5.11.0",
-		"@typescript-eslint/parser": "^5.11.0",
-		"eslint": "^8.8.0",
-		"ts-node": "^10.5.0",
+		"@typescript-eslint/eslint-plugin": "^5.13.0",
+		"@typescript-eslint/parser": "^5.13.0",
+		"eslint": "^8.10.0",
+		"ts-node": "^10.7.0",
 		"ts-patch": "^2.0.1",
-		"typescript": "^4.5.5",
+		"typescript": "^4.6.2",
 		"typescript-transform-paths": "^3.3.1"
 	},
 	"dependencies": {
-		"@sentry/node": "^6.17.6",
-		"@sentry/tracing": "^6.17.6",
-		"axios": "^0.25.0",
-		"dotenv": "^10.0.0",
-		"gizmo-api": "^1.1.1",
+		"@sentry/node": "^6.18.1",
+		"@sentry/tracing": "^6.18.1",
+		"axios": "^0.26.0",
+		"dotenv": "^16.0.0",
+		"gizmo-api": "^1.1.2",
 		"sanitize-html": "^2.7.0",
-		"socket.io": "^4.3.2"
+		"socket.io": "^4.4.1"
 	},
 	"optionalDependencies": {
 		"bufferutil": "^4.0.6",
