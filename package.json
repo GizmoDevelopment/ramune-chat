@@ -23,7 +23,7 @@
 		"start:production": "node -r dotenv/config ./build/src/index.js"
 	},
 	"devDependencies": {
-		"@gizmo-dev/eslint-config": "^1.0.29",
+		"@gizmo-dev/eslint-config": "^1.1.0",
 		"@sentry/types": "^6.18.1",
 		"@types/node": "^16.4.13",
 		"@types/sanitize-html": "^2.6.2",
