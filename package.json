@@ -36,7 +36,7 @@
 		"typescript-transform-paths": "^3.3.1"
 	},
 	"dependencies": {
-		"@sentry/node": "^6.18.1",
+		"@sentry/node": "^6.19.3",
 		"@sentry/tracing": "^6.18.1",
 		"axios": "^0.26.0",
 		"dotenv": "^16.0.0",
