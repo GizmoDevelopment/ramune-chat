@@ -1,6 +1,7 @@
 // Modules
 import { Server as ioServer } from "socket.io";
 import { getAuthenticatedUser } from "gizmo-api";
+import { instrument } from "@socket.io/admin-ui";
 
 // Classes
 import Service from "@classes/Service";
@@ -35,7 +36,13 @@ import type { Message, MessagePayload } from "@typings/message";
 // Constants
 import { LIMITS } from "@utils/constants";
 const WEBSOCKET_PORT = Number(process.env.WEBSOCKET_PORT);
-const CORS_ORIGIN_DOMAIN = process.env.CORS_ORIGIN_DOMAIN;
+const CORS_ORIGIN_DOMAIN = process.env.CORS_ORIGIN_DOMAIN || "";
+const WEBSOCKET_ADMIN_USERNAME = process.env.WEBSOCKET_ADMIN_USERNAME;
+const WEBSOCKET_ADMIN_PASSWORD = process.env.WEBSOCKET_ADMIN_PASSWORD;
+
+if (CORS_ORIGIN_DOMAIN.length === 0) {
+	throw Error("Missing environmental variable CORS_ORIGIN_DOMAIN");
+}
 
 class WebsocketService extends Service {
 
@@ -51,10 +58,23 @@ class WebsocketService extends Service {
 
 		this.ioServer = new ioServer(WEBSOCKET_PORT, {
 			cors: {
-				origin: CORS_ORIGIN_DOMAIN,
-				methods: [ "GET", "POST" ]
+				origin: [
+					CORS_ORIGIN_DOMAIN,
+					"https://admin.socket.io"
+				],
+				credentials: true
 			}
 		});
+
+		if (WEBSOCKET_ADMIN_USERNAME && WEBSOCKET_ADMIN_PASSWORD) {
+			instrument(this.ioServer, {
+				auth: {
+					type: "basic",
+					username: WEBSOCKET_ADMIN_USERNAME,
+					password: WEBSOCKET_ADMIN_PASSWORD
+				}
+			});
+		}
 
 		this.ioServer.sockets.on("connection", this.handleSocketConnection.bind(this));
 
