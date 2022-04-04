@@ -6,5 +6,7 @@ declare namespace NodeJS {
 		SHOW_ENDPOINT?: string;
 		CORS_ORIGIN_DOMAIN?: string;
 		BOT_TOKEN?: string;
+		WEBSOCKET_ADMIN_USERNAME?: string;
+		WEBSOCKET_ADMIN_PASSWORD?: string;
 	}
 }
