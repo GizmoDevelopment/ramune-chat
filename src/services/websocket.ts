@@ -214,7 +214,7 @@ class WebsocketService extends Service {
 					if (options.password.length === 0) {
 						return callback(createErrorResponse("Password cannot be empty."));
 					} else if (options.password.length > LIMITS.ROOM_PASSWORD_LENGTH_LIMIT) {
-						return callback(createErrorResponse(`Password is longer than ${LIMITS.ROOM_PASSWORD_LENGTH_LIMIT} characters.`));
+						return callback(createErrorResponse(`Password must not be longer than ${LIMITS.ROOM_PASSWORD_LENGTH_LIMIT} characters.`));
 					}
 				}
 
