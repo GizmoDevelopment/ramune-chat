@@ -48,7 +48,7 @@ class WebsocketService extends Service {
 
 	readonly ioServer: ioServer;
 	readonly sockets: Map<string, User> = new Map();
-	readonly userIdToSocketIdMap: Record<string, string> = {};
+	readonly userIdToSocketIdMap: Record<string, string | undefined> = {};
 
 	allowConnections = true;
 
@@ -99,7 +99,10 @@ class WebsocketService extends Service {
 	}
 
 	removeAuthenticatedUser (socket: Socket, user: User): void {
+
+		this.userIdToSocketIdMap[user.id] = undefined;
 		delete this.userIdToSocketIdMap[user.id];
+
 		this.sockets.delete(socket.id);
 	}
 
