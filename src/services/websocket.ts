@@ -145,6 +145,9 @@ class WebsocketService extends Service {
 						callback(createSuccessResponse(user));
 
 						logger.info(`[S-${socket.id}] [${user.username}] Successfully authenticated`);
+
+						// Prevent socket.disconnect() from being called when successfully authenticated
+						return;
 					} else {
 						callback(createErrorResponse("You are already connected somewhere else."));
 					}
@@ -156,6 +159,8 @@ class WebsocketService extends Service {
 			} else {
 				callback(createErrorResponse("User token is required."));
 			}
+
+			socket.disconnect(true);
 		});
 
 		socket.on("CLIENT:FETCH_ROOMS", async (callback: SocketCallback<PartialRoom[]>) => {
