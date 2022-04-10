@@ -63,9 +63,7 @@ class WebsocketService extends Service {
 					"https://admin.socket.io"
 				],
 				credentials: true
-			},
-			pingInterval: 15000,
-			pingTimeout: 15000
+			}
 		});
 
 		if (WEBSOCKET_ADMIN_USERNAME && WEBSOCKET_ADMIN_PASSWORD) {
