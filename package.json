@@ -24,13 +24,13 @@
 	},
 	"devDependencies": {
 		"@gizmo-dev/eslint-config": "^1.1.0",
-		"@sentry/types": "^6.19.3",
+		"@sentry/types": "^6.19.6",
 		"@types/node": "^16.4.13",
 		"@types/sanitize-html": "^2.6.2",
-		"@typescript-eslint/eslint-plugin": "^5.17.0",
-		"@typescript-eslint/parser": "^5.17.0",
+		"@typescript-eslint/eslint-plugin": "^5.18.0",
+		"@typescript-eslint/parser": "^5.18.0",
 		"bufferutil": "^4.0.6",
-		"eslint": "^8.12.0",
+		"eslint": "^8.13.0",
 		"ts-node": "^10.7.0",
 		"ts-patch": "^2.0.1",
 		"typescript": "^4.6.3",
@@ -38,8 +38,8 @@
 		"utf-8-validate": "^5.0.9"
 	},
 	"dependencies": {
-		"@sentry/node": "^6.19.3",
-		"@sentry/tracing": "^6.19.3",
+		"@sentry/node": "^6.19.6",
+		"@sentry/tracing": "^6.19.6",
 		"@socket.io/admin-ui": "^0.2.0",
 		"axios": "^0.26.1",
 		"dotenv": "^16.0.0",
