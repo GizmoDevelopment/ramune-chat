@@ -1,6 +1,6 @@
 {
 	"name": "gizmo-chat-backend",
-	"version": "1.4.1",
+	"version": "1.4.2",
 	"description": "",
 	"author": "Tjaz (https://github.com/GizmoTjaz)",
 	"license": "MIT",
@@ -39,12 +39,12 @@
 	},
 	"dependencies": {
 		"@sentry/node": "^6.19.6",
-		"@sentry/tracing": "^6.19.6",
+		"@sentry/tracing": "^6.19.7",
 		"@socket.io/admin-ui": "^0.2.0",
-		"axios": "^0.26.1",
+		"axios": "^0.27.2",
 		"dotenv": "^16.0.0",
 		"gizmo-api": "^1.1.2",
 		"sanitize-html": "^2.7.0",
-		"socket.io": "^4.4.1"
+		"socket.io": "^4.5.1"
 	}
 }
