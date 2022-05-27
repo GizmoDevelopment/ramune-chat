@@ -1,4 +1,5 @@
 // Modules
+import { hashSync } from "bcrypt";
 import { Server as ioServer } from "socket.io";
 import { getAuthenticatedUser } from "gizmo-api";
 import { instrument } from "@socket.io/admin-ui";
@@ -71,7 +72,7 @@ class WebsocketService extends Service {
 				auth: {
 					type: "basic",
 					username: WEBSOCKET_ADMIN_USERNAME,
-					password: WEBSOCKET_ADMIN_PASSWORD
+					password: hashSync(WEBSOCKET_ADMIN_PASSWORD, 10)
 				}
 			});
 		}
