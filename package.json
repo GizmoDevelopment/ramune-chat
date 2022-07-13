@@ -16,7 +16,7 @@
 		"!win32"
 	],
 	"scripts": {
-		"prepare": "npx ts-patch install -s",
+		"prepare": "ts-patch install -s",
 		"lint": "eslint src",
 		"build": "rm -rf ./build && tsc",
 		"start": "ts-node -r dotenv/config ./src/index.ts",
