@@ -5,7 +5,7 @@ import { randomUUID } from "crypto";
 import { sanitize } from "./essentials";
 
 // Types
-import type { User } from "gizmo-api/lib/types";
+import type { User } from "gizmo-api";
 import type { Message } from "@typings/message";
 
 export function constructMessage (user: User, messageContent: string): Message {

@@ -18,7 +18,7 @@ import { getEpisodeById, getShow } from "@utils/ramune";
 
 // Types
 import type { Socket } from "socket.io";
-import type { User } from "gizmo-api/lib/types";
+import type { User } from "gizmo-api";
 import type { SocketCallback } from "@typings/main";
 import type {
 	CreateRoomOptions,
