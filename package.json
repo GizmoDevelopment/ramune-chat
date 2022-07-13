@@ -40,7 +40,7 @@
 	"dependencies": {
 		"@sentry/node": "^7.6.0",
 		"@sentry/tracing": "^7.6.0",
-		"@socket.io/admin-ui": "^0.2.0",
+		"@socket.io/admin-ui": "^0.4.0",
 		"axios": "^0.27.2",
 		"dotenv": "^16.0.1",
 		"gizmo-api": "^1.2.2",
