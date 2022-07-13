@@ -23,12 +23,10 @@
 		"start:production": "node -r dotenv/config ./build/src/index.js"
 	},
 	"devDependencies": {
-		"@gizmo-dev/eslint-config": "^1.1.0",
+		"@gizmo-dev/eslint-plugin": "^3.2.0",
 		"@sentry/types": "^7.6.0",
 		"@types/node": "^16.11.43",
 		"@types/sanitize-html": "^2.6.2",
-		"@typescript-eslint/eslint-plugin": "^5.18.0",
-		"@typescript-eslint/parser": "^5.18.0",
 		"bufferutil": "^4.0.6",
 		"eslint": "^8.19.0",
 		"ts-node": "^10.8.2",
