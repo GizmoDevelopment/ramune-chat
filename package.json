@@ -25,24 +25,24 @@
 	"devDependencies": {
 		"@gizmo-dev/eslint-plugin": "^3.2.0",
 		"@sentry/types": "^7.6.0",
-		"@types/node": "^16.11.43",
+		"@types/node": "^16.11.49",
 		"@types/sanitize-html": "^2.6.2",
 		"bufferutil": "^4.0.6",
 		"eslint": "^8.22.0",
 		"ts-node": "^10.9.1",
-		"ts-patch": "^2.0.1",
+		"ts-patch": "^2.0.2",
 		"typescript": "^4.7.4",
 		"typescript-transform-paths": "^3.3.1",
 		"utf-8-validate": "^5.0.9"
 	},
 	"dependencies": {
-		"@sentry/node": "^7.6.0",
+		"@sentry/node": "^7.11.0",
 		"@sentry/tracing": "^7.6.0",
 		"@socket.io/admin-ui": "^0.4.0",
 		"axios": "^0.27.2",
 		"dotenv": "^16.0.1",
 		"gizmo-api": "^1.2.2",
-		"sanitize-html": "^2.7.0",
+		"sanitize-html": "^2.7.1",
 		"socket.io": "^4.5.1"
 	}
 }
