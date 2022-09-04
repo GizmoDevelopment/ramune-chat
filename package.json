@@ -43,6 +43,6 @@
 		"dotenv": "^16.0.2",
 		"gizmo-api": "^1.2.2",
 		"sanitize-html": "^2.7.1",
-		"socket.io": "^4.5.1"
+		"socket.io": "^4.5.2"
 	}
 }
