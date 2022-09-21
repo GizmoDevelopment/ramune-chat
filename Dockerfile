@@ -1,15 +1,29 @@
-FROM node:16
+FROM node:16 as preparation
+RUN curl -f https://get.pnpm.io/v6.16.js | node - add --global pnpm
 
-RUN mkdir dist
-WORKDIR /dist
+WORKDIR /usr/production
+COPY package.json pnpm-lock.yaml ./
 
-COPY package*.json ./
-RUN npm ci
+# Install dependencies
+RUN pnpm install --frozen-lockfile
 
-COPY . .
-RUN npm run build
+# Build
+COPY tsconfig.json ./
+COPY . ./
+RUN pnpm run build
 
-# RUN npm install -g pm2
+FROM node:16 as start
+RUN curl -f https://get.pnpm.io/v6.16.js | node - add --global pnpm
+
+WORKDIR /usr/production
+
+# Set up directory
+COPY --from=preparation /usr/production/package.json ./
+COPY --from=preparation /usr/production/pnpm-lock.yaml ./
+COPY --from=preparation /usr/production/build ./build
+
+# Install dependencies
+RUN pnpm install --frozen-lockfile --prod --ignore-scripts
 
 EXPOSE ${WEBSOCKET_PORT}
 
@@ -22,4 +36,4 @@ ENV WEBSOCKET_ADMIN_USERNAME=${WEBSOCKET_ADMIN_USERNAME}
 ENV WEBSOCKET_ADMIN_PASSWORD=${WEBSOCKET_ADMIN_PASSWORD}
 ENV SHOW_ENDPOINT=${SHOW_ENDPOINT}
 
-CMD [ "node", "./build/src/index.js" ]
+CMD [ "pnpm", "start" ]
