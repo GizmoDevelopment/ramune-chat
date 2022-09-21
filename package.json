@@ -33,7 +33,7 @@
 		"typescript-transform-paths": "^3.3.1"
 	},
 	"dependencies": {
-		"@gizmo-dev/logger": "^1.0.0",
+		"@gizmo-dev/logger": "^1.0.1",
 		"@sentry/node": "^7.12.1",
 		"@sentry/tracing": "^7.12.1",
 		"@socket.io/admin-ui": "^0.4.0",
