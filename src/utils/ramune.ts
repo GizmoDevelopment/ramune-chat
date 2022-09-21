@@ -1,9 +1,9 @@
 // Modules
 import axios from "axios";
+import logger from "@gizmo-dev/logger";
 
 // Utils
 import { SHOW_ENDPOINT } from "@utils/constants";
-import logger from "@utils/logger";
 
 // Types
 import type { Show, Episode } from "@typings/show";

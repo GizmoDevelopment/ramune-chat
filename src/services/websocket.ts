@@ -3,13 +3,13 @@ import { hashSync } from "bcrypt";
 import { Server as ioServer } from "socket.io";
 import { getAuthenticatedUser } from "gizmo-api";
 import { instrument } from "@socket.io/admin-ui";
+import logger from "@gizmo-dev/logger";
 
 // Classes
 import Service from "@classes/Service";
 import type PoopShitter from "@classes/PoopShitter";
 
 // Utils
-import logger from "@utils/logger";
 import { createErrorResponse, createSuccessResponse } from "@utils/essentials";
 import { constructMessage } from "@utils/message";
 import { isCreateRoomOptions, isInputRoomData, isInputRoomProperties, isJoinRoomOptions, isRoomSyncClientData, isRoomSyncData } from "@typings/room";

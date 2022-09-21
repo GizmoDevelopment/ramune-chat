@@ -1,12 +1,10 @@
 // Modules
 import fs from "fs";
 import path from "path";
+import logger from "@gizmo-dev/logger";
 
 // Classes
 import Service from "@classes/Service";
-
-// Utils
-import logger from "@utils/logger";
 
 // Constants
 const SERVICES_DIR = path.join(__dirname, "../services");

@@ -1,5 +1,6 @@
 // Modules
 import axios from "axios";
+import logger from "@gizmo-dev/logger";
 
 // Classes
 import Service from "@classes/Service";
@@ -7,7 +8,6 @@ import type PoopShitter from "@classes/PoopShitter";
 import type WebsocketService from "./websocket";
 
 // Utils
-import logger from "@utils/logger";
 import { generateHash, generatePasswordHash, sanitize } from "@utils/essentials";
 
 // Types

@@ -1,11 +1,9 @@
 // Modules
 import * as Sentry from "@sentry/node";
+import logger from "@gizmo-dev/logger";
 
 // Clases
 import PoopShitter from "@classes/PoopShitter";
-
-// Utils
-import logger from "@utils/logger";
 
 // Constants
 import { FACE_OF_APATHY } from "@utils/constants";

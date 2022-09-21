@@ -2,6 +2,7 @@ lockfileVersion: 5.4
 
 specifiers:
   '@gizmo-dev/eslint-plugin': ^3.3.1
+  '@gizmo-dev/logger': ^1.0.0
   '@sentry/node': ^7.12.1
   '@sentry/tracing': ^7.12.1
   '@sentry/types': ^7.12.1
@@ -19,6 +20,7 @@ specifiers:
   typescript-transform-paths: ^3.3.1
 
 dependencies:
+  '@gizmo-dev/logger': 1.0.0
   '@sentry/node': 7.13.0
   '@sentry/tracing': 7.13.0
   '@socket.io/admin-ui': 0.4.0_socket.io@4.5.2
@@ -71,6 +73,11 @@ packages:
       - supports-color
       - typescript
     dev: true
+
+  /@gizmo-dev/logger/1.0.0:
+    resolution: {integrity: sha512-Ugh3OWKC970bypJT5G1fQuQ+iiajCwzrImKzd7GQs2UCjlL+bYcSztHB1hInf7fAWXFJ6zT4u/e82DejZlFbBQ==}
+    engines: {node: '>=14.x'}
+    dev: false
 
   /@humanwhocodes/config-array/0.10.4:
     resolution: {integrity: sha512-mXAIHxZT3Vcpg83opl1wGlVZ9xydbfZO3r5YfRSH6Gpp2J/PfdBP0wbDa2sO6/qRbcalpoevVyW6A/fI6LfeMw==}
