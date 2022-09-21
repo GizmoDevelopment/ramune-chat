@@ -32,7 +32,7 @@ export default class PoopShitters {
 
 					if (service instanceof Service) {
 						this.services.set(service.name, service);
-						logger.success(`Successfully started Service '${service.name}'`);
+						logger.success(`Started Service '${service.name}'`);
 					}
 				}
 
@@ -40,7 +40,7 @@ export default class PoopShitters {
 			}
 		});
 
-		logger.success(`Successfully started PoopShitter '${this.name}'`);
+		logger.success(`Started PoopShitter '${this.name}'`);
 
 	}
 

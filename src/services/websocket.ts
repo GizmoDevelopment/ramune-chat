@@ -84,7 +84,7 @@ class WebsocketService extends Service {
 			this.allowConnections = false;
 		});
 
-		logger.success(`Successfully started WebSocket server on port '${WEBSOCKET_PORT}'`);
+		logger.success(`Started WebSocket server on port '${WEBSOCKET_PORT}'`);
 		logger.info(`http://localhost:${WEBSOCKET_PORT}`);
 
 		this.emit("ready");
