@@ -24,6 +24,7 @@
 	"devDependencies": {
 		"@gizmo-dev/eslint-plugin": "^3.3.1",
 		"@sentry/types": "^7.12.1",
+		"@types/bcrypt": "^5.0.0",
 		"@types/node": "^16.11.56",
 		"@types/sanitize-html": "^2.6.2",
 		"eslint": "^8.23.0",
@@ -37,6 +38,7 @@
 		"@sentry/tracing": "^7.12.1",
 		"@socket.io/admin-ui": "^0.4.0",
 		"axios": "^0.27.2",
+		"bcrypt": "^5.0.1",
 		"dotenv": "^16.0.2",
 		"gizmo-api": "^1.2.2",
 		"sanitize-html": "^2.7.1",

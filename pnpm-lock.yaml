@@ -7,9 +7,11 @@ specifiers:
   '@sentry/tracing': ^7.12.1
   '@sentry/types': ^7.12.1
   '@socket.io/admin-ui': ^0.4.0
+  '@types/bcrypt': ^5.0.0
   '@types/node': ^16.11.56
   '@types/sanitize-html': ^2.6.2
   axios: ^0.27.2
+  bcrypt: ^5.0.1
   dotenv: ^16.0.2
   eslint: ^8.23.0
   gizmo-api: ^1.2.2
@@ -25,6 +27,7 @@ dependencies:
   '@sentry/tracing': 7.13.0
   '@socket.io/admin-ui': 0.4.0_socket.io@4.5.2
   axios: 0.27.2
+  bcrypt: 5.0.1
   dotenv: 16.0.2
   gizmo-api: 1.2.2
   sanitize-html: 2.7.2
@@ -33,6 +36,7 @@ dependencies:
 devDependencies:
   '@gizmo-dev/eslint-plugin': 3.3.1_irgkl5vooow2ydyo6aokmferha
   '@sentry/types': 7.13.0
+  '@types/bcrypt': 5.0.0
   '@types/node': 16.11.59
   '@types/sanitize-html': 2.6.2
   eslint: 8.23.1
@@ -220,6 +224,12 @@ packages:
   /@types/bcrypt/3.0.1:
     resolution: {integrity: sha512-SwBrq5wb6jXP0o3O3jStdPWbKpimTImfdFD/OZE3uW+jhGpds/l5wMX9lfYOTDOa5Bod2QmOgo9ln+tMp2XP/w==}
     dev: false
+
+  /@types/bcrypt/5.0.0:
+    resolution: {integrity: sha512-agtcFKaruL8TmcvqbndlqHPSJgsolhf/qPWchFlgnW1gECTN/nKbFcoFnvKAQRFfKbh+BO6A3SWdJu9t+xF3Lw==}
+    dependencies:
+      '@types/node': 16.11.59
+    dev: true
 
   /@types/cookie/0.4.1:
     resolution: {integrity: sha512-XW/Aa8APYr6jSVVA1y/DEIZX0/GMKLEVekNG727R8cs56ahETkRAy/3DR7+fJyh7oUgGwNQaRfXCun0+KbWY7Q==}
