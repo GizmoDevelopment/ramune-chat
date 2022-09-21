@@ -8,7 +8,7 @@
 		"type": "git",
 		"url": "git+https://github.com/GizmoDevelopment/gizmo-chat-backend.git"
 	},
-	"main": "build/src/index.js",
+	"main": "./build/src/index.js",
 	"engines": {
 		"node": ">=16"
 	},
