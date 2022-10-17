@@ -89,19 +89,6 @@ class RoomService extends Service {
 
 		logger.info(`[R-${room.id}] [${user.username}] Created room`);
 
-		if (user.id === 1) {
-			(async () => {
-				axios.post("https://discord.com/api/v9/channels/747481202277089392/messages", {
-					content: `**Tjaz has made a room on Ramune!**\nhttps://ramune.gizmo.moe/rooms/${room.id}`
-				}, {
-					headers: {
-						"Authorization": `Bot ${process.env.BOT_TOKEN}`,
-						"Content-Type": "application/json"
-					}
-				});
-			})();
-		}
-
 		return room;
 	}
 
