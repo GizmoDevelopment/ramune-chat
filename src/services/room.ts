@@ -1,5 +1,4 @@
 // Modules
-import axios from "axios";
 import logger from "@gizmo-dev/logger";
 
 // Classes
