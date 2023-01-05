@@ -22,25 +22,25 @@
 		"start": "node -r dotenv/config ./build/src/index.js"
 	},
 	"devDependencies": {
-		"@gizmo-dev/eslint-plugin": "^3.3.1",
-		"@sentry/types": "^7.13.0",
+		"@gizmo-dev/eslint-plugin": "^3.3.2",
+		"@sentry/types": "^7.29.0",
 		"@types/bcrypt": "^5.0.0",
-		"@types/node": "^16.11.59",
-		"@types/sanitize-html": "^2.6.2",
-		"eslint": "^8.23.1",
-		"ts-patch": "^2.0.2",
-		"typescript": "^4.8.3",
-		"typescript-transform-paths": "^3.3.1"
+		"@types/node": "^16.18.11",
+		"@types/sanitize-html": "^2.8.0",
+		"eslint": "^8.31.0",
+		"ts-patch": "^2.1.0",
+		"typescript": "^4.9.4",
+		"typescript-transform-paths": "^3.4.4"
 	},
 	"dependencies": {
-		"@gizmo-dev/logger": "^1.0.1",
-		"@sentry/node": "^7.13.0",
-		"@sentry/tracing": "^7.13.0",
-		"@socket.io/admin-ui": "^0.5.0",
-		"axios": "^0.27.2",
-		"dotenv": "^16.0.2",
-		"gizmo-api": "^1.2.2",
-		"sanitize-html": "^2.7.2",
-		"socket.io": "^4.5.2"
+		"@gizmo-dev/logger": "^1.0.2",
+		"@sentry/node": "^7.29.0",
+		"@sentry/tracing": "^7.29.0",
+		"@socket.io/admin-ui": "^0.5.1",
+		"axios": "^1.2.2",
+		"dotenv": "^16.0.3",
+		"gizmo-api": "^1.2.3",
+		"sanitize-html": "^2.8.1",
+		"socket.io": "^4.5.4"
 	}
 }
