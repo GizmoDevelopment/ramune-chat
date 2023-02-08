@@ -10,7 +10,7 @@ specifiers:
   '@types/bcrypt': ^5.0.0
   '@types/node': '16'
   '@types/sanitize-html': ^2.8.0
-  axios: ^1.2.2
+  axios: ^1.3.2
   dotenv: ^16.0.3
   eslint: ^8.31.0
   gizmo-api: ^1.2.3
@@ -25,7 +25,7 @@ dependencies:
   '@sentry/node': 7.36.0
   '@sentry/tracing': 7.36.0
   '@socket.io/admin-ui': 0.5.1_socket.io@4.5.4
-  axios: 1.2.2
+  axios: 1.3.2
   dotenv: 16.0.3
   gizmo-api: 1.2.3
   sanitize-html: 2.8.1
@@ -414,8 +414,8 @@ packages:
     resolution: {integrity: sha512-Oei9OH4tRh0YqU3GxhX79dM/mwVgvbZJaSNaRk+bshkj0S5cfHcgYakreBjrHwatXKbz+IoIdYLxrKim2MjW0Q==}
     dev: false
 
-  /axios/1.2.2:
-    resolution: {integrity: sha512-bz/J4gS2S3I7mpN/YZfGFTqhXTYzRho8Ay38w2otuuDR322KzFIWm/4W2K6gIwvWaws5n+mnb7D1lN9uD+QH6Q==}
+  /axios/1.3.2:
+    resolution: {integrity: sha512-1M3O703bYqYuPhbHeya5bnhpYVsDDRyQSabNja04mZtboLNSuZ4YrltestrLXfHgmzua4TpUqRiVKbiQuo2epw==}
     dependencies:
       follow-redirects: 1.15.2
       form-data: 4.0.0
