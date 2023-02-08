@@ -14,7 +14,7 @@ specifiers:
   dotenv: ^16.0.3
   eslint: ^8.33.0
   gizmo-api: ^1.2.3
-  sanitize-html: ^2.8.1
+  sanitize-html: ^2.9.0
   socket.io: ^4.5.4
   ts-patch: ^2.1.0
   typescript: ^4.9.4
@@ -28,7 +28,7 @@ dependencies:
   axios: 1.3.2
   dotenv: 16.0.3
   gizmo-api: 1.2.3
-  sanitize-html: 2.8.1
+  sanitize-html: 2.9.0
   socket.io: 4.5.4
 
 devDependencies:
@@ -1344,8 +1344,8 @@ packages:
       queue-microtask: 1.2.3
     dev: true
 
-  /sanitize-html/2.8.1:
-    resolution: {integrity: sha512-qK5neD0SaMxGwVv5txOYv05huC3o6ZAA4h5+7nJJgWMNFUNRjcjLO6FpwAtKzfKCZ0jrG6xTk6eVFskbvOGblg==}
+  /sanitize-html/2.9.0:
+    resolution: {integrity: sha512-KY1hpSbqFNcpoLf+nP7iStbP5JfQZ2Nd19ZEE7qFsQqRdp+sO5yX/e5+HoG9puFAcSTEpzQuihfKUltDcLlQjg==}
     dependencies:
       deepmerge: 4.2.2
       escape-string-regexp: 4.0.0
