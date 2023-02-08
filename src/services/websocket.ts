@@ -63,6 +63,10 @@ class WebsocketService extends Service {
 					"https://admin.socket.io"
 				],
 				credentials: true
+			},
+			connectionStateRecovery: {
+				maxDisconnectionDuration: 12000,
+				skipMiddlewares: true
 			}
 		});
 
