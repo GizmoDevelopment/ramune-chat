@@ -1,3 +1,6 @@
+import * as dotenv from "dotenv";
+dotenv.config();
+
 // Modules
 import * as Sentry from "@sentry/node";
 import logger from "@gizmo-dev/logger";
