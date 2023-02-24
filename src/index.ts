@@ -37,9 +37,12 @@ if (process.env.NODE_ENV === "production" && process.env.SENTRY_DSN) {
 	process.on("unhandledRejection", logger.error);
 }
 
-if (!process.env.CORS_ORIGIN_DOMAIN) throw Error("Missing environmental variable 'CORS_ORIGIN_DOMAIN'");
-if (!process.env.WEBSOCKET_PORT) throw Error("Missing environmental variable 'WEBSOCKET_PORT'");
-if (!process.env.SHOW_ENDPOINT) throw Error("Missing environmental variable 'SHOW_ENDPOINT'");
+if (!process.env.CORS_ORIGIN_DOMAIN)
+	throw Error("Missing environmental variable 'CORS_ORIGIN_DOMAIN'");
+if (!process.env.WEBSOCKET_PORT)
+	throw Error("Missing environmental variable 'WEBSOCKET_PORT'");
+if (!process.env.SHOW_ENDPOINT)
+	throw Error("Missing environmental variable 'SHOW_ENDPOINT'");
 
 logger.info(`Version '${version}'`);
 logger.info(`Environment '${process.env.NODE_ENV || "development"}'`);
