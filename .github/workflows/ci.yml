@@ -1,0 +1,7 @@
+name: CI
+
+on: [ push, pull_request ]
+
+jobs:
+  build:
+    uses: GizmoDevelopment/gizmo-chat-backend/.github/workflows/build.yml@master
