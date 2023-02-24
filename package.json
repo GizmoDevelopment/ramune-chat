@@ -16,7 +16,8 @@
 	"scripts": {
 		"prepare": "ts-patch install -s",
 		"lint": "eslint src",
-		"build": "rm -rf ./build && tsc"
+		"build": "rm -rf ./build && tsc",
+		"start": "node ./build/src/index.js"
 	},
 	"devDependencies": {
 		"@gizmo-dev/eslint-plugin": "^3.3.2",
