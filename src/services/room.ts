@@ -12,7 +12,15 @@ import { generateHash, generatePasswordHash, sanitize } from "@utils/essentials"
 // Types
 import type { Server as ioServer } from "socket.io";
 import type { User } from "gizmo-api";
-import type { CreateRoomOptions, ExportedRoom, PartialRoom, Room, RoomData, RoomSyncData, UpdatableRoomProperties } from "@typings/room";
+import type {
+	CreateRoomOptions,
+	ExportedRoom,
+	PartialRoom,
+	Room,
+	RoomData,
+	RoomSyncData,
+	UpdatableRoomProperties
+} from "@typings/room";
 import type { Socket } from "socket.io";
 
 class RoomService extends Service {
