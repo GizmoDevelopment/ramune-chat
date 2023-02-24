@@ -67,7 +67,8 @@ class WebsocketService extends Service {
 			connectionStateRecovery: {
 				maxDisconnectionDuration: 12000,
 				skipMiddlewares: true
-			}
+			},
+			cleanupEmptyChildNamespaces: true
 		});
 
 		if (WEBSOCKET_ADMIN_USERNAME && WEBSOCKET_ADMIN_PASSWORD) {
