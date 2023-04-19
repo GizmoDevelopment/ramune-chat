@@ -1,5 +1,5 @@
 FROM node:16 as preparation
-LABEL org.opencontainers.image.source https://github.com/GizmoDevelopment/gizmo-chat-backend
+LABEL org.opencontainers.image.source https://github.com/GizmoDevelopment/ramune-chat
 RUN curl -f https://get.pnpm.io/v6.16.js | node - add --global pnpm
 
 WORKDIR /usr/production

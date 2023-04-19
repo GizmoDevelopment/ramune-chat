@@ -1,12 +1,12 @@
 {
-	"name": "gizmo-chat-backend",
+	"name": "ramune-chat",
 	"version": "1.6.1",
 	"description": "",
 	"author": "Tjaz (https://github.com/GizmoTjaz)",
 	"license": "MIT",
 	"repository": {
 		"type": "git",
-		"url": "git+https://github.com/GizmoDevelopment/gizmo-chat-backend.git"
+		"url": "git+https://github.com/GizmoDevelopment/ramune-chat.git"
 	},
 	"main": "./build/src/index.js",
 	"engines": {

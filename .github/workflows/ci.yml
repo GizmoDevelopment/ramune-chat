@@ -4,4 +4,4 @@ on: [ push ]
 
 jobs:
   build:
-    uses: GizmoDevelopment/gizmo-chat-backend/.github/workflows/build.yml@master
+    uses: GizmoDevelopment/ramune-chat/.github/workflows/build.yml@master
