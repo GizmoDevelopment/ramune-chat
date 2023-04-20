@@ -14,19 +14,11 @@
         "types": [
             "node"
         ],
-        "typeRoots": [
-            "./node_modules/@types",
-            "./node_modules/@sentry/types"
-        ],
-		"baseUrl": "src",
+        "baseUrl": "./",
 		"paths": {
-			"@/*": ["/*"],
-			"@typings/*": ["typings/*"],
-			"@utils/*": ["utils/*"],
-			"@classes/*": ["classes/*"]
-		},
-		"plugins": [
-			{ "transform": "typescript-transform-paths" },
-		]
+			"@typings/*": ["src/typings/*"],
+			"@utils/*": ["src/utils/*"],
+			"@classes/*": ["src/classes/*"]
+		}
     }
 }
