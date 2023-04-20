@@ -1,33 +1,22 @@
-FROM node:16 as preparation
+# Environment setup
+FROM node:18-alpine
 LABEL org.opencontainers.image.source https://github.com/GizmoDevelopment/ramune-chat
-RUN curl -f https://get.pnpm.io/v6.16.js | node - add --global pnpm
+WORKDIR /opt/production
 
-WORKDIR /usr/production
+RUN npm i -g pnpm
+
+# Dependencies
 COPY package.json pnpm-lock.yaml ./
+RUN pnpm fetch
 
-# Install dependencies
-RUN pnpm install --frozen-lockfile
+ADD . ./
+RUN pnpm install -r --offline
 
 # Build
-COPY tsconfig.json ./
-COPY . ./
-RUN pnpm run build
+RUN pnpm build
+RUN pnpm prune --prod
 
-FROM node:16 as start
-RUN curl -f https://get.pnpm.io/v6.16.js | node - add --global pnpm
-
-WORKDIR /usr/production
-
-# Set up directory
-COPY --from=preparation /usr/production/package.json ./
-COPY --from=preparation /usr/production/pnpm-lock.yaml ./
-COPY --from=preparation /usr/production/build ./build
-
-# Install dependencies
-RUN pnpm install --frozen-lockfile --prod --ignore-scripts
-
-EXPOSE ${WEBSOCKET_PORT}
-
+# Deploy
 ENV NODE_ENV=production
 ENV WEBSOCKET_PORT=${WEBSOCKET_PORT}
 ENV CORS_ORIGIN_DOMAIN=${CORS_ORIGIN_DOMAIN}
@@ -36,5 +25,7 @@ ENV BOT_TOKEN=${BOT_TOKEN}
 ENV WEBSOCKET_ADMIN_USERNAME=${WEBSOCKET_ADMIN_USERNAME}
 ENV WEBSOCKET_ADMIN_PASSWORD=${WEBSOCKET_ADMIN_PASSWORD}
 ENV SHOW_ENDPOINT=${SHOW_ENDPOINT}
+
+EXPOSE ${WEBSOCKET_PORT}	
 
 CMD [ "pnpm", "start" ]
