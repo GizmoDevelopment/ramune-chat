@@ -25,7 +25,7 @@
 		"@types/sanitize-html": "^2.9.0",
 		"eslint": "^8.38.0",
 		"tsc-alias": "^1.8.5",
-		"typescript": "^4.9.5"
+		"typescript": "^5.0.4"
 	},
 	"dependencies": {
 		"@gizmo-dev/logger": "^1.0.2",
