@@ -3,7 +3,7 @@ FROM node:18-alpine
 LABEL org.opencontainers.image.source https://github.com/GizmoDevelopment/ramune-chat
 WORKDIR /opt/production
 
-RUN npm i -g pnpm
+RUN npm i -g npm@latest pnpm
 
 # Dependencies
 COPY package.json pnpm-lock.yaml ./
