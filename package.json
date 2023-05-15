@@ -24,7 +24,7 @@
 		"@types/node": "^18.15.12",
 		"@types/sanitize-html": "^2.9.0",
 		"eslint": "^8.38.0",
-		"tsc-alias": "^1.8.5",
+		"tsc-alias": "^1.8.6",
 		"typescript": "^5.0.4"
 	},
 	"dependencies": {
