@@ -19,18 +19,18 @@
 		"start": "node ./build/src/index.js"
 	},
 	"devDependencies": {
-		"@gizmo-dev/eslint-plugin": "^3.3.3",
-		"@sentry/types": "^7.51.2",
-		"@types/node": "^18.15.12",
+		"@gizmo-dev/eslint-plugin": "^3.3.4",
+		"@sentry/types": "^7.52.1",
+		"@types/node": "^18.16.9",
 		"@types/sanitize-html": "^2.9.0",
-		"eslint": "^8.38.0",
+		"eslint": "^8.40.0",
 		"tsc-alias": "^1.8.6",
 		"typescript": "^5.0.4"
 	},
 	"dependencies": {
-		"@gizmo-dev/logger": "^1.0.2",
-		"@sentry/node": "^7.51.2",
-		"@sentry/tracing": "^7.51.2",
+		"@gizmo-dev/logger": "^1.0.4",
+		"@sentry/node": "^7.52.1",
+		"@sentry/tracing": "^7.52.1",
 		"@socket.io/admin-ui": "^0.5.1",
 		"axios": "^1.4.0",
 		"dotenv": "^16.0.3",
