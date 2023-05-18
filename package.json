@@ -34,7 +34,7 @@
 		"@socket.io/admin-ui": "^0.5.1",
 		"axios": "^1.4.0",
 		"dotenv": "^16.0.3",
-		"gizmo-api": "^1.2.4",
+		"gizmo-api": "^1.2.5",
 		"sanitize-html": "^2.10.0",
 		"socket.io": "^4.6.1"
 	}
