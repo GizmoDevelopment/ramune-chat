@@ -10,7 +10,7 @@
 	},
 	"main": "./build/src/index.js",
 	"engines": {
-		"node": ">=18"
+		"node": ">=v18.16.0"
 	},
 	"packageManager": "pnpm@8.5.1",
 	"scripts": {
@@ -21,7 +21,7 @@
 	"devDependencies": {
 		"@gizmo-dev/eslint-plugin": "^3.3.4",
 		"@sentry/types": "^7.52.1",
-		"@types/node": "^18.16.9",
+		"@types/node": "^18.16.13",
 		"@types/sanitize-html": "^2.9.0",
 		"eslint": "^8.40.0",
 		"tsc-alias": "^1.8.6",
