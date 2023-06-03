@@ -23,7 +23,7 @@
 		"@sentry/types": "^7.53.1",
 		"@types/node": "^18.16.16",
 		"@types/sanitize-html": "^2.9.0",
-		"eslint": "^8.41.0",
+		"eslint": "^8.42.0",
 		"tsc-alias": "^1.8.6",
 		"typescript": "^5.0.4"
 	},
