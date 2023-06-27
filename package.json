@@ -3,12 +3,12 @@
 	"version": "1.6.2",
 	"description": "",
 	"author": "Tjaz (https://github.com/GizmoTjaz)",
+	"private": true,
 	"license": "MIT",
 	"repository": {
 		"type": "git",
 		"url": "git+https://github.com/GizmoDevelopment/ramune-chat.git"
 	},
-	"main": "./build/src/index.js",
 	"engines": {
 		"node": ">=18"
 	},
