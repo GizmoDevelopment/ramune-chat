@@ -19,7 +19,7 @@
 		"start": "node ./build/src/index.js"
 	},
 	"devDependencies": {
-		"@gizmo-dev/eslint-plugin": "^3.3.4",
+		"@gizmo-dev/eslint-plugin": "^3.3.5",
 		"@sentry/types": "^7.56.0",
 		"@types/node": "^18.16.18",
 		"@types/sanitize-html": "^2.9.0",
