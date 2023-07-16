@@ -23,7 +23,7 @@ export default class PoopShitters {
 
 				const
 					servicePath = path.join(SERVICES_DIR, serviceFile),
-					// eslint-disable-next-line @typescript-eslint/no-var-requires
+					// eslint-disable-next-line @typescript-eslint/no-var-requires, @typescript-eslint/no-explicit-any
 					{ default: serviceClass }: any = require(servicePath);
 
 				if (typeof serviceClass === "function") {
@@ -44,6 +44,7 @@ export default class PoopShitters {
 
 	}
 
+	// eslint-disable-next-line @typescript-eslint/no-explicit-any
 	getService (name: string): any {
 		return this.services.get(name);
 	}
