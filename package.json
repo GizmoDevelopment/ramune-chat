@@ -10,7 +10,7 @@
 		"url": "git+https://github.com/GizmoDevelopment/ramune-chat.git"
 	},
 	"engines": {
-		"node": ">=v18.17.0"
+		"node": ">=v18.17.1"
 	},
 	"packageManager": "pnpm@8.6.12",
 	"scripts": {
