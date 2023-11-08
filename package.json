@@ -22,7 +22,7 @@
 		"@gizmo-dev/eslint-plugin": "^3.3.8",
 		"@sentry/types": "^7.77.0",
 		"@types/node": "^18.18.9",
-		"@types/sanitize-html": "^2.9.3",
+		"@types/sanitize-html": "^2.9.4",
 		"eslint": "^8.53.0",
 		"tsc-alias": "^1.8.8",
 		"typescript": "^5.2.2"
