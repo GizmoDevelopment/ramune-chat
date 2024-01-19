@@ -38,8 +38,8 @@ devDependencies:
     specifier: ^3.3.8
     version: 3.3.8(eslint@8.56.0)(typescript@5.3.3)
   '@sentry/types':
-    specifier: ^7.93.0
-    version: 7.93.0
+    specifier: ^7.94.0
+    version: 7.94.0
   '@types/node':
     specifier: ^18.19.8
     version: 18.19.8
@@ -202,6 +202,12 @@ packages:
   /@sentry/types@7.93.0:
     resolution: {integrity: sha512-UnzUccNakhFRA/esWBWP+0v7cjNg+RilFBQC03Mv9OEMaZaS29zSbcOGtRzuFOXXLBdbr44BWADqpz3VW0XaNw==}
     engines: {node: '>=8'}
+    dev: false
+
+  /@sentry/types@7.94.0:
+    resolution: {integrity: sha512-477p14hsZB0ZhP6qTpCu5LeQCpgC/3WsZWLcQMFD3m7zE3yibfzF1017kSSSmSdqi0Jrh6fTSH4mSUez1bpbCg==}
+    engines: {node: '>=8'}
+    dev: true
 
   /@sentry/utils@7.93.0:
     resolution: {integrity: sha512-Iovj7tUnbgSkh/WrAaMrd5UuYjW7AzyzZlFDIUrwidsyIdUficjCG2OIxYzh76H6nYIx9SxewW0R54Q6XoB4uA==}
