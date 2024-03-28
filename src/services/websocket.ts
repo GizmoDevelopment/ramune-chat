@@ -46,8 +46,7 @@ class WebsocketService extends Service {
 		this.ioServer = new Server<ClientToServerEvents, ServerToClientEvents, InterServerEvents, SocketData>(WEBSOCKET_PORT, {
 			cors: {
 				origin: [
-					CORS_ORIGIN_DOMAIN,
-					"https://admin.socket.io"
+					CORS_ORIGIN_DOMAIN
 				],
 				credentials: true
 			},
