@@ -5,6 +5,7 @@
 	"author": "Tjaz (https://github.com/GizmoTjaz)",
 	"private": true,
 	"license": "MIT",
+	"type": "module",
 	"repository": {
 		"type": "git",
 		"url": "git+https://github.com/GizmoDevelopment/ramune-chat.git"
@@ -24,8 +25,10 @@
 		"@types/node": "^18.19.29",
 		"@types/sanitize-html": "^2.11.0",
 		"eslint": "^9.0.0",
+		"globals": "^15.0.0",
 		"tsc-alias": "^1.8.8",
-		"typescript": "^5.4.4"
+		"typescript": "^5.4.4",
+		"typescript-eslint": "^7.5.0"
 	},
 	"dependencies": {
 		"@gizmo-dev/logger": "^1.0.8",
