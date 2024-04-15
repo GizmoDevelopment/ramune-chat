@@ -36,7 +36,7 @@ dependencies:
 devDependencies:
   '@gizmo-dev/eslint-plugin':
     specifier: ^4.0.0
-    version: 4.0.0(eslint-plugin-vue@9.24.0)(eslint@9.0.0)(typescript-eslint@7.6.0)
+    version: 4.0.0(eslint-plugin-vue@9.25.0)(eslint@9.0.0)(typescript-eslint@7.6.0)
   '@sentry/types':
     specifier: ^7.110.0
     version: 7.110.0
@@ -106,7 +106,7 @@ packages:
     engines: {node: ^18.18.0 || ^20.9.0 || >=21.1.0}
     dev: true
 
-  /@gizmo-dev/eslint-plugin@4.0.0(eslint-plugin-vue@9.24.0)(eslint@9.0.0)(typescript-eslint@7.6.0):
+  /@gizmo-dev/eslint-plugin@4.0.0(eslint-plugin-vue@9.25.0)(eslint@9.0.0)(typescript-eslint@7.6.0):
     resolution: {integrity: sha512-k6owLwvNaUopvk+xnyPXsn/CojjHvy9xIltX8sioocA2wx+blOPV9TFEwaCFl9317BEdiGmIBYfhNISUPhpSFQ==}
     engines: {node: '>=18.20.1'}
     peerDependencies:
@@ -115,7 +115,7 @@ packages:
       typescript-eslint: '>=7.5.x'
     dependencies:
       eslint: 9.0.0
-      eslint-plugin-vue: 9.24.0(eslint@9.0.0)
+      eslint-plugin-vue: 9.25.0(eslint@9.0.0)
       globals: 15.0.0
       typescript-eslint: 7.6.0(eslint@9.0.0)(typescript@5.4.5)
     dev: true
@@ -224,8 +224,8 @@ packages:
       - supports-color
     dev: false
 
-  /@socket.io/component-emitter@3.1.0:
-    resolution: {integrity: sha512-+9jVqKhRSpsc591z5vX+X5Yyw+he/HCB4iQ/RYxw35CEPaY1gnsNE43nf9n9AaYjAQrTiI/mOwKUKdUs9vf7Xg==}
+  /@socket.io/component-emitter@3.1.1:
+    resolution: {integrity: sha512-dzJtaDAAoXx4GCOJpbB2eG/Qj8VDpdwkLsWGzGm+0L7E8/434RyMbAHmk9ubXWVAb9nXmc44jUf8GKqVDiKezg==}
     dev: false
 
   /@types/bcryptjs@2.4.6:
@@ -693,11 +693,11 @@ packages:
     resolution: {integrity: sha512-TtpcNJ3XAzx3Gq8sWRzJaVajRs0uVxA2YAkdb1jm2YkPz4G6egUFAyA3n5vtEIZefPk5Wa4UXbKuS5fKkJWdgA==}
     engines: {node: '>=10'}
 
-  /eslint-plugin-vue@9.24.0(eslint@9.0.0):
-    resolution: {integrity: sha512-9SkJMvF8NGMT9aQCwFc5rj8Wo1XWSMSHk36i7ZwdI614BU7sIOR28ZjuFPKp8YGymZN12BSEbiSwa7qikp+PBw==}
+  /eslint-plugin-vue@9.25.0(eslint@9.0.0):
+    resolution: {integrity: sha512-tDWlx14bVe6Bs+Nnh3IGrD+hb11kf2nukfm6jLsmJIhmiRQ1SUaksvwY9U5MvPB0pcrg0QK0xapQkfITs3RKOA==}
     engines: {node: ^14.17.0 || >=16.0.0}
     peerDependencies:
-      eslint: ^6.2.0 || ^7.0.0 || ^8.0.0
+      eslint: ^6.2.0 || ^7.0.0 || ^8.0.0 || ^9.0.0
     dependencies:
       '@eslint-community/eslint-utils': 4.4.0(eslint@9.0.0)
       eslint: 9.0.0
@@ -1364,7 +1364,7 @@ packages:
     resolution: {integrity: sha512-/GbIKmo8ioc+NIWIhwdecY0ge+qVBSMdgxGygevmdHj24bsfgtCmcUUcQ5ZzcylGFHsN3k4HB4Cgkl96KVnuew==}
     engines: {node: '>=10.0.0'}
     dependencies:
-      '@socket.io/component-emitter': 3.1.0
+      '@socket.io/component-emitter': 3.1.1
       debug: 4.3.4
     transitivePeerDependencies:
       - supports-color
