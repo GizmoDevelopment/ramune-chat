@@ -24,7 +24,7 @@
 		"@sentry/types": "^7.113.0",
 		"@types/node": "^18.19.31",
 		"@types/sanitize-html": "^2.11.0",
-		"eslint": "^9.1.1",
+		"eslint": "^9.2.0",
 		"globals": "^15.1.0",
 		"tsc-alias": "^1.8.8",
 		"typescript": "^5.4.5",
