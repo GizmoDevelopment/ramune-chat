@@ -50,8 +50,8 @@ devDependencies:
     specifier: ^9.6.0
     version: 9.6.0
   globals:
-    specifier: ^15.7.0
-    version: 15.7.0
+    specifier: ^15.8.0
+    version: 15.8.0
   tsc-alias:
     specifier: ^1.8.10
     version: 1.8.10
@@ -127,7 +127,7 @@ packages:
     dependencies:
       eslint: 9.6.0
       eslint-plugin-vue: 9.26.0(eslint@9.6.0)
-      globals: 15.7.0
+      globals: 15.8.0
       typescript-eslint: 7.15.0(eslint@9.6.0)(typescript@5.5.3)
     dev: true
 
@@ -1516,8 +1516,8 @@ packages:
     engines: {node: '>=18'}
     dev: true
 
-  /globals@15.7.0:
-    resolution: {integrity: sha512-ivatRXWwKC6ImcdKO7dOwXuXR5XFrdwo45qFwD7D0qOkEPzzJdLXC3BHceBdyrPOD3p1suPaWi4Y4NMm2D++AQ==}
+  /globals@15.8.0:
+    resolution: {integrity: sha512-VZAJ4cewHTExBWDHR6yptdIBlx9YSSZuwojj9Nt5mBRXQzrKakDsVKQ1J63sklLvzAJm0X5+RpO4i3Y2hcOnFw==}
     engines: {node: '>=18'}
     dev: true
 
