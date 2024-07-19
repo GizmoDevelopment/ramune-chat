@@ -22,7 +22,7 @@
 	"devDependencies": {
 		"@gizmo-dev/eslint-plugin": "^4.0.0",
 		"@sentry/types": "^8.18.0",
-		"@types/node": "^18.19.40",
+		"@types/node": "^18.19.41",
 		"@types/sanitize-html": "^2.11.0",
 		"eslint": "^9.7.0",
 		"globals": "^15.8.0",
