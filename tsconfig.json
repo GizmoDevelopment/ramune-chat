@@ -20,5 +20,9 @@
 			"@utils/*": ["src/utils/*"],
 			"@classes/*": ["src/classes/*"]
 		}
-    }
+    },
+    "include": [
+		"src/**/*",
+		"eslint.config.mjs"
+	]
 }
