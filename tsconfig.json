@@ -1,7 +1,7 @@
 {
     "compilerOptions": {
         "module": "CommonJS",
-        "target": "ES2021",
+        "target": "ES2022",
         "outDir": "./build",
         "strict": true,
         "noImplicitAny": true,
@@ -20,5 +20,9 @@
 			"@utils/*": ["src/utils/*"],
 			"@classes/*": ["src/classes/*"]
 		}
-    }
+    },
+    "include": [
+		"src/**/*",
+		"eslint.config.mjs"
+	]
 }
