@@ -144,6 +144,7 @@ class WebsocketService extends Service {
 
 			} catch (err) {
 				callback(createErrorResponse("Something went wrong."));
+				logger.error(err);
 			}
 		});
 
