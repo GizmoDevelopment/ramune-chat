@@ -37,8 +37,8 @@ importers:
         version: 4.7.5
     devDependencies:
       '@gizmo-dev/eslint-plugin':
-        specifier: ^5.0.0
-        version: 5.0.0(eslint@9.9.1)(typescript@5.5.4)
+        specifier: ^5.0.1
+        version: 5.0.1(eslint@9.9.1)(typescript@5.5.4)
       '@sentry/types':
         specifier: ^8.26.0
         version: 8.26.0
@@ -89,9 +89,9 @@ packages:
     resolution: {integrity: sha512-BsWiH1yFGjXXS2yvrf5LyuoSIIbPrGUWob917o+BTKuZ7qJdxX8aJLRxs1fS9n6r7vESrq1OUqb68dANcFXuQQ==}
     engines: {node: ^18.18.0 || ^20.9.0 || >=21.1.0}
 
-  '@gizmo-dev/eslint-plugin@5.0.0':
-    resolution: {integrity: sha512-Hk4UtSNq/62XD7WWCH7nTfLhselRKR7ZpYpIWBnIqwP4BWJFmgqoQsVI1IPfkc33ab8Gp6ittXslTeLYiJZKBw==}
-    engines: {node: '>=18.20.2'}
+  '@gizmo-dev/eslint-plugin@5.0.1':
+    resolution: {integrity: sha512-7h+doxUXUebmNhCVeU2UriZ8wyewPKaTlVfBWCl9TmWGZCZmi5twd6IltajdEBoRhnsR1oqlNgJkQWjOTcBd9Q==}
+    engines: {node: '>=20'}
     peerDependencies:
       eslint: 9.x
 
@@ -1268,7 +1268,7 @@ snapshots:
 
   '@eslint/object-schema@2.1.4': {}
 
-  '@gizmo-dev/eslint-plugin@5.0.0(eslint@9.9.1)(typescript@5.5.4)':
+  '@gizmo-dev/eslint-plugin@5.0.1(eslint@9.9.1)(typescript@5.5.4)':
     dependencies:
       '@stylistic/eslint-plugin': 2.6.4(eslint@9.9.1)(typescript@5.5.4)
       eslint: 9.9.1
