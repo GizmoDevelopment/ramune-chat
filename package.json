@@ -21,7 +21,7 @@
 	"devDependencies": {
 		"@gizmo-dev/eslint-plugin": "^5.0.2",
 		"@sentry/types": "^8.27.0",
-		"@types/node": "^20.16.2",
+		"@types/node": "^20.16.3",
 		"@types/sanitize-html": "^2.13.0",
 		"eslint": "^9.9.1",
 		"globals": "^15.9.0",
