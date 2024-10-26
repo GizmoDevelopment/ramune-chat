@@ -19,7 +19,7 @@ importers:
         version: 7.114.0
       '@socket.io/admin-ui':
         specifier: ^0.5.1
-        version: 0.5.1(socket.io@4.8.0)
+        version: 0.5.1(socket.io@4.8.1)
       axios:
         specifier: ^1.7.7
         version: 1.7.7
@@ -33,8 +33,8 @@ importers:
         specifier: ^2.13.1
         version: 2.13.1
       socket.io:
-        specifier: ^4.8.0
-        version: 4.8.0
+        specifier: ^4.8.1
+        version: 4.8.1
     devDependencies:
       '@gizmo-dev/eslint-plugin':
         specifier: ^5.0.4
@@ -1117,8 +1117,8 @@ packages:
     resolution: {integrity: sha512-/GbIKmo8ioc+NIWIhwdecY0ge+qVBSMdgxGygevmdHj24bsfgtCmcUUcQ5ZzcylGFHsN3k4HB4Cgkl96KVnuew==}
     engines: {node: '>=10.0.0'}
 
-  socket.io@4.8.0:
-    resolution: {integrity: sha512-8U6BEgGjQOfGz3HHTYaC/L1GaxDCJ/KM0XTkJly0EhZ5U/du9uNEZy4ZgYzEzIqlx2CMm25CrCqr1ck899eLNA==}
+  socket.io@4.8.1:
+    resolution: {integrity: sha512-oZ7iUCxph8WYRHHcjBEc9unw3adt5CmSNlppj/5Q4k2RIrhl8Z5yY2Xr4j9zj0+wzVZ0bxmYoGSzKJnRl6A4yg==}
     engines: {node: '>=10.2.0'}
 
   source-map-js@1.2.1:
@@ -1665,12 +1665,12 @@ snapshots:
     dependencies:
       '@sentry/types': 8.35.0
 
-  '@socket.io/admin-ui@0.5.1(socket.io@4.8.0)':
+  '@socket.io/admin-ui@0.5.1(socket.io@4.8.1)':
     dependencies:
       '@types/bcryptjs': 2.4.6
       bcryptjs: 2.4.3
       debug: 4.3.7
-      socket.io: 4.8.0
+      socket.io: 4.8.1
     transitivePeerDependencies:
       - supports-color
 
@@ -2434,7 +2434,7 @@ snapshots:
     transitivePeerDependencies:
       - supports-color
 
-  socket.io@4.8.0:
+  socket.io@4.8.1:
     dependencies:
       accepts: 1.3.8
       base64id: 2.0.0
