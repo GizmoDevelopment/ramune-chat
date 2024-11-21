@@ -37,8 +37,8 @@ importers:
         version: 4.8.1
     devDependencies:
       '@gizmo-dev/eslint-plugin':
-        specifier: ^5.0.4
-        version: 5.0.4(eslint@9.15.0)(typescript@5.6.3)
+        specifier: ^5.0.5
+        version: 5.0.5(eslint@9.15.0)(typescript@5.6.3)
       '@sentry/types':
         specifier: ^8.39.0
         version: 8.39.0
@@ -97,11 +97,11 @@ packages:
     resolution: {integrity: sha512-2b/g5hRmpbb1o4GnTZax9N9m0FXzz9OV42ZzI4rDDMDuHUqigAiQCEWChBWCY4ztAGVRjoWT19v0yMmc5/L5kA==}
     engines: {node: ^18.18.0 || ^20.9.0 || >=21.1.0}
 
-  '@gizmo-dev/eslint-plugin@5.0.4':
-    resolution: {integrity: sha512-4xbjaiuw7JryJpLnx5WafHzWBv3T/Co0MO054sH6gk5yTm+uiOfL9PAeiDj9+CpMECAeCw3iF6rOoImecG6Daw==}
-    engines: {node: '>=20'}
+  '@gizmo-dev/eslint-plugin@5.0.5':
+    resolution: {integrity: sha512-V7I0t21X0ZJwdpfQI2ic8132XDiDXm0AJ2OX4NtSCiyM0Ty2kKEAqAAKmUxejR296I784J+SD9nVn2jTd23THw==}
+    engines: {node: '>=20.18.0'}
     peerDependencies:
-      eslint: 9.x
+      eslint: 9.15.0
 
   '@gizmo-dev/logger@1.0.8':
     resolution: {integrity: sha512-4b6KkM50zAa5qj6ZQT/pgjBDSvSoR9q9NTXGDtDdcFAldBlRnUv6L9uL7DW7MXMy0/Xlj6FL9IPN5kYs5I6xAg==}
@@ -1310,7 +1310,7 @@ snapshots:
     dependencies:
       levn: 0.4.1
 
-  '@gizmo-dev/eslint-plugin@5.0.4(eslint@9.15.0)(typescript@5.6.3)':
+  '@gizmo-dev/eslint-plugin@5.0.5(eslint@9.15.0)(typescript@5.6.3)':
     dependencies:
       '@stylistic/eslint-plugin': 2.11.0(eslint@9.15.0)(typescript@5.6.3)
       eslint: 9.15.0
