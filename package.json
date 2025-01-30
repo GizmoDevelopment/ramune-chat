@@ -20,7 +20,7 @@
 	},
 	"devDependencies": {
 		"@gizmo-dev/eslint-plugin": "^5.0.6",
-		"@sentry/types": "^8.51.0",
+		"@sentry/types": "^8.52.0",
 		"@types/node": "^20.16.10",
 		"@types/sanitize-html": "^2.13.0",
 		"eslint": "^9.19.0",
@@ -30,7 +30,7 @@
 	},
 	"dependencies": {
 		"@gizmo-dev/logger": "^1.0.8",
-		"@sentry/node": "^8.51.0",
+		"@sentry/node": "^8.52.0",
 		"@sentry/tracing": "^7.120.3",
 		"@socket.io/admin-ui": "^0.5.1",
 		"axios": "^1.7.9",
