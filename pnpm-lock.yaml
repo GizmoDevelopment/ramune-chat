@@ -46,8 +46,8 @@ importers:
         specifier: ^20.17.24
         version: 20.17.25
       '@types/sanitize-html':
-        specifier: ^2.13.0
-        version: 2.13.0
+        specifier: ^2.15.0
+        version: 2.15.0
       eslint:
         specifier: ^9.23.0
         version: 9.23.0
@@ -454,8 +454,8 @@ packages:
   '@types/pg@8.6.1':
     resolution: {integrity: sha512-1Kc4oAGzAl7uqUStZCDvaLFqZrW9qWSjXOmBfdgyBP5La7Us6Mg4GBvRlSoaZMhQF/zSj1C8CtKMBkoiT8eL8w==}
 
-  '@types/sanitize-html@2.13.0':
-    resolution: {integrity: sha512-X31WxbvW9TjIhZZNyNBZ/p5ax4ti7qsNDBDEnH4zAgmEh35YnFD1UiS6z9Cd34kKm0LslFW0KPmTQzu/oGtsqQ==}
+  '@types/sanitize-html@2.15.0':
+    resolution: {integrity: sha512-71Z6PbYsVKfp4i6Jvr37s5ql6if1Q/iJQT80NbaSi7uGaG8CqBMXP0pk/EsURAOuGdk5IJCd/vnzKrR7S3Txsw==}
 
   '@types/shimmer@1.2.0':
     resolution: {integrity: sha512-UE7oxhQLLd9gub6JKIAhDq06T0F6FnztwMNRvYgjeQSBeMc1ZG/tA47EwfduvkuQS8apbkM/lpLpWsaCeYsXVg==}
@@ -1828,7 +1828,7 @@ snapshots:
       pg-protocol: 1.8.0
       pg-types: 2.2.0
 
-  '@types/sanitize-html@2.13.0':
+  '@types/sanitize-html@2.15.0':
     dependencies:
       htmlparser2: 8.0.2
 
