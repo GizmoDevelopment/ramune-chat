@@ -25,7 +25,7 @@
 		"@types/sanitize-html": "^2.15.0",
 		"eslint": "^9.26.0",
 		"globals": "^15.15.0",
-		"tsc-alias": "^1.8.15",
+		"tsc-alias": "^1.8.16",
 		"typescript": "^5.8.3"
 	},
 	"dependencies": {
