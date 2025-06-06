@@ -10,7 +10,7 @@
 		"url": "git+https://github.com/GizmoDevelopment/ramune-chat.git"
 	},
 	"engines": {
-		"node": ">=20.18.3"
+		"node": ">=20.19.2"
 	},
 	"packageManager": "pnpm@9.15.9",
 	"scripts": {
@@ -21,7 +21,7 @@
 	"devDependencies": {
 		"@gizmo-dev/eslint-plugin": "^5.0.7",
 		"@sentry/types": "^8.55.0",
-		"@types/node": "^20.17.24",
+		"@types/node": "^20.19.0",
 		"@types/sanitize-html": "^2.16.0",
 		"eslint": "^9.28.0",
 		"globals": "^15.15.0",
