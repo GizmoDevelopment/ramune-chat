@@ -43,7 +43,7 @@ importers:
         specifier: ^8.55.0
         version: 8.55.0
       '@types/node':
-        specifier: ^20.17.24
+        specifier: ^20.19.0
         version: 20.19.0
       '@types/sanitize-html':
         specifier: ^2.16.0
